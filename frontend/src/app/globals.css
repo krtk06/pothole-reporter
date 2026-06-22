@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply transition-colors bg-background text-foreground;
+  }
+  :root {
+    --background: oklch(0.96 0.01 70);
+    --foreground: oklch(0.12 0.02 40);
+    --card: oklch(0.98 0.005 70);
+    --card-foreground: oklch(0.12 0.02 40);
+    --popover: oklch(0.98 0.005 70);
+    --popover-foreground: oklch(0.12 0.02 40);
+    --primary: oklch(0.65 0.19 45);
+    --primary-foreground: oklch(0.98 0 0);
+    --secondary: oklch(0.87 0.17 95);
+    --secondary-foreground: oklch(0.15 0.05 45);
+    --muted: oklch(0.92 0.01 70);
+    --muted-foreground: oklch(0.45 0.02 40);
+    --accent: oklch(0.87 0.17 95);
+    --accent-foreground: oklch(0.15 0.05 45);
+    --destructive: oklch(0.58 0.22 25);
+    --border: oklch(0.85 0.02 70);
+    --input: oklch(0.85 0.02 70);
+    --ring: oklch(0.65 0.19 45);
+    --chart-1: oklch(0.65 0.19 45);
+    --chart-2: oklch(0.55 0.12 45);
+    --chart-3: oklch(0.45 0.08 45);
+    --chart-4: oklch(0.87 0.17 95);
+    --chart-5: oklch(0.35 0.05 40);
+    --radius: 0.75rem;
+    --sidebar: oklch(0.96 0.01 70);
+    --sidebar-foreground: oklch(0.12 0.02 40);
+    --sidebar-primary: oklch(0.65 0.19 45);
+    --sidebar-primary-foreground: oklch(0.98 0 0);
+    --sidebar-accent: oklch(0.87 0.17 95);
+    --sidebar-accent-foreground: oklch(0.15 0.05 45);
+    --sidebar-border: oklch(0.85 0.02 70);
+    --sidebar-ring: oklch(0.65 0.19 45);
+    --color-bg: oklch(0.96 0.01 70);
+    --color-surface: oklch(0.98 0.005 70);
+    --color-muted-surface: oklch(0.92 0.01 70);
+    --color-border: oklch(0.85 0.02 70);
+    --color-text-secondary: oklch(0.45 0.02 40);
+    --color-text-primary: oklch(0.12 0.02 40);
+    --color-heading: oklch(0.12 0.02 40);
+    --spacing-6: 1.5rem;
+    --rounded-lg: 0.5rem;
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    --color-text-primary-rgb: 199, 209, 219;
+    --color-bg-2: oklch(0.92 0.01 70);
+  }
+  .dark {
+    --background: oklch(0.03 0 0);
+    --foreground: oklch(0.92 0 0);
+    --card: oklch(0.12 0.01 40);
+    --card-foreground: oklch(0.92 0 0);
+    --popover: oklch(0.12 0.01 40);
+    --popover-foreground: oklch(0.92 0 0);
+    --primary: oklch(0.65 0.19 45);
+    --primary-foreground: oklch(0.98 0 0);
+    --secondary: oklch(0.87 0.17 95);
+    --secondary-foreground: oklch(0.15 0.05 45);
+    --muted: oklch(0.15 0.01 40);
+    --muted-foreground: oklch(0.55 0.01 40);
+    --accent: oklch(0.87 0.17 95 / 0.15);
+    --accent-foreground: oklch(0.87 0.17 95);
+    --destructive: oklch(0.58 0.22 25);
+    --destructive-foreground: oklch(0.98 0 0);
+    --border: oklch(0.2 0.01 40);
+    --input: oklch(0.2 0.01 40);
+    --ring: oklch(0.65 0.19 45);
+    --chart-1: oklch(0.65 0.19 45);
+    --chart-2: oklch(0.55 0.12 45);
+    --chart-3: oklch(0.45 0.08 45);
+    --chart-4: oklch(0.87 0.17 95);
+    --chart-5: oklch(0.35 0.05 40);
+    --sidebar: oklch(0.08 0.01 40);
+    --sidebar-foreground: oklch(0.92 0 0);
+    --sidebar-primary: oklch(0.65 0.19 45);
+    --sidebar-primary-foreground: oklch(0.98 0 0);
+    --sidebar-accent: oklch(0.87 0.17 95 / 0.15);
+    --sidebar-accent-foreground: oklch(0.87 0.17 95);
+    --sidebar-border: oklch(0.2 0.01 40);
+    --sidebar-ring: oklch(0.65 0.19 45);
+    --color-bg: #101214;
+    --color-surface: #161A1D;
+    --color-muted-surface: #1D2125;
+    --color-border: #2C333A;
+    --color-text-secondary: #596773;
+    --color-text-primary: #C7D1DB;
+    --color-heading: #DEE4EA;
+    --color-bg-2: #C7D1DB;
+    --color-text-primary-rgb: 199, 209, 219;
+  }
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .hazard-stripe {
+    background: repeating-linear-gradient(
+      45deg, hsl(25, 95%, 53%) 0px, hsl(25, 95%, 53%) 20px,
+      hsl(48, 96%, 53%) 20px, hsl(48, 96%, 53%) 40px
+    );
+  }
+  .hazard-stripe-subtle {
+    background: repeating-linear-gradient(
+      45deg, oklch(0.65 0.19 45 / 0.08) 0px, oklch(0.65 0.19 45 / 0.08) 16px,
+      oklch(0.87 0.17 95 / 0.08) 16px, oklch(0.87 0.17 95 / 0.08) 32px
+    );
+  }
+  .asphalt-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+  .text-gradient-orange {
+    background: linear-gradient(135deg, oklch(0.65 0.19 45), oklch(0.87 0.17 95));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glow-orange {
+    box-shadow: 0 0 20px oklch(0.65 0.19 45 / 0.3), 0 0 60px oklch(0.65 0.19 45 / 0.1);
+  }
+}
+
+/* Leaflet overrides for dark mode */
+.dark .leaflet-container {
+  background: #0a0a0a;
+}
+.dark .leaflet-popup-content-wrapper {
+  background: #1c1917;
+  color: #e5e7eb;
+}
+.dark .leaflet-popup-tip {
+  background: #1c1917;
+}
+
+@theme inline {
+  @keyframes b {
+  100% {
+    background-position: 50% 0,
+      60% 50%;
+    }
+  }
+}

@@ -1,0 +1,73 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+enum Role {
+  public
+  admin
+}
+
+enum ThemePreference {
+  light
+  dark
+}
+
+enum ReportStatus {
+  pending
+  verified
+  rejected
+  fixed
+}
+
+enum TenderStatus {
+  open
+  assigned
+  completed
+}
+
+model User {
+  id              String          @id @default(uuid()) @db.Uuid
+  role            Role            @default(public)
+  name            String          @db.VarChar(255)
+  email           String          @unique @db.VarChar(255)
+  phone           String?         @db.VarChar(20)
+  password_hash   String          @db.VarChar(255)
+  theme_preference ThemePreference @default(dark)
+  refresh_token   String?         @db.Text
+  created_at      DateTime        @default(now())
+  potholes        Pothole[]
+
+  @@map("users")
+}
+
+model Pothole {
+  id           String       @id @default(uuid()) @db.Uuid
+  reporter_id  String       @db.Uuid
+  image_s3_key String       @db.VarChar(255)
+  location     Unsupported("geometry(Point, 4326)")
+  address_notes String?     @db.Text
+  block_id     String?      @db.VarChar(100)
+  status       ReportStatus @default(pending)
+  created_at   DateTime     @default(now())
+  reporter     User         @relation(fields: [reporter_id], references: [id])
+
+  @@map("potholes")
+}
+
+model Tender {
+  id            String       @id @default(uuid()) @db.Uuid
+  block_id      String       @db.VarChar(100)
+  pothole_count Int
+  estimated_cost Decimal @db.Decimal(10, 2)
+  status        TenderStatus @default(open)
+  generated_at  DateTime     @default(now())
+
+  @@map("tenders")
+}
