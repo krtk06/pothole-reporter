@@ -1,7 +1,10 @@
 import { Router, Response } from "express";
+import { z } from "zod";
 import { authenticate } from "../middleware/auth";
 import { requireAdmin } from "../middleware/rbac";
+import { validate } from "../middleware/validate";
 import prisma from "../config/database";
+import logger from "../config/logger";
 import { getTenders } from "../services/tenderService";
 import { generatePresignedDownloadUrl } from "../services/s3Service";
 import { AuthenticatedRequest } from "../types";
@@ -10,9 +13,15 @@ const router = Router();
 
 router.use(authenticate, requireAdmin);
 
+const statusFilterSchema = z.object({
+  status: z.enum(["pending", "verified", "rejected", "fixed"]).optional(),
+});
+
 router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { status } = req.query;
+    const parsed = statusFilterSchema.safeParse(req.query);
+    const status = parsed.success ? parsed.data.status : undefined;
+
     let query = `
       SELECT
         p.id,
@@ -47,8 +56,41 @@ router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
 
     res.json({ reports: enriched });
   } catch (err: any) {
-    console.error("Admin reports error:", err);
-    res.status(500).json({ error: "Failed to fetch reports" });
+    logger.error({ err }, "Admin reports error");
+    return res.status(500).json({ error: "Failed to fetch reports" });
+  }
+});
+
+const updateReportSchema = z.object({
+  status: z.enum(["pending", "verified", "rejected", "fixed"]),
+});
+
+const uuidParam = z.string().uuid();
+
+router.patch("/reports/:id", validate(updateReportSchema), async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { status } = req.body;
+    const idResult = uuidParam.safeParse(req.params.id);
+    if (!idResult.success) {
+      res.status(400).json({ error: "Invalid report ID" });
+      return;
+    }
+    const id = idResult.data;
+
+    const result: any[] = await prisma.$queryRawUnsafe(`
+      UPDATE potholes SET status = $1::text::"ReportStatus" WHERE id = $2::uuid RETURNING id, status
+    `, status, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Report not found" });
+      return;
+    }
+
+    logger.info({ reportId: id, newStatus: status, adminId: req.user!.userId }, "Report status updated");
+    res.json({ report: result[0] });
+  } catch (err: any) {
+    logger.error({ err }, "Update report error");
+    return res.status(500).json({ error: "Failed to update report" });
   }
 });
 
@@ -104,8 +146,8 @@ router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => 
       })),
     });
   } catch (err: any) {
-    console.error("Map clusters error:", err);
-    res.status(500).json({ error: "Failed to fetch map data" });
+    logger.error({ err }, "Map clusters error");
+    return res.status(500).json({ error: "Failed to fetch map data" });
   }
 });
 
@@ -114,8 +156,34 @@ router.get("/tenders", async (req: AuthenticatedRequest, res: Response) => {
     const tenders = await getTenders();
     res.json({ tenders });
   } catch (err: any) {
-    console.error("Tenders error:", err);
-    res.status(500).json({ error: "Failed to fetch tenders" });
+    logger.error({ err }, "Tenders error");
+    return res.status(500).json({ error: "Failed to fetch tenders" });
+  }
+});
+
+const updateTenderSchema = z.object({
+  status: z.enum(["open", "assigned", "completed"]),
+});
+
+router.patch("/tenders/:id", validate(updateTenderSchema), async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { status } = req.body;
+    const idResult = uuidParam.safeParse(req.params.id);
+    if (!idResult.success) {
+      return res.status(400).json({ error: "Invalid tender ID" });
+    }
+    const id = idResult.data;
+
+    const tender = await prisma.tender.update({
+      where: { id },
+      data: { status },
+    });
+
+    logger.info({ tenderId: id, newStatus: status, adminId: req.user!.userId }, "Tender status updated");
+    res.json({ tender });
+  } catch (err: any) {
+    logger.error({ err }, "Update tender error");
+    return res.status(500).json({ error: "Failed to update tender" });
   }
 });
 

@@ -8,8 +8,3 @@ export interface AuthPayload {
 export interface AuthenticatedRequest extends Request {
   user?: AuthPayload;
 }
-
-export interface PaginationQuery {
-  page?: string;
-  limit?: string;
-}

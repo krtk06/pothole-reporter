@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { z } from "zod";
 import { validate } from "../middleware/validate";
 import prisma from "../config/database";
+import logger from "../config/logger";
 import { checkAndGenerateTender } from "../services/tenderService";
 
 const router = Router();
@@ -13,8 +14,13 @@ const mlWebhookSchema = z.object({
 });
 
 function verifyInternalApiKey(req: Request, res: Response, next: Function): void {
+  const webhookSecret = process.env.ML_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    res.status(500).json({ error: "Webhook not configured on server" });
+    return;
+  }
   const apiKey = req.headers["x-api-key"];
-  if (apiKey !== process.env.ML_WEBHOOK_SECRET) {
+  if (apiKey !== webhookSecret) {
     res.status(401).json({ error: "Invalid API key" });
     return;
   }
@@ -27,7 +33,7 @@ router.post(
   validate(mlWebhookSchema),
   async (req: Request, res: Response) => {
     try {
-      const { report_id, is_valid, confidence_score } = req.body;
+      const { report_id, is_valid } = req.body;
 
       const newStatus = is_valid ? "verified" : "rejected";
       const report: any[] = await prisma.$queryRawUnsafe(`
@@ -45,8 +51,8 @@ router.post(
 
       res.json({ success: true, tender_generated: tenderGenerated });
     } catch (err: any) {
-      console.error("ML webhook error:", err);
-      res.status(500).json({ error: "Failed to process ML validation" });
+      logger.error({ err }, "ML webhook error");
+      return res.status(500).json({ error: "Failed to process ML validation" });
     }
   }
 );

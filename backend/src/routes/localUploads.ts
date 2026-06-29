@@ -4,6 +4,7 @@ import path from "path";
 import { v4 as uuid } from "uuid";
 import { authenticate } from "../middleware/auth";
 import { uploadLimiter } from "../middleware/rateLimiter";
+import logger from "../config/logger";
 
 const router = Router();
 
@@ -17,7 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (!file.mimetype.startsWith("image/")) {
       cb(new Error("Only image files are allowed"));
@@ -34,7 +35,7 @@ router.post(
   (req: Request, res: Response) => {
     upload.single("file")(req, res, (err: any) => {
       if (err) {
-        console.error("Upload error:", err);
+        logger.error({ err }, "Local upload error");
         res.status(400).json({ error: err.message || "Upload failed" });
         return;
       }
@@ -42,7 +43,7 @@ router.post(
         res.status(400).json({ error: "No file provided" });
         return;
       }
-      const key = `local/${req.file.filename}`;
+      const key = `uploads/${req.file.filename}`;
       res.json({ uploadUrl: "", key });
     });
   }

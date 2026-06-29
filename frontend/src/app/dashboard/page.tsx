@@ -127,7 +127,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
-      {/* Header */}
       <nav className="flex items-center justify-between p-4 md:px-16 lg:px-24 xl:px-32 md:py-6 w-full border-b border-[var(--color-border)]">
         <a className="flex items-center gap-2" href="/dashboard">
           <div className="w-8 h-8 rounded-lg bg-[var(--color-text-primary)] flex items-center justify-center">
@@ -147,7 +146,6 @@ export default function Dashboard() {
       </nav>
 
       <main className="max-w-5xl mx-auto px-4 py-10">
-        {/* Hero-style header with fluid grid background */}
         <div
           className="text-center mb-12 bg-no-repeat bg-cover bg-center rounded-2xl py-16 px-4 relative overflow-hidden"
           style={{ backgroundImage: "url('https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/gridBackground.png')" }}
@@ -183,9 +181,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Camera & Browse buttons */}
         <div className="max-w-lg mx-auto mb-8">
-          {/* Hidden file inputs */}
           <input
             ref={fileInputRef}
             type="file"
@@ -262,7 +258,6 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Session expired */}
         <AnimatePresence>
           {sessionExpired && (
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
@@ -274,7 +269,6 @@ export default function Dashboard() {
           )}
         </AnimatePresence>
 
-        {/* Reports */}
         <div className="flex items-center justify-between mb-6 mt-12">
           <h2 className="text-xl font-bold text-[var(--color-heading)]">My Reports</h2>
           <Button variant="ghost" size="sm" onClick={fetchReports} className="text-[var(--color-text-secondary)]">

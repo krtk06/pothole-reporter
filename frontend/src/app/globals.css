@@ -132,7 +132,6 @@
   }
 }
 
-/* Leaflet overrides for dark mode */
 .dark .leaflet-container {
   background: #0a0a0a;
 }

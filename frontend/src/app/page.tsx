@@ -18,11 +18,10 @@ export default function Home() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { setUser, setToken } = useStore();
+  const { setUser } = useStore();
   const bgRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
-  // Fluid mouse tracking on the background
   useEffect(() => {
     const el = bgRef.current;
     if (!el) return;
@@ -44,7 +43,6 @@ export default function Home() {
       const data = isLogin
         ? await api.login(email, password)
         : await api.register(name, email, password, phone || undefined);
-      setToken(data.accessToken);
       setUser(data.user);
       router.push(data.user.role === "admin" ? "/admin" : "/dashboard");
     } catch (err: any) {
@@ -71,7 +69,6 @@ export default function Home() {
         backgroundRepeat: "no-repeat, no-repeat, no-repeat, no-repeat, repeat",
       }}
     >
-      {/* Fluid gradient overlay that follows mouse */}
       <div
         className="absolute inset-0 pointer-events-none transition-all duration-1000 ease-out"
         style={{
@@ -80,7 +77,6 @@ export default function Home() {
       />
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Top nav */}
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[var(--color-text-primary)] flex items-center justify-center">
@@ -93,11 +89,9 @@ export default function Home() {
           <ThemeToggleNew />
         </div>
 
-        {/* Hero + Auth centered */}
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="w-full max-w-5xl flex flex-col lg:flex-row justify-between rounded-2xl overflow-hidden shadow-2xl border border-[var(--color-border)] bg-[var(--color-surface)] backdrop-blur-sm">
             
-            {/* Left: Auth Form */}
             <div className="w-full lg:w-1/2 px-6 lg:px-12 py-10 lg:py-16 relative">
               <div className="h-full flex flex-col justify-center">
                 <form onSubmit={handleSubmit} className="text-center grid gap-5">
@@ -190,7 +184,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right: Map */}
             <div className="hidden lg:block w-1/2 relative overflow-hidden rounded-r-2xl" style={{ minHeight: "600px" }}>
               <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] via-transparent to-transparent z-10 pointer-events-none" />
               <LoginMap />

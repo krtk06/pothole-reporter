@@ -16,7 +16,6 @@ const RetroTvError = React.forwardRef<HTMLDivElement, RetroTvErrorProps>(
     },
     ref
   ) => {
-    // Splits the error code into individual characters
     const errorCodeDigits = errorCode.split('');
 
     return (
@@ -87,7 +86,7 @@ const RetroTvError = React.forwardRef<HTMLDivElement, RetroTvErrorProps>(
           </div>
         </div>
         <div className="text_404">
-          {/* Map over the error code digits to render them */}
+          
           {errorCodeDigits.map((digit, index) => (
             <div key={index} className={`text_404${index + 1}`}>
               {digit}

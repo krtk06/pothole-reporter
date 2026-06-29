@@ -21,7 +21,7 @@ CREATE TABLE "users" (
     "email" VARCHAR(255) NOT NULL,
     "phone" VARCHAR(20),
     "password_hash" VARCHAR(255) NOT NULL,
-    "theme_preference" "ThemePreference" NOT NULL DEFAULT 'light',
+    "theme_preference" "ThemePreference" NOT NULL DEFAULT 'dark',
     "refresh_token" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

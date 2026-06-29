@@ -87,7 +87,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
-      {/* Nav */}
       <nav className="flex items-center justify-between p-4 md:px-16 lg:px-24 xl:px-32 md:py-6 w-full border-b border-[var(--color-border)]">
         <a className="flex items-center gap-2" href="/admin">
           <div className="w-8 h-8 rounded-lg bg-[var(--color-text-primary)] flex items-center justify-center">
@@ -108,7 +107,6 @@ export default function AdminDashboard() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 py-10">
-        {/* Hero header with grid background */}
         <div
           className="text-center mb-10 bg-no-repeat bg-cover bg-center rounded-2xl py-16 px-4 relative overflow-hidden"
           style={{ backgroundImage: "url('https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/gridBackground.png')" }}
@@ -133,7 +131,6 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
             { icon: MapPin, label: "Total", value: stats.total, color: "text-blue-400", bg: "bg-blue-500/10" },
@@ -155,7 +152,6 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-[var(--color-surface)] border border-[var(--color-border)]">
             <TabsTrigger value="map" className="gap-2 data-[state=active]:bg-[var(--color-text-primary)] data-[state=active]:text-[var(--color-bg)]">

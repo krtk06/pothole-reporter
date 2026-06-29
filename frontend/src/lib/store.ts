@@ -5,10 +5,8 @@ import { User } from "@/types";
 
 interface AppState {
   user: User | null;
-  token: string | null;
   theme: "light" | "dark";
   setUser: (user: User | null) => void;
-  setToken: (token: string | null) => void;
   setTheme: (theme: "light" | "dark") => void;
   toggleTheme: () => void;
   logout: () => void;
@@ -17,11 +15,6 @@ interface AppState {
 function getStoredTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "dark";
   return (localStorage.getItem("theme") as "light" | "dark") || "dark";
-}
-
-function getStoredToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("accessToken");
 }
 
 function getStoredUser(): User | null {
@@ -36,7 +29,6 @@ function applyTheme(theme: "light" | "dark") {
   }
 }
 
-// Apply dark mode immediately on load
 if (typeof window !== "undefined") {
   const stored = localStorage.getItem("theme");
   const theme = (stored as "light" | "dark") || "dark";
@@ -45,12 +37,10 @@ if (typeof window !== "undefined") {
 
 export const useStore = create<AppState>((set) => ({
   user: getStoredUser(),
-  token: getStoredToken(),
   theme: getStoredTheme(),
 
   setUser: (user) => {
     if (user) {
-      // Keep existing theme preference — don't override with DB default
       const currentTheme = localStorage.getItem("theme") as "light" | "dark" | null;
       const theme = currentTheme || user.theme_preference || "dark";
       set({ user, theme });
@@ -61,12 +51,6 @@ export const useStore = create<AppState>((set) => ({
       set({ user: null });
       localStorage.removeItem("user");
     }
-  },
-
-  setToken: (token) => {
-    set({ token });
-    if (token) localStorage.setItem("accessToken", token);
-    else localStorage.removeItem("accessToken");
   },
 
   setTheme: (theme) => {
@@ -85,9 +69,8 @@ export const useStore = create<AppState>((set) => ({
   },
 
   logout: () => {
-    set({ user: null, token: null, theme: "dark" });
+    set({ user: null, theme: "dark" });
     localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
     localStorage.setItem("theme", "dark");
     applyTheme("dark");
   },

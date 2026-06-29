@@ -1,10 +1,5 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("accessToken");
-}
-
 class ApiClient {
   private async fetch(endpoint: string, options: RequestInit = {}) {
     const headers: Record<string, string> = {
@@ -12,21 +7,15 @@ class ApiClient {
       ...(options.headers as Record<string, string>),
     };
 
-    const token = getToken();
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
     const res = await fetch(`${API_URL}${endpoint}`, {
       ...options,
       headers,
       credentials: "include",
     });
 
-    if (res.status === 401 && token) {
+    if (res.status === 401) {
       const refreshed = await this.refresh();
       if (refreshed) {
-        headers["Authorization"] = `Bearer ${getToken()}`;
         const retryRes = await fetch(`${API_URL}${endpoint}`, {
           ...options,
           headers,
@@ -52,13 +41,14 @@ class ApiClient {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
       });
-      if (!res.ok) return false;
-      const data = await res.json();
-      localStorage.setItem("accessToken", data.accessToken);
-      return true;
+      return res.ok;
     } catch {
       return false;
     }
+  }
+
+  async getMe() {
+    return this.fetch("/auth/me");
   }
 
   async register(name: string, email: string, password: string, phone?: string) {
@@ -76,8 +66,11 @@ class ApiClient {
   }
 
   async logout() {
-    localStorage.removeItem("accessToken");
-    return this.fetch("/auth/logout", { method: "POST" }).catch(() => null);
+    try {
+      return await this.fetch("/auth/logout", { method: "POST" });
+    } catch {
+      return null;
+    }
   }
 
   async getPresignedUrl(filename: string, contentType: string) {
@@ -88,13 +81,12 @@ class ApiClient {
   }
 
   async uploadLocal(file: File) {
-    const token = getToken();
     const formData = new FormData();
     formData.append("file", file);
 
     const res = await fetch(`${API_URL}/uploads/local`, {
       method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      credentials: "include",
       body: formData,
     });
     if (!res.ok) {
@@ -126,6 +118,20 @@ class ApiClient {
 
   async getTenders() {
     return this.fetch("/admin/tenders");
+  }
+
+  async forgotPassword(email: string) {
+    return this.fetch("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async resetPassword(token: string, password: string) {
+    return this.fetch("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ token, password }),
+    });
   }
 }
 

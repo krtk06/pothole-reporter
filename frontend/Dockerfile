@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY next.config.js tsconfig.json tailwind.config.ts postcss.config.mjs ./
+COPY next.config.js tsconfig.json tailwind.config.ts postcss.config.js ./
 COPY public/ ./public/
 COPY src/ ./src/
 

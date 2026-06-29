@@ -36,7 +36,6 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
-      {/* Nav */}
       <nav className="flex items-center justify-between p-4 md:px-16 lg:px-24 md:py-6 border-b border-[var(--color-border)]">
         <a className="flex items-center gap-2" href="/dashboard">
           <div className="w-8 h-8 rounded-lg bg-[var(--color-text-primary)] flex items-center justify-center">
@@ -55,7 +54,6 @@ export default function Profile() {
       </nav>
 
       <main className="max-w-4xl mx-auto px-4 py-10">
-        {/* Hero header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 border border-[var(--color-border)] rounded-full px-4 py-1.5 text-xs text-[var(--color-text-secondary)] mb-6">
             <Shield className="w-3 h-3" /> {user.role === "admin" ? "Administrator" : "Public Reporter"}
@@ -69,7 +67,6 @@ export default function Profile() {
           <p className="text-[var(--color-text-secondary)] mt-2">{user.email}</p>
         </div>
 
-        {/* Info */}
         <div className="grid gap-4 sm:grid-cols-2 max-w-lg mx-auto mb-10">
           <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)] flex items-center gap-3">
             <Mail className="w-4 h-4 text-[var(--color-text-secondary)]" />
@@ -87,7 +84,6 @@ export default function Profile() {
           </Card>
         </div>
 
-        {/* Activity */}
         <h2 className="text-xl font-bold text-[var(--color-heading)] mb-4 text-center">Recent Reports</h2>
         {reports.length === 0 ? (
           <p className="text-center text-[var(--color-text-secondary)] text-sm">No reports yet.</p>

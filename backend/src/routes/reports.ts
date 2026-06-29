@@ -2,7 +2,9 @@ import { Router, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middleware/auth";
 import { validate } from "../middleware/validate";
+import { uploadLimiter } from "../middleware/rateLimiter";
 import prisma from "../config/database";
+import logger from "../config/logger";
 import { AuthenticatedRequest } from "../types";
 
 const router = Router();
@@ -17,6 +19,7 @@ const reportSchema = z.object({
 router.post(
   "/",
   authenticate,
+  uploadLimiter,
   validate(reportSchema),
   async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -42,8 +45,8 @@ router.post(
         status: report[0].status,
       });
     } catch (err: any) {
-      console.error("Report submission error:", err);
-      res.status(500).json({ error: "Failed to submit report" });
+      logger.error({ err }, "Report submission error");
+      return res.status(500).json({ error: "Failed to submit report" });
     }
   }
 );
@@ -67,8 +70,8 @@ router.get("/", authenticate, async (req: AuthenticatedRequest, res: Response) =
 
     res.json({ reports });
   } catch (err: any) {
-    console.error("Fetch reports error:", err);
-    res.status(500).json({ error: "Failed to fetch reports" });
+    logger.error({ err }, "Fetch reports error");
+    return res.status(500).json({ error: "Failed to fetch reports" });
   }
 });
 

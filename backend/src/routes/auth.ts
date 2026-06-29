@@ -1,10 +1,11 @@
 import { Router, Request, Response } from "express";
 import { z } from "zod";
 import { validate } from "../middleware/validate";
-import { loginLimiter } from "../middleware/rateLimiter";
+import { loginLimiter, generalLimiter, refreshLimiter } from "../middleware/rateLimiter";
 import { authenticate } from "../middleware/auth";
 import { AuthenticatedRequest } from "../types";
 import * as authService from "../services/authService";
+import logger from "../config/logger";
 
 const router = Router();
 
@@ -17,31 +18,30 @@ const registerSchema = z.object({
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1),
+  password: z.string().min(8).max(255),
 });
 
-const refreshSchema = z.object({
-  refreshToken: z.string().min(1),
-});
+const TOKEN_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict" as const,
+  path: "/",
+};
 
-router.post("/register", validate(registerSchema), async (req: Request, res: Response) => {
+router.post("/register", generalLimiter, validate(registerSchema), async (req: Request, res: Response) => {
   try {
     const { name, email, password, phone } = req.body;
     const result = await authService.registerUser(name, email, password, phone);
 
-    res.cookie("refreshToken", result.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("accessToken", result.accessToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
+    res.cookie("refreshToken", result.refreshToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
     res.status(201).json({
       user: result.user,
       accessToken: result.accessToken,
     });
   } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 });
 
@@ -50,52 +50,84 @@ router.post("/login", loginLimiter, validate(loginSchema), async (req: Request, 
     const { email, password } = req.body;
     const result = await authService.loginUser(email, password);
 
-    res.cookie("refreshToken", result.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("accessToken", result.accessToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
+    res.cookie("refreshToken", result.refreshToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
     res.json({
       user: result.user,
       accessToken: result.accessToken,
     });
   } catch (err: any) {
-    res.status(401).json({ error: err.message });
+    return res.status(401).json({ error: err.message });
   }
 });
 
-router.post("/refresh", async (req: Request, res: Response) => {
+router.post("/refresh", refreshLimiter, async (req: Request, res: Response) => {
   try {
     const token = req.cookies?.refreshToken || req.body.refreshToken;
     if (!token) {
-      res.status(400).json({ error: "Refresh token required" });
-      return;
+      return res.status(400).json({ error: "Refresh token required" });
     }
 
     const result = await authService.refreshAccessToken(token);
 
-    res.cookie("refreshToken", result.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("accessToken", result.accessToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
+    res.cookie("refreshToken", result.refreshToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
     res.json({ accessToken: result.accessToken });
   } catch (err: any) {
-    res.status(401).json({ error: err.message });
+    return res.status(401).json({ error: err.message });
   }
 });
 
 router.post("/logout", authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
     await authService.logoutUser(req.user!.userId);
-    res.clearCookie("refreshToken");
+    res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
     res.json({ success: true });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    logger.error({ err }, "Logout failed");
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/me", authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const user = await authService.getCurrentUser(req.user!.userId);
+    res.json({ user });
+  } catch (err: any) {
+    logger.error({ err }, "Get current user error");
+    return res.status(404).json({ error: "User not found" });
+  }
+});
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+router.post("/forgot-password", validate(forgotPasswordSchema), async (req: Request, res: Response) => {
+  try {
+    await authService.forgotPassword(req.body.email);
+    res.json({ message: "If that email is registered, a reset link has been sent." });
+  } catch (err: any) {
+    logger.error({ err }, "Forgot password error");
+    return res.status(500).json({ error: "Failed to process request" });
+  }
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1),
+  password: z.string().min(8).max(255),
+});
+
+router.post("/reset-password", validate(resetPasswordSchema), async (req: Request, res: Response) => {
+  try {
+    await authService.resetPassword(req.body.token, req.body.password);
+    res.json({ message: "Password has been reset. Please log in." });
+  } catch (err: any) {
+    logger.error({ err }, "Reset password error");
+    return res.status(400).json({ error: err.message });
   }
 });
 

@@ -23,6 +23,11 @@ RUN npm ci --production
 
 COPY --from=builder /app/prisma/ ./prisma/
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/prisma/ ./prisma/
+RUN npx prisma migrate deploy
+
 COPY --from=builder /app/dist/ ./dist/
 
 EXPOSE 4000

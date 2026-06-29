@@ -4,6 +4,7 @@ import { authenticate } from "../middleware/auth";
 import { validate } from "../middleware/validate";
 import { uploadLimiter } from "../middleware/rateLimiter";
 import { generatePresignedUploadUrl } from "../services/s3Service";
+import logger from "../config/logger";
 
 const router = Router();
 
@@ -23,8 +24,8 @@ router.post(
       const result = await generatePresignedUploadUrl(filename, contentType);
       res.json(result);
     } catch (err: any) {
-      console.error("S3 presigned URL error:", err);
-      res.status(500).json({ error: "Failed to generate upload URL" });
+      logger.error({ err }, "S3 presigned URL error");
+      return res.status(500).json({ error: "Failed to generate upload URL" });
     }
   }
 );
