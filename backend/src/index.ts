@@ -6,6 +6,7 @@ import logger from "./config/logger";
 const REQUIRED_ENV_VARS = [
   "JWT_SECRET",
   "JWT_REFRESH_SECRET",
+  "JWT_RESET_SECRET",
   "DATABASE_URL",
   "AWS_ACCESS_KEY_ID",
   "AWS_SECRET_ACCESS_KEY",
@@ -64,7 +65,7 @@ app.use(cors({
   origin: FRONTEND_URL,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-API-Key"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-API-Key", "X-Client-Platform"],
 }));
 
 const uploadsDir = path.join(__dirname, "../uploads");

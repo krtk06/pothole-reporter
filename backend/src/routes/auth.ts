@@ -8,6 +8,7 @@ import * as authService from "../services/authService";
 import logger from "../config/logger";
 
 const router = Router();
+const MOBILE_CLIENT_PLATFORM = "mobile";
 
 const registerSchema = z.object({
   name: z.string().min(1).max(255),
@@ -24,9 +25,21 @@ const loginSchema = z.object({
 const TOKEN_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "strict" as const,
+  sameSite: (process.env.NODE_ENV === "production" ? "none" : "lax") as "none" | "lax",
   path: "/",
 };
+
+function isMobileClient(req: Request): boolean {
+  return req.header("X-Client-Platform")?.toLowerCase() === MOBILE_CLIENT_PLATFORM;
+}
+
+function authResponse(result: { user?: unknown; accessToken: string; refreshToken: string }, includeRefreshToken: boolean) {
+  return {
+    ...(result.user ? { user: result.user } : {}),
+    accessToken: result.accessToken,
+    ...(includeRefreshToken ? { refreshToken: result.refreshToken } : {}),
+  };
+}
 
 router.post("/register", generalLimiter, validate(registerSchema), async (req: Request, res: Response) => {
   try {
@@ -36,10 +49,7 @@ router.post("/register", generalLimiter, validate(registerSchema), async (req: R
     res.cookie("accessToken", result.accessToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
     res.cookie("refreshToken", result.refreshToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
-    res.status(201).json({
-      user: result.user,
-      accessToken: result.accessToken,
-    });
+    res.status(201).json(authResponse(result, isMobileClient(req)));
   } catch (err: any) {
     return res.status(400).json({ error: err.message });
   }
@@ -53,10 +63,7 @@ router.post("/login", loginLimiter, validate(loginSchema), async (req: Request, 
     res.cookie("accessToken", result.accessToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
     res.cookie("refreshToken", result.refreshToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
-    res.json({
-      user: result.user,
-      accessToken: result.accessToken,
-    });
+    res.json(authResponse(result, isMobileClient(req)));
   } catch (err: any) {
     return res.status(401).json({ error: err.message });
   }
@@ -74,7 +81,7 @@ router.post("/refresh", refreshLimiter, async (req: Request, res: Response) => {
     res.cookie("accessToken", result.accessToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
     res.cookie("refreshToken", result.refreshToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
-    res.json({ accessToken: result.accessToken });
+    res.json(authResponse(result, isMobileClient(req)));
   } catch (err: any) {
     return res.status(401).json({ error: err.message });
   }
@@ -83,8 +90,8 @@ router.post("/refresh", refreshLimiter, async (req: Request, res: Response) => {
 router.post("/logout", authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
     await authService.logoutUser(req.user!.userId);
-    res.clearCookie("accessToken", { path: "/" });
-    res.clearCookie("refreshToken", { path: "/" });
+    res.clearCookie("accessToken", TOKEN_COOKIE_OPTIONS);
+    res.clearCookie("refreshToken", TOKEN_COOKIE_OPTIONS);
     res.json({ success: true });
   } catch (err: any) {
     logger.error({ err }, "Logout failed");

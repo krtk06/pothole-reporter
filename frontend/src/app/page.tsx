@@ -148,7 +148,11 @@ export default function Home() {
                   </div>
 
                   {isLogin && (
-                    <button type="button" className="font-light text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
+                    <button
+                      type="button"
+                      onClick={() => router.push("/forgot-password")}
+                      className="font-light text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                    >
                       Forgot your password?
                     </button>
                   )}

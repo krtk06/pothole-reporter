@@ -94,6 +94,7 @@ export default function Dashboard() {
   const handleUpload = async () => {
     const file = selectedFiles[0];
     if (!file) { setError("Select a photo first"); return; }
+    if (!location) { setError("Use your location before submitting"); return; }
     setUploading(true); setError(""); setSuccess("");
 
     try {
@@ -109,7 +110,7 @@ export default function Dashboard() {
       }
 
       const combinedNotes = [notes, descLoc ? `📍 ${descLoc}` : ""].filter(Boolean).join("\n");
-      await api.submitReport(key, location?.lat || 0, location?.lng || 0, combinedNotes || undefined);
+      await api.submitReport(key, location.lat, location.lng, combinedNotes || undefined);
       setSuccess("Pothole reported!");
       setNotes(""); setDescLoc(""); setSelectedFiles([]);
       fetchReports();

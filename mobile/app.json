@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Pothole Reporter",
+    "slug": "pothole-reporter",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Take photos of potholes for reporting",
+        "NSPhotoLibraryUsageDescription": "Select photos of potholes for reporting",
+        "NSLocationWhenInUseUsageDescription": "Your location is used to mark pothole positions"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0a0a0a"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-image-picker"
+    ]
+  }
+}

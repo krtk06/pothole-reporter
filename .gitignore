@@ -24,6 +24,7 @@ Thumbs.db
 
 # AI agent tools — skill files, configs, and prompts
 .agent/
+.agents/
 .claude/
 .codebuddy/
 .codex/

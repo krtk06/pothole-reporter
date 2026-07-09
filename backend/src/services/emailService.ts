@@ -13,7 +13,7 @@ const FROM_EMAIL = process.env.SES_FROM_EMAIL || "";
 
 export async function sendPasswordResetEmail(recipient: string, resetLink: string): Promise<void> {
   if (process.env.NODE_ENV !== "production") {
-    logger.info({ recipient, resetLink }, "Password reset email (skipped SES in dev)");
+    logger.info({ recipient }, "Password reset email skipped in non-production");
     return;
   }
 

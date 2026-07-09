@@ -14,6 +14,9 @@ const reportSchema = z.object({
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
   notes: z.string().optional(),
+}).refine((data) => !(data.latitude === 0 && data.longitude === 0), {
+  message: "Valid location is required",
+  path: ["latitude"],
 });
 
 router.post(

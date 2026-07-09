@@ -10,6 +10,12 @@ function hashToken(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
+function hashResetToken(token: string): string {
+  const secret = process.env.JWT_RESET_SECRET;
+  if (!secret) throw new Error("JWT_RESET_SECRET is not configured");
+  return crypto.createHash("sha256").update(`${token}.${secret}`).digest("hex");
+}
+
 function generateAccessToken(payload: AuthPayload): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET is not configured");
@@ -118,37 +124,59 @@ export async function forgotPassword(email: string): Promise<void> {
     return;
   }
 
-  const secret = process.env.JWT_RESET_SECRET;
-  if (!secret) throw new Error("JWT_RESET_SECRET is not configured");
-  const payload = { userId: user.id, purpose: "password_reset" } as const;
-  const token = jwt.sign(payload, secret, { expiresIn: "15m", algorithm: "HS256" } as SignOptions);
+  const token = crypto.randomBytes(32).toString("hex");
+  const tokenHash = hashResetToken(token);
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+  await prisma.$transaction([
+    prisma.passwordResetToken.updateMany({
+      where: { user_id: user.id, used_at: null },
+      data: { used_at: new Date() },
+    }),
+    prisma.passwordResetToken.create({
+      data: {
+        user_id: user.id,
+        token_hash: tokenHash,
+        expires_at: expiresAt,
+      },
+    }),
+  ]);
 
   const resetLink = `${process.env.FRONTEND_URL || "http://localhost:3000"}/reset-password?token=${token}`;
 
-  logger.info({ email, resetLink }, "Password reset link generated");
-
+  logger.info({ email }, "Password reset link generated");
   await sendPasswordResetEmail(user.email, resetLink);
 }
 
 export async function resetPassword(token: string, newPassword: string): Promise<void> {
-  const secret = process.env.JWT_RESET_SECRET;
-  if (!secret) throw new Error("JWT_RESET_SECRET is not configured");
+  const tokenHash = hashResetToken(token);
+  const resetToken = await prisma.passwordResetToken.findUnique({
+    where: { token_hash: tokenHash },
+  });
 
-  let decoded: { userId: string; purpose: string };
-  try {
-    decoded = jwt.verify(token, secret) as typeof decoded;
-  } catch {
+  if (!resetToken || resetToken.used_at || resetToken.expires_at <= new Date()) {
     throw new Error("Invalid or expired reset token");
   }
 
-  if (decoded.purpose !== "password_reset") {
-    throw new Error("Invalid reset token");
-  }
-
   const password_hash = await bcrypt.hash(newPassword, 10);
-  await prisma.user.update({
-    where: { id: decoded.userId },
-    data: { password_hash, refresh_token: null },
+  await prisma.$transaction(async (tx) => {
+    const consumed = await tx.passwordResetToken.updateMany({
+      where: {
+        id: resetToken.id,
+        used_at: null,
+        expires_at: { gt: new Date() },
+      },
+      data: { used_at: new Date() },
+    });
+
+    if (consumed.count !== 1) {
+      throw new Error("Invalid or expired reset token");
+    }
+
+    await tx.user.update({
+      where: { id: resetToken.user_id },
+      data: { password_hash, refresh_token: null },
+    });
   });
 }
 
