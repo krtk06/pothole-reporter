@@ -1,6 +1,18 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
+export class ApiError extends Error {
+  constructor(message: string, public readonly status: number) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 class ApiClient {
+  private async toApiError(res: Response): Promise<ApiError> {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    return new ApiError(err.error || "Request failed", res.status);
+  }
+
   private async fetch(endpoint: string, options: RequestInit = {}) {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -21,14 +33,13 @@ class ApiClient {
           headers,
           credentials: "include",
         });
-        if (!retryRes.ok) throw new Error(await retryRes.text());
+        if (!retryRes.ok) throw await this.toApiError(retryRes);
         return retryRes.json();
       }
     }
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: res.statusText }));
-      throw new Error(err.error || "Request failed");
+      throw await this.toApiError(res);
     }
 
     return res.json();
@@ -51,10 +62,19 @@ class ApiClient {
     return this.fetch("/auth/me");
   }
 
-  async register(name: string, email: string, password: string, phone?: string) {
+  async register(
+    name: string,
+    email: string,
+    password: string,
+    phone?: string,
+    state?: string,
+    district?: string,
+    mandal?: string,
+    admin_scope?: "mandal" | "district" | "state"
+  ) {
     return this.fetch("/auth/register", {
       method: "POST",
-      body: JSON.stringify({ name, email, password, phone }),
+      body: JSON.stringify({ name, email, password, phone, state, district, mandal, admin_scope }),
     });
   }
 
@@ -90,16 +110,15 @@ class ApiClient {
       body: formData,
     });
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: res.statusText }));
-      throw new Error(err.error || "Local upload failed");
+      throw await this.toApiError(res);
     }
     return res.json();
   }
 
-  async submitReport(s3Key: string, latitude: number, longitude: number, notes?: string) {
+  async submitReport(s3Key: string, latitude: number, longitude: number, notes?: string, blockId?: string) {
     return this.fetch("/reports", {
       method: "POST",
-      body: JSON.stringify({ s3_key: s3Key, latitude, longitude, notes }),
+      body: JSON.stringify({ s3_key: s3Key, latitude, longitude, notes, block_id: blockId }),
     });
   }
 
@@ -118,6 +137,29 @@ class ApiClient {
 
   async getTenders() {
     return this.fetch("/admin/tenders");
+  }
+
+  async updateTenderStatus(id: string, status: "open" | "assigned" | "completed" | "rejected") {
+    return this.fetch(`/admin/tenders/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async updateReportStatus(id: string, status: "pending" | "verified" | "rejected" | "fixed") {
+    return this.fetch(`/admin/reports/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async getPublicPotholes(state?: string, district?: string, mandal?: string) {
+    const params = new URLSearchParams();
+    if (state) params.set("state", state);
+    if (district) params.set("district", district);
+    if (mandal) params.set("mandal", mandal);
+    const query = params.toString() ? `?${params.toString()}` : "";
+    return this.fetch(`/public/potholes${query}`);
   }
 
   async forgotPassword(email: string) {

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { z } from "zod";
 import { validate } from "../middleware/validate";
-import { loginLimiter, generalLimiter, refreshLimiter } from "../middleware/rateLimiter";
+import { forgotPasswordLimiter, loginLimiter, generalLimiter, refreshLimiter } from "../middleware/rateLimiter";
 import { authenticate } from "../middleware/auth";
 import { AuthenticatedRequest } from "../types";
 import * as authService from "../services/authService";
@@ -15,6 +15,10 @@ const registerSchema = z.object({
   email: z.string().email().max(255),
   password: z.string().min(8).max(255),
   phone: z.string().max(20).optional(),
+  state: z.string().max(100).optional(),
+  district: z.string().max(100).optional(),
+  mandal: z.string().max(100).optional(),
+  admin_scope: z.enum(["mandal", "district", "state"]).optional(),
 });
 
 const loginSchema = z.object({
@@ -43,8 +47,8 @@ function authResponse(result: { user?: unknown; accessToken: string; refreshToke
 
 router.post("/register", generalLimiter, validate(registerSchema), async (req: Request, res: Response) => {
   try {
-    const { name, email, password, phone } = req.body;
-    const result = await authService.registerUser(name, email, password, phone);
+    const { name, email, password, phone, state, district, mandal, admin_scope } = req.body;
+    const result = await authService.registerUser(name, email, password, phone, state, district, mandal, admin_scope);
 
     res.cookie("accessToken", result.accessToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
     res.cookie("refreshToken", result.refreshToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 7 * 24 * 60 * 60 * 1000 });
@@ -83,7 +87,11 @@ router.post("/refresh", refreshLimiter, async (req: Request, res: Response) => {
 
     res.json(authResponse(result, isMobileClient(req)));
   } catch (err: any) {
-    return res.status(401).json({ error: err.message });
+    if (err instanceof authService.InvalidRefreshTokenError) {
+      return res.status(401).json({ error: err.message });
+    }
+    logger.error({ err }, "Refresh token error");
+    return res.status(500).json({ error: "Unable to refresh session" });
   }
 });
 
@@ -113,7 +121,7 @@ const forgotPasswordSchema = z.object({
   email: z.string().email(),
 });
 
-router.post("/forgot-password", validate(forgotPasswordSchema), async (req: Request, res: Response) => {
+router.post("/forgot-password", forgotPasswordLimiter, validate(forgotPasswordSchema), async (req: Request, res: Response) => {
   try {
     await authService.forgotPassword(req.body.email);
     res.json({ message: "If that email is registered, a reset link has been sent." });

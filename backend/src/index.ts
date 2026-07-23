@@ -44,6 +44,7 @@ import localUploadRoutes from "./routes/localUploads";
 import reportRoutes from "./routes/reports";
 import webhookRoutes from "./routes/webhooks";
 import adminRoutes from "./routes/admin";
+import publicRoutes from "./routes/publicReports";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -88,6 +89,7 @@ app.use("/api/v1/uploads", localUploadRoutes);
 app.use("/api/v1/reports", reportRoutes);
 app.use("/api/v1/webhooks", webhookRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/public", publicRoutes);
 
 app.get("/api/health", async (_req, res) => {
   try {

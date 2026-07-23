@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { validate } from "../middleware/validate";
 import prisma from "../config/database";
@@ -13,7 +13,7 @@ const mlWebhookSchema = z.object({
   confidence_score: z.number().min(0).max(1),
 });
 
-function verifyInternalApiKey(req: Request, res: Response, next: Function): void {
+function verifyInternalApiKey(req: Request, res: Response, next: NextFunction): void {
   const webhookSecret = process.env.ML_WEBHOOK_SECRET;
   if (!webhookSecret) {
     res.status(500).json({ error: "Webhook not configured on server" });

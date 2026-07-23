@@ -14,6 +14,7 @@ const reportSchema = z.object({
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
   notes: z.string().optional(),
+  block_id: z.string().trim().min(1).max(100).regex(/^[a-z0-9][a-z0-9 /-]*$/i).optional(),
 }).refine((data) => !(data.latitude === 0 && data.longitude === 0), {
   message: "Valid location is required",
   path: ["latitude"],
@@ -26,22 +27,23 @@ router.post(
   validate(reportSchema),
   async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const { s3_key, latitude, longitude, notes } = req.body;
+      const { s3_key, latitude, longitude, notes, block_id } = req.body;
       const userId = req.user!.userId;
 
       const report: any[] = await prisma.$queryRawUnsafe(`
-        INSERT INTO potholes (id, reporter_id, image_s3_key, location, address_notes, status, created_at)
+        INSERT INTO potholes (id, reporter_id, image_s3_key, location, address_notes, block_id, status, created_at)
         VALUES (
           gen_random_uuid(),
           $1::uuid,
           $2,
           ST_SetSRID(ST_MakePoint($3, $4), 4326),
           $5,
+          $6,
           'pending',
           NOW()
         )
         RETURNING id, status
-      `, userId, s3_key, longitude, latitude, notes || null);
+      `, userId, s3_key, longitude, latitude, notes || null, block_id || null);
 
       res.status(201).json({
         report_id: report[0].id,

@@ -44,7 +44,7 @@ router.post(
         return;
       }
       const key = `uploads/${req.file.filename}`;
-      res.json({ uploadUrl: "", key });
+      res.json({ key });
     });
   }
 );

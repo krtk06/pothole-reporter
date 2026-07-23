@@ -153,6 +153,22 @@ describe("Auth and report routes", () => {
       expect(res.body.accessToken).toBeTruthy();
       expect(res.body.refreshToken).toBeTruthy();
     });
+
+    it("returns a server error when the database lookup fails", async () => {
+      const refreshToken = jwt.sign(
+        { userId: "11111111-1111-4111-8111-111111111111", role: "public" },
+        process.env.JWT_REFRESH_SECRET!,
+        { expiresIn: "7d", algorithm: "HS256" } as SignOptions
+      );
+      mockPrisma.user.findUnique.mockRejectedValue(new Error("Database unavailable"));
+
+      const res = await request(app)
+        .post("/api/v1/auth/refresh")
+        .send({ refreshToken });
+
+      expect(res.status).toBe(500);
+      expect(res.body.error).toBe("Unable to refresh session");
+    });
   });
 
   describe("POST /api/v1/auth/forgot-password", () => {
@@ -239,6 +255,36 @@ describe("Auth and report routes", () => {
 
       expect(res.status).toBe(400);
       expect(res.body.error).toBe("Validation failed");
+    });
+
+    it("persists a validated block ID with the report", async () => {
+      const accessToken = jwt.sign(
+        { userId: "11111111-1111-4111-8111-111111111111", role: "public" },
+        process.env.JWT_SECRET!,
+        { expiresIn: "1h", algorithm: "HS256" } as SignOptions
+      );
+      mockPrisma.$queryRawUnsafe.mockResolvedValue([{ id: "33333333-3333-4333-8333-333333333333", status: "pending" }]);
+
+      const res = await request(app)
+        .post("/api/v1/reports")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({
+          s3_key: "uploads/photo.jpg",
+          latitude: 17.385,
+          longitude: 78.4867,
+          block_id: "telangana/hyderabad/amberpet",
+        });
+
+      expect(res.status).toBe(201);
+      expect(mockPrisma.$queryRawUnsafe).toHaveBeenCalledWith(
+        expect.stringContaining("block_id"),
+        expect.any(String),
+        "uploads/photo.jpg",
+        78.4867,
+        17.385,
+        null,
+        "telangana/hyderabad/amberpet"
+      );
     });
   });
 });

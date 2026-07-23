@@ -31,3 +31,11 @@ export const refreshLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: "Too many refresh attempts. Try again later." },
 });
+
+export const forgotPasswordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many password reset requests. Try again later." },
+});

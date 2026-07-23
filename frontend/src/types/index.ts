@@ -1,9 +1,15 @@
+export type AdminScope = "mandal" | "district" | "state";
+
 export interface User {
   id: string;
   name: string;
   email: string;
   role: "public" | "admin";
   theme_preference: "light" | "dark";
+  state?: string;
+  district?: string;
+  mandal?: string;
+  admin_scope?: AdminScope;
 }
 
 export interface AuthResponse {
@@ -28,7 +34,7 @@ export interface Tender {
   block_id: string;
   pothole_count: number;
   estimated_cost: number;
-  status: "open" | "assigned" | "completed";
+  status: "open" | "assigned" | "completed" | "rejected";
   generated_at: string;
 }
 
@@ -42,4 +48,13 @@ export interface MapCluster {
   count: number;
   avg_longitude: number;
   avg_latitude: number;
+}
+
+export interface PublicPothole {
+  id: string;
+  latitude: number;
+  longitude: number;
+  status: "pending" | "verified" | "rejected" | "fixed";
+  block_id?: string;
+  created_at: string;
 }

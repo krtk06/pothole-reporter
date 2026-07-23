@@ -105,7 +105,7 @@ export default function Profile() {
         )}
 
         <div className="text-center mt-8">
-          <Button variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10 gap-2" onClick={() => { logout(); router.push("/"); }}>
+          <Button variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10 gap-2" onClick={() => { void logout().finally(() => router.push("/")); }}>
             <LogOut className="w-4 h-4" /> Sign Out
           </Button>
         </div>

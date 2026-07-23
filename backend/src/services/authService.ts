@@ -4,7 +4,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import prisma from "../config/database";
 import logger from "../config/logger";
 import { sendPasswordResetEmail } from "./emailService";
-import { AuthPayload } from "../types";
+import { AuthPayload, AdminScope } from "../types";
 
 function hashToken(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");
@@ -14,6 +14,35 @@ function hashResetToken(token: string): string {
   const secret = process.env.JWT_RESET_SECRET;
   if (!secret) throw new Error("JWT_RESET_SECRET is not configured");
   return crypto.createHash("sha256").update(`${token}.${secret}`).digest("hex");
+}
+
+export class InvalidRefreshTokenError extends Error {
+  constructor() {
+    super("Invalid or expired refresh token");
+  }
+}
+
+function buildPayload(user: any): AuthPayload {
+  const payload: AuthPayload = { userId: user.id, role: user.role };
+  if (user.admin_scope) payload.admin_scope = user.admin_scope as AdminScope;
+  if (user.state) payload.admin_state = user.state;
+  if (user.district) payload.admin_district = user.district;
+  if (user.mandal) payload.admin_mandal = user.mandal;
+  return payload;
+}
+
+function buildUserResponse(user: any) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    theme_preference: user.theme_preference,
+    state: user.state ?? undefined,
+    district: user.district ?? undefined,
+    mandal: user.mandal ?? undefined,
+    admin_scope: user.admin_scope ?? undefined,
+  };
 }
 
 function generateAccessToken(payload: AuthPayload): string {
@@ -32,18 +61,36 @@ function generateRefreshToken(payload: AuthPayload): string {
   return jwt.sign(payload, secret, opts);
 }
 
-export async function registerUser(name: string, email: string, password: string, phone?: string) {
+export async function registerUser(
+  name: string,
+  email: string,
+  password: string,
+  phone?: string,
+  state?: string,
+  district?: string,
+  mandal?: string,
+  admin_scope?: AdminScope
+) {
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    throw new Error("Invalid email or password");
+    throw new Error("An account with this email already exists");
   }
 
   const password_hash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
-    data: { name, email, phone, password_hash },
+    data: {
+      name,
+      email,
+      phone,
+      password_hash,
+      state: state || null,
+      district: district || null,
+      mandal: mandal || null,
+      admin_scope: admin_scope || null,
+    },
   });
 
-  const payload: AuthPayload = { userId: user.id, role: user.role };
+  const payload = buildPayload(user);
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
 
@@ -53,7 +100,7 @@ export async function registerUser(name: string, email: string, password: string
   });
 
   return {
-    user: { id: user.id, name: user.name, email: user.email, role: user.role, theme_preference: user.theme_preference },
+    user: buildUserResponse(user),
     accessToken,
     refreshToken,
   };
@@ -70,7 +117,7 @@ export async function loginUser(email: string, password: string) {
     throw new Error("Invalid email or password");
   }
 
-  const payload: AuthPayload = { userId: user.id, role: user.role };
+  const payload = buildPayload(user);
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
 
@@ -80,35 +127,38 @@ export async function loginUser(email: string, password: string) {
   });
 
   return {
-    user: { id: user.id, name: user.name, email: user.email, role: user.role, theme_preference: user.theme_preference },
+    user: buildUserResponse(user),
     accessToken,
     refreshToken,
   };
 }
 
 export async function refreshAccessToken(token: string) {
+  const refreshSecret = process.env.JWT_REFRESH_SECRET;
+  if (!refreshSecret) throw new Error("JWT_REFRESH_SECRET is not configured");
+
+  let decoded: AuthPayload;
   try {
-    const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
-    if (!REFRESH_SECRET) throw new Error("JWT_REFRESH_SECRET is not configured");
-    const decoded = jwt.verify(token, REFRESH_SECRET) as AuthPayload;
-    const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
-    if (!user || user.refresh_token !== hashToken(token)) {
-      throw new Error("Invalid refresh token");
-    }
-
-    const payload: AuthPayload = { userId: user.id, role: user.role };
-    const accessToken = generateAccessToken(payload);
-    const newRefreshToken = generateRefreshToken(payload);
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { refresh_token: hashToken(newRefreshToken) },
-    });
-
-    return { accessToken, refreshToken: newRefreshToken };
+    decoded = jwt.verify(token, refreshSecret) as AuthPayload;
   } catch {
-    throw new Error("Invalid or expired refresh token");
+    throw new InvalidRefreshTokenError();
   }
+
+  const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+  if (!user || user.refresh_token !== hashToken(token)) {
+    throw new InvalidRefreshTokenError();
+  }
+
+  const payload = buildPayload(user);
+  const accessToken = generateAccessToken(payload);
+  const newRefreshToken = generateRefreshToken(payload);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { refresh_token: hashToken(newRefreshToken) },
+  });
+
+  return { accessToken, refreshToken: newRefreshToken };
 }
 
 export async function logoutUser(userId: string) {
@@ -183,12 +233,5 @@ export async function resetPassword(token: string, newPassword: string): Promise
 export async function getCurrentUser(userId: string) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
-
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    theme_preference: user.theme_preference,
-  };
+  return buildUserResponse(user);
 }

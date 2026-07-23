@@ -27,10 +27,17 @@ enum ReportStatus {
   fixed
 }
 
+enum AdminScope {
+  mandal
+  district
+  state
+}
+
 enum TenderStatus {
   open
   assigned
   completed
+  rejected
 }
 
 model User {
@@ -42,6 +49,10 @@ model User {
   password_hash   String          @db.VarChar(255)
   theme_preference ThemePreference @default(dark)
   refresh_token   String?         @db.Text
+  state           String?         @db.VarChar(100)
+  district        String?         @db.VarChar(100)
+  mandal          String?         @db.VarChar(100)
+  admin_scope     AdminScope?
   created_at      DateTime        @default(now())
   potholes        Pothole[]
   password_reset_tokens PasswordResetToken[]

@@ -17,12 +17,57 @@ const statusFilterSchema = z.object({
   status: z.enum(["pending", "verified", "rejected", "fixed"]).optional(),
 });
 
+/** Build scope prefix string for tender filtering */
+function getScopePrefix(req: AuthenticatedRequest): string | null {
+  const scope = req.user?.admin_scope;
+  const state = req.user?.admin_state;
+  const district = req.user?.admin_district;
+  const mandal = req.user?.admin_mandal;
+
+  if (!scope || !state) return null;
+
+  if (scope === "mandal" && district && mandal) {
+    return `${state.toLowerCase()}/${district.toLowerCase()}/${mandal.toLowerCase()}`;
+  } else if (scope === "district" && district) {
+    return `${state.toLowerCase()}/${district.toLowerCase()}`;
+  }
+  return state.toLowerCase();
+}
+
+function getScopeCondition(scopePrefix: string | null, column: string, parameterIndex: number) {
+  if (!scopePrefix) return { clause: "", params: [] as string[] };
+  return {
+    clause: `(${column} = $${parameterIndex} OR ${column} LIKE $${parameterIndex + 1})`,
+    params: [scopePrefix, `${scopePrefix}/%`],
+  };
+}
+
 router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
   try {
     const parsed = statusFilterSchema.safeParse(req.query);
     const status = parsed.success ? parsed.data.status : undefined;
+    const scopePrefix = getScopePrefix(req);
 
-    let query = `
+    let conditions: string[] = [];
+    let params: any[] = [];
+    let paramIdx = 1;
+
+    if (status) {
+      conditions.push(`p.status = $${paramIdx}::text::"ReportStatus"`);
+      params.push(status);
+      paramIdx++;
+    }
+
+    if (scopePrefix) {
+      const scopeCondition = getScopeCondition(scopePrefix, "p.block_id", paramIdx);
+      conditions.push(scopeCondition.clause);
+      params.push(...scopeCondition.params);
+      paramIdx += 2;
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    const query = `
       SELECT
         p.id,
         u.name as reporter_name,
@@ -35,13 +80,9 @@ router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
         p.created_at
       FROM potholes p
       JOIN users u ON u.id = p.reporter_id
+      ${whereClause}
+      ORDER BY p.created_at DESC
     `;
-    const params: any[] = [];
-    if (status) {
-      query += ` WHERE p.status = $1::text::"ReportStatus"`;
-      params.push(status);
-    }
-    query += ` ORDER BY p.created_at DESC`;
 
     const reports: any[] = await prisma.$queryRawUnsafe(query, ...params);
 
@@ -76,10 +117,14 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
       return;
     }
     const id = idResult.data;
+    const scopeCondition = getScopeCondition(getScopePrefix(req), "block_id", 3);
 
     const result: any[] = await prisma.$queryRawUnsafe(`
-      UPDATE potholes SET status = $1::text::"ReportStatus" WHERE id = $2::uuid RETURNING id, status
-    `, status, id);
+      UPDATE potholes
+      SET status = $1::text::"ReportStatus"
+      WHERE id = $2::uuid${scopeCondition.clause ? ` AND ${scopeCondition.clause}` : ""}
+      RETURNING id, status
+    `, status, id, ...scopeCondition.params);
 
     if (result.length === 0) {
       res.status(404).json({ error: "Report not found" });
@@ -96,6 +141,19 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
 
 router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => {
   try {
+    const scopePrefix = getScopePrefix(req);
+
+    let conditions = [`p.status = 'verified'`];
+    let params: any[] = [];
+
+    if (scopePrefix) {
+      const scopeCondition = getScopeCondition(scopePrefix, "p.block_id", 1);
+      conditions.push(scopeCondition.clause);
+      params.push(...scopeCondition.params);
+    }
+
+    const whereClause = `WHERE ${conditions.join(" AND ")}`;
+
     const clusters: any[] = await prisma.$queryRawUnsafe(`
       SELECT
         p.id,
@@ -104,8 +162,8 @@ router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => 
         p.status,
         p.block_id
       FROM potholes p
-      WHERE p.status = 'verified'
-    `);
+      ${whereClause}
+    `, ...params);
 
     const features = clusters.map((c: any) => ({
       type: "Feature",
@@ -125,6 +183,17 @@ router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => 
       features,
     };
 
+    let densityConditions = [`status = 'verified'`, `block_id IS NOT NULL`];
+    let densityParams: any[] = [];
+
+    if (scopePrefix) {
+      const scopeCondition = getScopeCondition(scopePrefix, "block_id", 1);
+      densityConditions.push(scopeCondition.clause);
+      densityParams.push(...scopeCondition.params);
+    }
+
+    const densityWhere = `WHERE ${densityConditions.join(" AND ")}`;
+
     const blockDensity: any[] = await prisma.$queryRawUnsafe(`
       SELECT
         block_id,
@@ -132,9 +201,9 @@ router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => 
         AVG(ST_X(location::geometry)) as avg_longitude,
         AVG(ST_Y(location::geometry)) as avg_latitude
       FROM potholes
-      WHERE status = 'verified' AND block_id IS NOT NULL
+      ${densityWhere}
       GROUP BY block_id
-    `);
+    `, ...densityParams);
 
     res.json({
       potholes: geojson,
@@ -153,7 +222,23 @@ router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => 
 
 router.get("/tenders", async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const tenders = await getTenders();
+    const scopePrefix = getScopePrefix(req);
+    let tenders;
+
+    if (scopePrefix) {
+      tenders = await prisma.tender.findMany({
+        where: {
+          OR: [
+            { block_id: scopePrefix },
+            { block_id: { startsWith: `${scopePrefix}/` } },
+          ],
+        },
+        orderBy: { generated_at: "desc" },
+      });
+    } else {
+      tenders = await getTenders();
+    }
+
     res.json({ tenders });
   } catch (err: any) {
     logger.error({ err }, "Tenders error");
@@ -162,7 +247,7 @@ router.get("/tenders", async (req: AuthenticatedRequest, res: Response) => {
 });
 
 const updateTenderSchema = z.object({
-  status: z.enum(["open", "assigned", "completed"]),
+  status: z.enum(["open", "assigned", "completed", "rejected"]),
 });
 
 router.patch("/tenders/:id", validate(updateTenderSchema), async (req: AuthenticatedRequest, res: Response) => {
@@ -173,11 +258,26 @@ router.patch("/tenders/:id", validate(updateTenderSchema), async (req: Authentic
       return res.status(400).json({ error: "Invalid tender ID" });
     }
     const id = idResult.data;
+    const scopePrefix = getScopePrefix(req);
+    const scopeWhere = scopePrefix
+      ? {
+          OR: [
+            { block_id: scopePrefix },
+            { block_id: { startsWith: `${scopePrefix}/` } },
+          ],
+        }
+      : {};
 
-    const tender = await prisma.tender.update({
-      where: { id },
+    const updateResult = await prisma.tender.updateMany({
+      where: { id, ...scopeWhere },
       data: { status },
     });
+
+    if (updateResult.count === 0) {
+      return res.status(404).json({ error: "Tender not found" });
+    }
+
+    const tender = await prisma.tender.findUnique({ where: { id } });
 
     logger.info({ tenderId: id, newStatus: status, adminId: req.user!.userId }, "Tender status updated");
     res.json({ tender });

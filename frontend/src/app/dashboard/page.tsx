@@ -3,15 +3,19 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { MapPin, Image as ImageIcon, Loader2, RefreshCw, Navigation, AlertCircle, CheckCircle2, Upload as UploadIcon, Camera, FolderOpen } from "lucide-react";
+import { MapPin, Image as ImageIcon, Loader2, RefreshCw, Navigation, CheckCircle2, Upload as UploadIcon, Camera, FolderOpen, Map } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
-import { Report } from "@/types";
+import { Report, PublicPothole } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { getDistrictBounds } from "@/data/india-locations";
+import dynamic from "next/dynamic";
+
+const PublicMiniMap = dynamic(() => import("@/components/PublicMiniMap"), { ssr: false });
 
 const statusMeta: Record<string, { label: string; color: "default" | "secondary" | "destructive" | "outline" }> = {
   pending: { label: "Pending", color: "secondary" },
@@ -21,11 +25,13 @@ const statusMeta: Record<string, { label: string; color: "default" | "secondary"
 };
 
 export default function Dashboard() {
-  const { user, logout } = useStore();
+  const { user, logout, selectedState, selectedDistrict, selectedMandal } = useStore();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [reports, setReports] = useState<Report[]>([]);
+  const [publicPotholes, setPublicPotholes] = useState<PublicPothole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMap, setLoadingMap] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [notes, setNotes] = useState("");
   const [descLoc, setDescLoc] = useState("");
@@ -37,6 +43,7 @@ export default function Dashboard() {
   const [sessionExpired, setSessionExpired] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [showMap, setShowMap] = useState(true);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -44,6 +51,36 @@ export default function Dashboard() {
     if (!user) { router.push("/"); return; }
     fetchReports();
   }, [user]);
+
+  // Fetch public potholes for the mini map (scoped to user's district if available)
+  useEffect(() => {
+    if (!user) return;
+    const state = selectedState || user.state;
+    const district = selectedDistrict || user.district;
+    const mandal = selectedMandal || user.mandal;
+
+    api.getPublicPotholes(state || undefined, district || undefined, mandal || undefined)
+      .then((data) => setPublicPotholes(data.potholes || []))
+      .catch(() => {})
+      .finally(() => setLoadingMap(false));
+  }, [user, selectedState, selectedDistrict, selectedMandal]);
+
+  const districtBounds = (selectedState || user?.state) && (selectedDistrict || user?.district)
+    ? getDistrictBounds(
+        selectedState || user?.state || "",
+        selectedDistrict || user?.district || ""
+      )
+    : null;
+
+  // Convert user's own reports to PublicPothole format for map overlay
+  const userMapPotholes: PublicPothole[] = reports.map((r) => ({
+    id: r.id,
+    latitude: Number(r.latitude),
+    longitude: Number(r.longitude),
+    status: r.status,
+    block_id: r.block_id,
+    created_at: r.created_at,
+  }));
 
   const getLocation = () => {
     if (!navigator.geolocation) {
@@ -85,10 +122,7 @@ export default function Dashboard() {
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFiles([file]);
-      setError("");
-    }
+    if (file) { setSelectedFiles([file]); setError(""); }
   };
 
   const handleUpload = async () => {
@@ -104,13 +138,27 @@ export default function Dashboard() {
         const uploadRes = await fetch(presigned.uploadUrl, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
         if (!uploadRes.ok) throw new Error("");
         key = presigned.key;
-      } catch {
+      } catch (uploadError) {
+        if (process.env.NODE_ENV === "production") {
+          throw new Error("Photo upload is temporarily unavailable. Please try again shortly.");
+        }
+        console.warn("S3 upload failed; using the local development upload fallback.", uploadError);
         const local = await api.uploadLocal(file);
         key = local.key;
       }
 
+      // Build block_id from selected location
+      const state = selectedState || user?.state || "";
+      const district = selectedDistrict || user?.district || "";
+      const mandal = selectedMandal || user?.mandal || "";
+      const blockId = state && district && mandal
+        ? `${state.toLowerCase()}/${district.toLowerCase()}/${mandal.toLowerCase()}`
+        : state && district
+        ? `${state.toLowerCase()}/${district.toLowerCase()}`
+        : undefined;
+
       const combinedNotes = [notes, descLoc ? `📍 ${descLoc}` : ""].filter(Boolean).join("\n");
-      await api.submitReport(key, location.lat, location.lng, combinedNotes || undefined);
+      await api.submitReport(key, location.lat, location.lng, combinedNotes || undefined, blockId);
       setSuccess("Pothole reported!");
       setNotes(""); setDescLoc(""); setSelectedFiles([]);
       fetchReports();
@@ -126,44 +174,41 @@ export default function Dashboard() {
 
   if (!mounted || !user) return null;
 
+  const locationLabel = [selectedMandal || user.mandal, selectedDistrict || user.district, selectedState || user.state]
+    .filter(Boolean).join(", ");
+
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
       <nav className="flex items-center justify-between p-4 md:px-16 lg:px-24 xl:px-32 md:py-6 w-full border-b border-[var(--color-border)]">
         <a className="flex items-center gap-2" href="/dashboard">
           <div className="w-8 h-8 rounded-lg bg-[var(--color-text-primary)] flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="var(--color-bg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
           <span className="font-bold text-[var(--color-heading)]">Pothole Reporter</span>
         </a>
         <div className="flex items-center gap-4">
+          {locationLabel && (
+            <div className="hidden md:flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)] border border-[var(--color-border)] rounded-full px-3 py-1">
+              <MapPin className="w-3 h-3" />
+              {locationLabel}
+            </div>
+          )}
           <span className="text-sm text-[var(--color-text-secondary)] hidden sm:block">{user.name}</span>
           <ThemeToggle />
-          <Button variant="ghost" size="sm" onClick={() => { logout(); router.push("/"); }} className="text-[var(--color-text-secondary)]">
+          <Button variant="ghost" size="sm" onClick={() => { void logout().finally(() => router.push("/")); }} className="text-[var(--color-text-secondary)]">
             Logout
           </Button>
         </div>
       </nav>
 
       <main className="max-w-5xl mx-auto px-4 py-10">
+        {/* Hero */}
         <div
-          className="text-center mb-12 bg-no-repeat bg-cover bg-center rounded-2xl py-16 px-4 relative overflow-hidden"
+          className="text-center mb-10 bg-no-repeat bg-cover bg-center rounded-2xl py-16 px-4 relative overflow-hidden"
           style={{ backgroundImage: "url('https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/gridBackground.png')" }}
         >
-          <div
-            className="absolute inset-0 opacity-30 pointer-events-none"
-            style={{
-              background: "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06) 0%, transparent 40%)",
-            }}
-            onMouseMove={(e) => {
-              const rect = e.currentTarget.parentElement?.getBoundingClientRect();
-              if (rect) {
-                e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-                e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-              }
-            }}
-          />
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 border border-[var(--color-border)] rounded-full px-4 py-1.5 text-xs text-[var(--color-text-secondary)] mb-6 backdrop-blur-sm">
               <span>New — Report a pothole in seconds</span>
@@ -182,69 +227,27 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="max-w-lg mx-auto mb-8">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleFileSelect}
-            className="hidden"
-            id="camera-input"
-          />
+        {/* Upload section */}
+        <div className="max-w-lg mx-auto mb-10">
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+          <input type="file" accept="image/*" capture="environment" onChange={handleFileSelect} className="hidden" id="camera-input" />
 
           {!selectedFiles.length ? (
             <div className="grid grid-cols-2 gap-4">
-              <Button
-                onClick={() => document.getElementById("camera-input")?.click()}
-                className="h-32 flex-col gap-2 rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-text-primary)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all"
-                variant="ghost"
-              >
-                <Camera className="w-8 h-8" />
-                <span className="text-sm font-medium">Camera</span>
+              <Button onClick={() => document.getElementById("camera-input")?.click()} className="h-32 flex-col gap-2 rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-text-primary)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all" variant="ghost">
+                <Camera className="w-8 h-8" /><span className="text-sm font-medium">Camera</span>
               </Button>
-              <Button
-                onClick={() => fileInputRef.current?.click()}
-                className="h-32 flex-col gap-2 rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-text-primary)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all"
-                variant="ghost"
-              >
-                <FolderOpen className="w-8 h-8" />
-                <span className="text-sm font-medium">Browse</span>
+              <Button onClick={() => fileInputRef.current?.click()} className="h-32 flex-col gap-2 rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-text-primary)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all" variant="ghost">
+                <FolderOpen className="w-8 h-8" /><span className="text-sm font-medium">Browse</span>
               </Button>
             </div>
           ) : (
             <div className="mt-4 space-y-3">
-              <p className="text-xs text-[var(--color-text-secondary)] text-center">
-                Selected: {selectedFiles[0].name}
-              </p>
-              <Textarea
-                value={descLoc}
-                onChange={(e) => setDescLoc(e.target.value)}
-                placeholder="Where is this pothole? (e.g. 'In front of 42 Maple Street')"
-                className="bg-[var(--color-surface)] border-[var(--color-border)] text-sm"
-                rows={2}
-              />
-              <Textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Extra details (size, depth, etc.)"
-                className="bg-[var(--color-surface)] border-[var(--color-border)] text-sm"
-                rows={2}
-              />
-              {location && (
-                <p className="text-xs text-green-500 text-center font-mono">
-                  📍 {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
-                </p>
-              )}
-              {locError && (
-                <p className="text-xs text-red-400 text-center">{locError}</p>
-              )}
+              <p className="text-xs text-[var(--color-text-secondary)] text-center">Selected: {selectedFiles[0].name}</p>
+              <Textarea value={descLoc} onChange={(e) => setDescLoc(e.target.value)} placeholder="Where is this pothole? (e.g. 'In front of 42 Maple Street')" className="bg-[var(--color-surface)] border-[var(--color-border)] text-sm" rows={2} />
+              <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Extra details (size, depth, etc.)" className="bg-[var(--color-surface)] border-[var(--color-border)] text-sm" rows={2} />
+              {location && <p className="text-xs text-green-500 text-center font-mono">📍 {location.lat.toFixed(6)}, {location.lng.toFixed(6)}</p>}
+              {locError && <p className="text-xs text-red-400 text-center">{locError}</p>}
               <div className="flex justify-center gap-3">
                 <Button onClick={handleUpload} disabled={uploading} className="rounded-full">
                   {uploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading...</> : <><UploadIcon className="w-4 h-4" /> Submit Report</>}
@@ -259,17 +262,56 @@ export default function Dashboard() {
           )}
         </div>
 
+        {/* Session expired */}
         <AnimatePresence>
           {sessionExpired && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-              className="p-4 mb-6 rounded-xl border border-red-500/30 bg-red-500/5 text-center max-w-lg mx-auto">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="p-4 mb-6 rounded-xl border border-red-500/30 bg-red-500/5 text-center max-w-lg mx-auto">
               <p className="font-semibold text-red-400 mb-1">Session expired</p>
               <p className="text-xs text-[var(--color-text-secondary)] mb-3">Your login token is no longer valid.</p>
-              <Button size="sm" onClick={() => { logout(); router.push("/"); }}>Go to Login</Button>
+              <Button size="sm" onClick={() => { void logout().finally(() => router.push("/")); }}>Go to Login</Button>
             </motion.div>
           )}
         </AnimatePresence>
 
+        {/* Mini Map Section */}
+        <div className="mb-10">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-xl font-bold text-[var(--color-heading)]">
+                <Map className="w-5 h-5 inline-block mr-2 text-[var(--color-text-secondary)]" />
+                Potholes Near You
+              </h2>
+              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                {locationLabel
+                  ? `Showing potholes in ${locationLabel}`
+                  : "Showing all potholes (set your location to filter)"}
+              </p>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => setShowMap(!showMap)} className="text-[var(--color-text-secondary)]">
+              {showMap ? "Hide Map" : "Show Map"}
+            </Button>
+          </div>
+
+          {showMap && (
+            <div>
+              {loadingMap ? (
+                <div className="flex items-center justify-center h-[300px] rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+                  <Loader2 className="w-6 h-6 animate-spin text-[var(--color-text-secondary)]" />
+                </div>
+              ) : (
+                <PublicMiniMap
+                  key={`${publicPotholes.length}-${reports.length}`}
+                  potholes={publicPotholes}
+                  userPotholes={userMapPotholes}
+                  bounds={districtBounds}
+                  height={300}
+                />
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* My Reports */}
         <div className="flex items-center justify-between mb-6 mt-12">
           <h2 className="text-xl font-bold text-[var(--color-heading)]">My Reports</h2>
           <Button variant="ghost" size="sm" onClick={fetchReports} className="text-[var(--color-text-secondary)]">
