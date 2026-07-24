@@ -103,7 +103,7 @@ export default function Dashboard() {
   }, [selectedArea]);
 
   const scopedBounds = useMemo(() => areaBounds(area), [area]);
-  const locationLabel = area?.displayName || "Select District And Mandal";
+  const locationLabel = area?.displayName || "Select District, Mandal, City/Village";
 
   const fetchPotholes = async () => {
     if (!scopedBounds) {
@@ -132,25 +132,24 @@ export default function Dashboard() {
     setLocationSelection(next);
     setError("");
 
-    if (!next.subdistrict) {
+    if (!next.village) {
       setArea(null);
       setPotholes([]);
       setAdministrativeArea(null);
       return;
     }
 
-    const currentMandalCode = area?.type === "subdistrict" ? area.subdistrictCode : null;
-    if (currentMandalCode && currentMandalCode === next.subdistrict.subdistrictCode) {
+    if (area?.id === next.village.id) {
       return;
     }
 
     setResolvingArea(true);
     try {
-      const { area: resolved } = await api.getCurrentAdministrativeArea(next.subdistrict);
+      const { area: resolved } = await api.getCurrentAdministrativeArea(next.village);
       setArea(resolved);
       setAdministrativeArea(resolved);
     } catch (err: any) {
-      setError(err.message || "Unable to resolve the selected mandal.");
+      setError(err.message || "Unable to resolve the selected city/village.");
     } finally {
       setResolvingArea(false);
     }
@@ -202,7 +201,7 @@ export default function Dashboard() {
               Road Conditions In Your Area
             </h1>
             <p className="text-[var(--color-text-secondary)] mt-4 max-w-xl mx-auto">
-              Select a district and mandal to keep the map focused on that area only.
+              Select a district, mandal, and city/village to keep the map focused on that area only.
             </p>
           </div>
         </div>
@@ -217,16 +216,15 @@ export default function Dashboard() {
               value={locationSelection}
               onChange={handleLocationChange}
               label={false}
-              includeVillage={false}
             />
             {resolvingArea && (
               <p className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)] mt-4">
                 <Loader2 className="w-3 h-3 animate-spin" />
-                Resolving selected mandal...
+                Resolving selected city/village...
               </p>
             )}
             {!area && !resolvingArea && (
-              <p className="text-xs text-amber-500 mt-4">Choose district and mandal to load the scoped map.</p>
+              <p className="text-xs text-amber-500 mt-4">Choose district, mandal, and city/village to load the scoped map.</p>
             )}
             {error && <p className="text-xs text-red-400 mt-4">{error}</p>}
           </Card>
@@ -274,7 +272,7 @@ export default function Dashboard() {
                   boundary={area?.boundary || null}
                   height={480}
                   center={area?.latitude && area.longitude ? [area.latitude, area.longitude] : undefined}
-                  zoom={area ? 11 : 7}
+                  zoom={area ? 13 : 7}
                 />
               )}
             </div>

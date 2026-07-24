@@ -90,7 +90,7 @@ export default function AndhraLocationSelector({
   const placeholders = useMemo(() => ({
     district: "Search district",
     subdistrict: selection.district ? "Search mandal / sub-district" : "Select district first",
-    village: selection.subdistrict ? "Search village / city" : "Select mandal first",
+    village: selection.subdistrict ? "Search city / village" : "Select mandal first",
   }), [selection.district, selection.subdistrict]);
 
   async function loadOptions(level: Level, query: string) {
