@@ -3,24 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { MapPin, Shield } from "lucide-react";
+import { Loader2, MapPin, Shield } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import LocationSelector from "@/components/LocationSelector";
+import AndhraLocationSelector, { AndhraLocationSelection } from "@/components/AndhraLocationSelector";
 
 const LoginMap = dynamic(() => import("@/components/LoginMap"), { ssr: false });
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedMandal, setSelectedMandal] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState<AndhraLocationSelection>({
+    district: null,
+    subdistrict: null,
+    village: null,
+  });
   const [error, setError] = useState("");
+  const [loadingGuest, setLoadingGuest] = useState(false);
   const [loadingAdmin, setLoadingAdmin] = useState(false);
   const router = useRouter();
-  const { setUser, setLocation } = useStore();
+  const { setUser, setLocation, setAdministrativeArea } = useStore();
   const bgRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
@@ -38,26 +41,34 @@ export default function LoginPage() {
     return () => window.removeEventListener("mousemove", onMove);
   }, []);
 
-  const continueAsGuest = () => {
+  const continueAsGuest = async () => {
     setError("");
-    if (!selectedState || !selectedDistrict || !selectedMandal) {
-      setError("Select state, district, and mandal to continue as guest.");
+    if (!selectedLocation.district || !selectedLocation.subdistrict || !selectedLocation.village) {
+      setError("Select district, mandal, and village/city to continue as guest.");
       return;
     }
 
-    setLocation(selectedState, selectedDistrict, selectedMandal);
-    setUser({
-      id: "guest",
-      name: "Guest",
-      email: "",
-      role: "public",
-      is_guest: true,
-      theme_preference: "dark",
-      state: selectedState,
-      district: selectedDistrict,
-      mandal: selectedMandal,
-    });
-    router.push("/dashboard");
+    setLoadingGuest(true);
+    try {
+      const { area } = await api.getCurrentAdministrativeArea(selectedLocation.village);
+      setAdministrativeArea(area);
+      setUser({
+        id: "guest",
+        name: "Guest",
+        email: "",
+        role: "public",
+        is_guest: true,
+        theme_preference: "dark",
+        state: area.stateName || "Andhra Pradesh",
+        district: area.districtName || selectedLocation.district.name,
+        mandal: area.subdistrictName || selectedLocation.subdistrict.name,
+      });
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(err.message || "Unable to resolve the selected village/city.");
+    } finally {
+      setLoadingGuest(false);
+    }
   };
 
   const handleAdminLogin = async (e: React.FormEvent) => {
@@ -134,14 +145,9 @@ export default function LoginPage() {
                 </div>
 
                 <div className="border border-[var(--color-border)] rounded-lg p-4 bg-[var(--color-bg)]">
-                  <LocationSelector
-                    selectedState={selectedState}
-                    selectedDistrict={selectedDistrict}
-                    selectedMandal={selectedMandal}
-                    onStateChange={setSelectedState}
-                    onDistrictChange={setSelectedDistrict}
-                    onMandalChange={setSelectedMandal}
-                    required
+                  <AndhraLocationSelector
+                    value={selectedLocation}
+                    onChange={(next) => setSelectedLocation(next)}
                     label
                   />
                 </div>
@@ -149,10 +155,15 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={continueAsGuest}
+                  disabled={loadingGuest}
                   className="group/button relative inline-flex items-center justify-center overflow-hidden rounded-md bg-[var(--color-border)] px-8 py-3 text-sm font-normal text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-lg disabled:opacity-50"
                 >
-                  <MapPin className="relative z-10 mr-2 h-4 w-4" />
-                  <span className="relative z-10">Continue as Guest</span>
+                  {loadingGuest ? (
+                    <Loader2 className="relative z-10 mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <MapPin className="relative z-10 mr-2 h-4 w-4" />
+                  )}
+                  <span className="relative z-10">{loadingGuest ? "Resolving area..." : "Continue as Guest"}</span>
                   <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
                     <div className="relative h-full w-8 bg-white/20" />
                   </div>

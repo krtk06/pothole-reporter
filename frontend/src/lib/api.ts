@@ -1,3 +1,5 @@
+import type { AdministrativeArea, AdministrativeAreaType, PublicPothole } from "@/types";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
 export class ApiError extends Error {
@@ -174,6 +176,38 @@ class ApiClient {
       method: "POST",
       body: JSON.stringify({ token, password }),
     });
+  }
+
+  async getAdministrativeOptions(params: {
+    level: Exclude<AdministrativeAreaType, "state">;
+    q?: string;
+    districtCode?: string;
+    subdistrictCode?: string;
+  }): Promise<{ areas: AdministrativeArea[] }> {
+    const query = new URLSearchParams({ level: params.level });
+    if (params.q) query.set("q", params.q);
+    if (params.districtCode) query.set("districtCode", params.districtCode);
+    if (params.subdistrictCode) query.set("subdistrictCode", params.subdistrictCode);
+    return this.fetch(`/map/areas/options?${query.toString()}`);
+  }
+
+  async getCurrentAdministrativeArea(area: Pick<AdministrativeArea, "id" | "name" | "districtName" | "subdistrictName" | "districtCode" | "subdistrictCode"> | string): Promise<{ area: AdministrativeArea }> {
+    const query = new URLSearchParams({ id: typeof area === "string" ? area : area.id });
+    if (typeof area !== "string") {
+      query.set("name", area.name);
+      if (area.districtName) query.set("districtName", area.districtName);
+      if (area.subdistrictName) query.set("subdistrictName", area.subdistrictName);
+      if (area.districtCode) query.set("districtCode", area.districtCode);
+      if (area.subdistrictCode) query.set("subdistrictCode", area.subdistrictCode);
+    }
+    return this.fetch(`/map/areas/current?${query.toString()}`);
+  }
+
+  async getPotholesInBounds(bbox: { west: number; south: number; east: number; north: number }): Promise<{ potholes: PublicPothole[] }> {
+    const query = new URLSearchParams({
+      bbox: `${bbox.west},${bbox.south},${bbox.east},${bbox.north}`,
+    });
+    return this.fetch(`/map/potholes?${query.toString()}`);
   }
 }
 

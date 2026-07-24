@@ -59,3 +59,29 @@ export interface PublicPothole {
   block_id?: string;
   created_at: string;
 }
+
+export interface MapBoundingBox {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+}
+
+export type AdministrativeAreaType = "state" | "district" | "subdistrict" | "village";
+
+export interface AdministrativeArea {
+  id: string;
+  name: string;
+  displayName: string;
+  type: AdministrativeAreaType;
+  stateCode?: string;
+  stateName?: string;
+  districtCode?: string;
+  districtName?: string;
+  subdistrictCode?: string;
+  subdistrictName?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  bbox?: MapBoundingBox | null;
+  boundary?: unknown | null;
+}

@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
-import { MapCluster, PublicPothole } from "@/types";
-import { LatLngBounds } from "@/data/india-locations";
+import type { MapBoundingBox, MapCluster, PublicPothole } from "@/types";
 import "leaflet/dist/leaflet.css";
 
 const iconUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
@@ -26,10 +25,10 @@ interface MapViewProps {
   potholes?: PublicPothole[];
   center?: [number, number];
   zoom?: number;
-  bounds?: LatLngBounds | null;
+  bounds?: MapBoundingBox | null;
 }
 
-function BoundsController({ bounds }: { bounds: LatLngBounds }) {
+function BoundsController({ bounds }: { bounds: MapBoundingBox }) {
   const map = useMap();
   useEffect(() => {
     const leafletBounds = L.latLngBounds(
@@ -127,6 +126,8 @@ export default function MapView({
       <MapContainer
         center={center}
         zoom={zoom}
+        minZoom={7}
+        maxZoom={18}
         className="h-full w-full"
         zoomControl={true}
         maxBoundsViscosity={bounds ? 0.9 : undefined}

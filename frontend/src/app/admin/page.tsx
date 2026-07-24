@@ -17,7 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { getDistrictBounds, getMandalBounds, getStateBounds } from "@/data/india-locations";
+import { ANDHRA_STATE, getFallbackDistricts, getFallbackSubdistricts } from "@/data/andhraDirectory";
+import type { AdministrativeArea, MapBoundingBox } from "@/types";
 import dynamic from "next/dynamic";
 
 const DynamicMap = dynamic(() => import("@/components/MapView"), {
@@ -46,6 +47,23 @@ const tenderStatusBadge: Record<string, { label: string; color: "default" | "sec
   completed: { label: "Completed", color: "outline" },
   rejected: { label: "Rejected", color: "destructive" },
 };
+
+function normalize(value?: string | null) {
+  return (value || "").trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function areaBounds(area: AdministrativeArea | null): MapBoundingBox | null {
+  if (area?.bbox) return area.bbox;
+  if (area?.latitude && area.longitude) {
+    return {
+      north: area.latitude + 0.0045,
+      south: area.latitude - 0.0045,
+      east: area.longitude + 0.0045,
+      west: area.longitude - 0.0045,
+    };
+  }
+  return null;
+}
 
 function ScopeLabel({ user }: { user: any }) {
   if (!user?.admin_scope) return null;
@@ -78,23 +96,66 @@ export default function AdminDashboard() {
   const [tenderLoading, setTenderLoading] = useState<string | null>(null);
   const [reportUpdating, setReportUpdating] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState("");
+  const [scopeArea, setScopeArea] = useState<AdministrativeArea | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    if (!user) { router.push("/"); return; }
+    if (!user) { router.push("/login"); return; }
     if (user.role !== "admin") { router.push("/dashboard"); return; }
     fetchAll();
+    void resolveAdminScope();
   }, [user]);
 
-  // Compute scoped bounds for the map
-  const scopeBounds = (() => {
-    if (!user?.admin_scope || !user?.state) return null;
-    if (user.admin_scope === "state") return getStateBounds(user.state);
-    if (user.admin_scope === "district" && user.district) return getDistrictBounds(user.state, user.district);
-    if (user.admin_scope === "mandal" && user.district && user.mandal) return getMandalBounds(user.state, user.district, user.mandal);
-    return null;
-  })();
+  const scopeBounds = areaBounds(scopeArea) || (user?.state === "Andhra Pradesh" ? ANDHRA_STATE.bbox : null);
+
+  const resolveAdminScope = async () => {
+    if (!user?.admin_scope || user.state !== "Andhra Pradesh") {
+      setScopeArea(null);
+      return;
+    }
+
+    if (user.admin_scope === "state") {
+      setScopeArea({
+        id: "state:28",
+        name: "Andhra Pradesh",
+        displayName: "Andhra Pradesh, India",
+        type: "state",
+        stateCode: ANDHRA_STATE.code,
+        stateName: ANDHRA_STATE.name,
+        bbox: ANDHRA_STATE.bbox,
+      });
+      return;
+    }
+
+    const districts = [
+      ...((await api.getAdministrativeOptions({ level: "district", q: user.district || "" }).catch(() => ({ areas: [] }))).areas || []),
+      ...getFallbackDistricts(user.district || ""),
+    ];
+    const district = districts.find((area) => normalize(area.name) === normalize(user.district)) || districts[0] || null;
+
+    if (user.admin_scope === "district") {
+      if (!district) return setScopeArea(null);
+      const resolved = await api.getCurrentAdministrativeArea(district).then((data) => data.area).catch(() => district);
+      setScopeArea(resolved);
+      return;
+    }
+
+    if (user.admin_scope === "mandal" && district?.districtCode) {
+      const subdistricts = [
+        ...((await api.getAdministrativeOptions({
+          level: "subdistrict",
+          q: user.mandal || "",
+          districtCode: district.districtCode,
+        }).catch(() => ({ areas: [] }))).areas || []),
+        ...getFallbackSubdistricts(district.districtCode, user.mandal || ""),
+      ];
+      const subdistrict = subdistricts.find((area) => normalize(area.name) === normalize(user.mandal)) || subdistricts[0] || null;
+      if (!subdistrict) return setScopeArea(null);
+      const resolved = await api.getCurrentAdministrativeArea(subdistrict).then((data) => data.area).catch(() => subdistrict);
+      setScopeArea(resolved);
+    }
+  };
 
   const fetchAll = async () => {
     setLoading(true);

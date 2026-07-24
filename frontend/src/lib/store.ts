@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { User } from "@/types";
+import type { AdministrativeArea, User } from "@/types";
 import { api } from "@/lib/api";
 
 interface AppState {
@@ -10,11 +10,14 @@ interface AppState {
   selectedState: string;
   selectedDistrict: string;
   selectedMandal: string;
+  selectedVillage: string;
+  selectedArea: AdministrativeArea | null;
   setUser: (user: User | null) => void;
   setTheme: (theme: "light" | "dark") => void;
   toggleTheme: () => void;
   logout: () => Promise<void>;
   setLocation: (state: string, district: string, mandal: string) => void;
+  setAdministrativeArea: (area: AdministrativeArea | null) => void;
 }
 
 function getStoredTheme(): "light" | "dark" {
@@ -28,13 +31,20 @@ function getStoredUser(): User | null {
   return raw ? JSON.parse(raw) : null;
 }
 
-function getStoredLocation(): { state: string; district: string; mandal: string } {
-  if (typeof window === "undefined") return { state: "", district: "", mandal: "" };
+function getStoredLocation(): {
+  state: string;
+  district: string;
+  mandal: string;
+  village: string;
+  area: AdministrativeArea | null;
+} {
+  const empty = { state: "", district: "", mandal: "", village: "", area: null };
+  if (typeof window === "undefined") return empty;
   try {
     const raw = localStorage.getItem("location");
-    return raw ? JSON.parse(raw) : { state: "", district: "", mandal: "" };
+    return raw ? { ...empty, ...JSON.parse(raw) } : empty;
   } catch {
-    return { state: "", district: "", mandal: "" };
+    return empty;
   }
 }
 
@@ -58,6 +68,8 @@ export const useStore = create<AppState>((set) => {
     selectedState: storedLocation.state,
     selectedDistrict: storedLocation.district,
     selectedMandal: storedLocation.mandal,
+    selectedVillage: storedLocation.village,
+    selectedArea: storedLocation.area,
 
     setUser: (user) => {
       if (user) {
@@ -68,11 +80,25 @@ export const useStore = create<AppState>((set) => {
         const state = storedLoc.state || user.state || "";
         const district = storedLoc.district || user.district || "";
         const mandal = storedLoc.mandal || user.mandal || "";
-        set({ user, theme, selectedState: state, selectedDistrict: district, selectedMandal: mandal });
+        set({
+          user,
+          theme,
+          selectedState: state,
+          selectedDistrict: district,
+          selectedMandal: mandal,
+          selectedVillage: storedLoc.village,
+          selectedArea: storedLoc.area,
+        });
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("theme", theme);
         if (state || district || mandal) {
-          localStorage.setItem("location", JSON.stringify({ state, district, mandal }));
+          localStorage.setItem("location", JSON.stringify({
+            state,
+            district,
+            mandal,
+            village: storedLoc.village,
+            area: storedLoc.area,
+          }));
         }
         applyTheme(theme);
       } else {
@@ -100,7 +126,15 @@ export const useStore = create<AppState>((set) => {
       try {
         await api.logout();
       } finally {
-        set({ user: null, theme: "dark" });
+        set({
+          user: null,
+          theme: "dark",
+          selectedState: "",
+          selectedDistrict: "",
+          selectedMandal: "",
+          selectedVillage: "",
+          selectedArea: null,
+        });
         localStorage.removeItem("user");
         localStorage.removeItem("location");
         localStorage.setItem("theme", "dark");
@@ -109,8 +143,32 @@ export const useStore = create<AppState>((set) => {
     },
 
     setLocation: (state, district, mandal) => {
-      set({ selectedState: state, selectedDistrict: district, selectedMandal: mandal });
-      localStorage.setItem("location", JSON.stringify({ state, district, mandal }));
+      set({ selectedState: state, selectedDistrict: district, selectedMandal: mandal, selectedVillage: "", selectedArea: null });
+      localStorage.setItem("location", JSON.stringify({ state, district, mandal, village: "", area: null }));
+    },
+
+    setAdministrativeArea: (area) => {
+      if (!area) {
+        set({ selectedState: "", selectedDistrict: "", selectedMandal: "", selectedVillage: "", selectedArea: null });
+        localStorage.removeItem("location");
+        return;
+      }
+
+      const location = {
+        state: area.stateName || "Andhra Pradesh",
+        district: area.districtName || "",
+        mandal: area.subdistrictName || "",
+        village: area.type === "village" ? area.name : "",
+        area,
+      };
+      set({
+        selectedState: location.state,
+        selectedDistrict: location.district,
+        selectedMandal: location.mandal,
+        selectedVillage: location.village,
+        selectedArea: area,
+      });
+      localStorage.setItem("location", JSON.stringify(location));
     },
   };
 });

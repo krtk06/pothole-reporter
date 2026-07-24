@@ -6,32 +6,80 @@ import dynamic from "next/dynamic";
 import { Loader2, LogOut, Map, MapPin, RefreshCw } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
-import { PublicPothole } from "@/types";
+import { PublicPothole, type AdministrativeArea, type MapBoundingBox } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import LocationSelector from "@/components/LocationSelector";
-import { getDistrictBounds, getMandalBounds, getStateBounds } from "@/data/india-locations";
+import AndhraLocationSelector, { type AndhraLocationSelection } from "@/components/AndhraLocationSelector";
+import { ANDHRA_STATE } from "@/data/andhraDirectory";
 
 const PublicMiniMap = dynamic(() => import("@/components/PublicMiniMap"), { ssr: false });
 
+function areaBounds(area: AdministrativeArea | null): MapBoundingBox | null {
+  if (area?.bbox) return area.bbox;
+  if (area?.latitude && area.longitude) {
+    return {
+      north: area.latitude + 0.0045,
+      south: area.latitude - 0.0045,
+      east: area.longitude + 0.0045,
+      west: area.longitude - 0.0045,
+    };
+  }
+  return null;
+}
+
+function selectionFromArea(area: AdministrativeArea | null): AndhraLocationSelection {
+  if (!area) {
+    return { district: null, subdistrict: null, village: null };
+  }
+
+  const district = area.districtCode && area.districtName
+    ? {
+        id: `district:${area.districtCode}`,
+        name: area.districtName,
+        displayName: `${area.districtName}, Andhra Pradesh, India`,
+        type: "district" as const,
+        stateCode: area.stateCode,
+        stateName: area.stateName,
+        districtCode: area.districtCode,
+        districtName: area.districtName,
+      }
+    : null;
+
+  const subdistrict = area.subdistrictCode && area.subdistrictName
+    ? {
+        id: `subdistrict:${area.subdistrictCode}`,
+        name: area.subdistrictName,
+        displayName: `${area.subdistrictName}, ${area.districtName || ""}, Andhra Pradesh, India`,
+        type: "subdistrict" as const,
+        stateCode: area.stateCode,
+        stateName: area.stateName,
+        districtCode: area.districtCode,
+        districtName: area.districtName,
+        subdistrictCode: area.subdistrictCode,
+        subdistrictName: area.subdistrictName,
+      }
+    : null;
+
+  return {
+    district,
+    subdistrict,
+    village: area.type === "village" ? area : null,
+  };
+}
+
 export default function Dashboard() {
-  const {
-    user,
-    logout,
-    selectedState,
-    selectedDistrict,
-    selectedMandal,
-    setLocation,
-  } = useStore();
+  const { user, logout, selectedArea, setAdministrativeArea } = useStore();
   const router = useRouter();
   const [potholes, setPotholes] = useState<PublicPothole[]>([]);
-  const [loadingMap, setLoadingMap] = useState(true);
+  const [loadingMap, setLoadingMap] = useState(false);
+  const [resolvingArea, setResolvingArea] = useState(false);
   const [error, setError] = useState("");
   const [mounted, setMounted] = useState(false);
-  const [areaState, setAreaState] = useState("");
-  const [areaDistrict, setAreaDistrict] = useState("");
-  const [areaMandal, setAreaMandal] = useState("");
+  const [area, setArea] = useState<AdministrativeArea | null>(selectedArea);
+  const [locationSelection, setLocationSelection] = useState<AndhraLocationSelection>(
+    selectionFromArea(selectedArea)
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -49,41 +97,24 @@ export default function Dashboard() {
   }, [mounted, router, user]);
 
   useEffect(() => {
-    if (!user) return;
-    setAreaState(selectedState || user.state || "");
-    setAreaDistrict(selectedDistrict || user.district || "");
-    setAreaMandal(selectedMandal || user.mandal || "");
-  }, [user]);
+    if (!selectedArea) return;
+    setArea(selectedArea);
+    setLocationSelection(selectionFromArea(selectedArea));
+  }, [selectedArea]);
 
-  useEffect(() => {
-    if (!mounted || !user || user.role === "admin") return;
-    setLocation(areaState, areaDistrict, areaMandal);
-  }, [areaState, areaDistrict, areaMandal, mounted, setLocation, user]);
-
-  const state = areaState;
-  const district = areaDistrict;
-  const mandal = areaMandal;
-
-  const scopedBounds = useMemo(() => {
-    if (state && district && mandal) return getMandalBounds(state, district, mandal);
-    if (state && district) return getDistrictBounds(state, district);
-    if (state) return getStateBounds(state);
-    return null;
-  }, [state, district, mandal]);
-
-  const locationLabel = [mandal, district, state].filter(Boolean).join(", ");
+  const scopedBounds = useMemo(() => areaBounds(area), [area]);
+  const locationLabel = area?.displayName || "Select District, Mandal, Village/City";
 
   const fetchPotholes = async () => {
-    if (!state || !district || !mandal) {
+    if (!scopedBounds) {
       setPotholes([]);
-      setLoadingMap(false);
       return;
     }
 
     setLoadingMap(true);
     setError("");
     try {
-      const data = await api.getPublicPotholes(state, district, mandal);
+      const data = await api.getPotholesInBounds(scopedBounds);
       setPotholes(data.potholes || []);
     } catch (err: any) {
       setError(err.message || "Unable to load map data");
@@ -95,7 +126,30 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user || user.role === "admin") return;
     void fetchPotholes();
-  }, [user, state, district, mandal]);
+  }, [user, scopedBounds?.north, scopedBounds?.south, scopedBounds?.east, scopedBounds?.west]);
+
+  async function handleLocationChange(next: AndhraLocationSelection) {
+    setLocationSelection(next);
+    setError("");
+
+    if (!next.village) {
+      setArea(null);
+      setPotholes([]);
+      setAdministrativeArea(null);
+      return;
+    }
+
+    setResolvingArea(true);
+    try {
+      const { area: resolved } = await api.getCurrentAdministrativeArea(next.village);
+      setArea(resolved);
+      setAdministrativeArea(resolved);
+    } catch (err: any) {
+      setError(err.message || "Unable to resolve the selected village/city.");
+    } finally {
+      setResolvingArea(false);
+    }
+  }
 
   if (!mounted || !user || user.role === "admin") return null;
 
@@ -118,10 +172,10 @@ export default function Dashboard() {
           <span className="font-bold text-[var(--color-heading)]">Pothole Reporter</span>
         </a>
         <div className="flex items-center gap-3">
-          {locationLabel && (
+          {area && (
             <div className="hidden md:flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)] border border-[var(--color-border)] rounded-full px-3 py-1">
               <MapPin className="w-3 h-3" />
-              {locationLabel}
+              {area.name}
             </div>
           )}
           <span className="text-sm text-[var(--color-text-secondary)] hidden sm:block">Guest</span>
@@ -147,7 +201,7 @@ export default function Dashboard() {
               Road Conditions In Your Area
             </h1>
             <p className="text-[var(--color-text-secondary)] mt-4 max-w-xl mx-auto">
-              Select a state, district, and mandal to keep the map focused on that area only.
+              Select a district, mandal, and village/city to keep the map focused on that area only.
             </p>
           </div>
         </div>
@@ -158,18 +212,19 @@ export default function Dashboard() {
               <MapPin className="w-4 h-4 text-[var(--color-text-secondary)]" />
               <h2 className="text-lg font-semibold text-[var(--color-heading)]">Area Filter</h2>
             </div>
-            <LocationSelector
-              selectedState={state}
-              selectedDistrict={district}
-              selectedMandal={mandal}
-              onStateChange={setAreaState}
-              onDistrictChange={setAreaDistrict}
-              onMandalChange={setAreaMandal}
-              required
+            <AndhraLocationSelector
+              value={locationSelection}
+              onChange={handleLocationChange}
               label={false}
             />
-            {(!state || !district || !mandal) && (
-              <p className="text-xs text-amber-500 mt-4">Choose all three fields to load the map.</p>
+            {resolvingArea && (
+              <p className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)] mt-4">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                Resolving selected village/city...
+              </p>
+            )}
+            {!area && !resolvingArea && (
+              <p className="text-xs text-amber-500 mt-4">Choose all fields to load the scoped map.</p>
             )}
             {error && <p className="text-xs text-red-400 mt-4">{error}</p>}
           </Card>
@@ -194,13 +249,13 @@ export default function Dashboard() {
                 <div>
                   <h2 className="text-xl font-bold text-[var(--color-heading)]">
                     <Map className="w-5 h-5 inline-block mr-2 text-[var(--color-text-secondary)]" />
-                    {locationLabel || "Select Area"}
+                    {area?.name || "Select Area"}
                   </h2>
                   <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                    {locationLabel ? `Map is scoped to ${locationLabel}` : "No area selected"}
+                    {area ? `Map is scoped to ${locationLabel}` : "No area selected"}
                   </p>
                 </div>
-                <Button variant="ghost" size="sm" onClick={fetchPotholes} className="text-[var(--color-text-secondary)]" disabled={loadingMap}>
+                <Button variant="ghost" size="sm" onClick={fetchPotholes} className="text-[var(--color-text-secondary)]" disabled={loadingMap || !scopedBounds}>
                   {loadingMap ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                 </Button>
               </div>
@@ -211,10 +266,13 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <PublicMiniMap
-                  key={`${state}-${district}-${mandal}-${potholes.length}`}
+                  key={`${area?.id || "andhra"}-${potholes.length}`}
                   potholes={potholes}
-                  bounds={scopedBounds}
+                  bounds={scopedBounds || ANDHRA_STATE.bbox}
+                  boundary={area?.boundary || null}
                   height={480}
+                  center={area?.latitude && area.longitude ? [area.latitude, area.longitude] : undefined}
+                  zoom={area ? 13 : 7}
                 />
               )}
             </div>

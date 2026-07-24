@@ -2,13 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import type { Map as LeafletMap } from "leaflet";
-import { PublicPothole } from "@/types";
-import { LatLngBounds } from "@/data/india-locations";
+import type { MapBoundingBox, PublicPothole } from "@/types";
 
 interface PublicMiniMapProps {
   potholes: PublicPothole[];
   userPotholes?: PublicPothole[];
-  bounds?: LatLngBounds | null;
+  bounds?: MapBoundingBox | null;
+  boundary?: unknown | null;
   height?: number | string;
   center?: [number, number];
   zoom?: number;
@@ -32,9 +32,10 @@ export default function PublicMiniMap({
   potholes,
   userPotholes = [],
   bounds,
+  boundary,
   height = 300,
-  center = [20, 78],
-  zoom = 5,
+  center = [15.9, 80.5],
+  zoom = 7,
 }: PublicMiniMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
@@ -64,6 +65,8 @@ export default function PublicMiniMap({
         zoomControl: true,
         attributionControl: false,
         scrollWheelZoom: false,
+        minZoom: 7,
+        maxZoom: 18,
       }).setView(initialCenter, initialZoom);
 
       mapRef.current = map;
@@ -80,6 +83,18 @@ export default function PublicMiniMap({
         );
         map.fitBounds(leafletBounds, { padding: [10, 10] });
         map.setMaxBounds(leafletBounds.pad(0.1));
+      }
+
+      if (boundary && typeof boundary === "object" && "type" in boundary) {
+        L.geoJSON(boundary as any, {
+          style: {
+            color: "#60a5fa",
+            weight: 2,
+            opacity: 0.8,
+            fillColor: "#60a5fa",
+            fillOpacity: 0.08,
+          },
+        }).addTo(map);
       }
 
       // Add all potholes to map
@@ -114,7 +129,7 @@ export default function PublicMiniMap({
                 ${new Date(p.created_at).toLocaleDateString()}
               </span>
               ${p.block_id ? `<br/><span style="font-family:monospace;font-size:11px;color:#aaa;">${p.block_id}</span>` : ""}
-              ${isUser ? `<br/><span style="color:#60a5fa;font-size:11px;">📍 Your report</span>` : ""}
+              ${isUser ? `<br/><span style="color:#60a5fa;font-size:11px;">Your report</span>` : ""}
             </div>
           `)
           .addTo(map);

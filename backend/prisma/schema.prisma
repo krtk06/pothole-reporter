@@ -98,3 +98,27 @@ model Tender {
 
   @@map("tenders")
 }
+
+model AdministrativeArea {
+  id               String   @id
+  name             String   @db.VarChar(255)
+  normalized_name  String   @db.VarChar(255)
+  level            String   @db.VarChar(20)
+  state_code       String   @db.VarChar(20)
+  state_name       String   @db.VarChar(100)
+  district_code    String?  @db.VarChar(20)
+  district_name    String?  @db.VarChar(100)
+  subdistrict_code String?  @db.VarChar(20)
+  subdistrict_name String?  @db.VarChar(100)
+  latitude         Float?
+  longitude        Float?
+  bbox             Json?
+  boundary         Unsupported("geometry(MultiPolygon, 4326)")?
+  source           String   @default("LGD administrative directory") @db.VarChar(255)
+  updated_at       DateTime @default(now()) @updatedAt
+
+  @@index([level, state_code, district_code, subdistrict_code, normalized_name])
+  @@index([district_code, normalized_name])
+  @@index([subdistrict_code, normalized_name])
+  @@map("administrative_areas")
+}
