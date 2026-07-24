@@ -99,7 +99,6 @@ export default function Dashboard() {
   useEffect(() => {
     if (!selectedArea) return;
     setArea(selectedArea);
-    setLocationSelection(selectionFromArea(selectedArea));
   }, [selectedArea]);
 
   const scopedBounds = useMemo(() => areaBounds(area), [area]);
@@ -135,7 +134,6 @@ export default function Dashboard() {
     if (!next.village) {
       setArea(null);
       setPotholes([]);
-      setAdministrativeArea(null);
       return;
     }
 

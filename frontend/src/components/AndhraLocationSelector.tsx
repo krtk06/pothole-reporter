@@ -59,6 +59,11 @@ export default function AndhraLocationSelector({
   });
   const [loadingLevel, setLoadingLevel] = useState<Level | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const valueKey = [
+    value.district?.id || "",
+    value.subdistrict?.id || "",
+    value.village?.id || "",
+  ].join("|");
 
   useEffect(() => {
     if (
@@ -75,7 +80,7 @@ export default function AndhraLocationSelector({
       subdistrict: value.subdistrict?.name || "",
       village: value.village?.name || "",
     });
-  }, [value]);
+  }, [valueKey]);
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
