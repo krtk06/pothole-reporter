@@ -174,10 +174,13 @@ async function geocodeArea(area: any) {
   url.searchParams.set("limit", "1");
   url.searchParams.set("polygon_geojson", "1");
   url.searchParams.set("addressdetails", "0");
+  if (process.env.NOMINATIM_EMAIL) {
+    url.searchParams.set("email", process.env.NOMINATIM_EMAIL);
+  }
 
   const response = await fetch(url, {
     headers: {
-      "User-Agent": process.env.NOMINATIM_USER_AGENT || "pothole-reporter/1.0 contact@example.com",
+      "User-Agent": process.env.NOMINATIM_USER_AGENT || `PotholeReporter/1.0 (${process.env.FRONTEND_URL || "local"})`,
       "Accept": "application/json",
     },
   });
