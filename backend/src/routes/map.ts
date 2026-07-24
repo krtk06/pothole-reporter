@@ -24,6 +24,18 @@ function normalizeName(value: string): string {
   return value.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
+function cleanPlaceName(value?: string | null): string {
+  return String(value || "")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/\b(R|U)\b/gi, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function unique(values: string[]) {
+  return [...new Set(values.map((value) => value.trim()).filter(Boolean))];
+}
+
 function toPublicArea(row: any) {
   return {
     id: row.id,
@@ -113,6 +125,67 @@ async function fetchAreas(level: string, q?: string, districtCode?: string, subd
   `, ...params);
 }
 
+function childFallbackArea(area: any) {
+  if (area.level === "village" && area.subdistrict_name) {
+    return {
+      ...area,
+      id: area.subdistrict_code ? `subdistrict:${area.subdistrict_code}` : `subdistrict:${area.subdistrict_name}`,
+      name: area.subdistrict_name,
+      level: "subdistrict",
+      latitude: null,
+      longitude: null,
+      bbox: null,
+      boundary_geojson: null,
+    };
+  }
+
+  if (area.level === "subdistrict" && area.district_name) {
+    return {
+      ...area,
+      id: area.district_code ? `district:${area.district_code}` : `district:${area.district_name}`,
+      name: area.district_name,
+      level: "district",
+      subdistrict_code: null,
+      subdistrict_name: null,
+      latitude: null,
+      longitude: null,
+      bbox: null,
+      boundary_geojson: null,
+    };
+  }
+
+  return null;
+}
+
+function geocodeQueries(area: any) {
+  const name = cleanPlaceName(area.name);
+  const originalName = String(area.name || "").trim().replace(/\s+/g, " ");
+  const subdistrict = cleanPlaceName(area.subdistrict_name);
+  const district = cleanPlaceName(area.district_name);
+
+  if (area.level === "village") {
+    return unique([
+      [originalName, area.subdistrict_name, area.district_name, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+      [name, subdistrict, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+      [`${name} village`, subdistrict, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+      [subdistrict, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+    ]);
+  }
+
+  if (area.level === "subdistrict") {
+    return unique([
+      [originalName, area.district_name, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+      [name, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+      [`${name} mandal`, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+    ]);
+  }
+
+  return unique([
+    [originalName, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+    [name, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
+  ]);
+}
+
 router.get("/areas/options", async (req: Request, res: Response) => {
   try {
     const levelResult = levelSchema.safeParse(req.query.level);
@@ -120,14 +193,19 @@ router.get("/areas/options", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid level" });
     }
 
-    const areas = await fetchAreas(
-      levelResult.data,
-      typeof req.query.q === "string" ? req.query.q : undefined,
-      typeof req.query.districtCode === "string" ? req.query.districtCode : undefined,
-      typeof req.query.subdistrictCode === "string" ? req.query.subdistrictCode : undefined
-    );
+    let areas: any[] = [];
+    try {
+      areas = await fetchAreas(
+        levelResult.data,
+        typeof req.query.q === "string" ? req.query.q : undefined,
+        typeof req.query.districtCode === "string" ? req.query.districtCode : undefined,
+        typeof req.query.subdistrictCode === "string" ? req.query.subdistrictCode : undefined
+      ) as any[];
+    } catch (err) {
+      logger.warn({ err }, "Administrative options database lookup failed; returning empty options");
+    }
 
-    res.json({ areas: (areas as any[]).map(toPublicArea) });
+    res.json({ areas: areas.map(toPublicArea) });
   } catch (err) {
     logger.error({ err }, "Map options error");
     res.status(500).json({ error: "Failed to load administrative options" });
@@ -143,14 +221,19 @@ router.get("/areas/search", async (req: Request, res: Response) => {
     }
 
     const levels = levelResult.data ? [levelResult.data] : ["district", "subdistrict", "village"];
-    const searches = await Promise.all(
-      levels.map((level) => fetchAreas(
-        level,
-        query.data,
-        typeof req.query.districtCode === "string" ? req.query.districtCode : undefined,
-        typeof req.query.subdistrictCode === "string" ? req.query.subdistrictCode : undefined
-      ))
-    );
+    let searches: any[][] = [];
+    try {
+      searches = await Promise.all(
+        levels.map((level) => fetchAreas(
+          level,
+          query.data,
+          typeof req.query.districtCode === "string" ? req.query.districtCode : undefined,
+          typeof req.query.subdistrictCode === "string" ? req.query.subdistrictCode : undefined
+        ) as Promise<any[]>)
+      );
+    } catch (err) {
+      logger.warn({ err }, "Administrative search database lookup failed; returning empty results");
+    }
 
     res.json({ areas: searches.flat().slice(0, MAX_RESULTS).map(toPublicArea) });
   } catch (err) {
@@ -159,15 +242,7 @@ router.get("/areas/search", async (req: Request, res: Response) => {
   }
 });
 
-async function geocodeArea(area: any) {
-  const query = [
-    area.name,
-    area.subdistrict_name,
-    area.district_name,
-    ANDHRA_STATE_NAME,
-    "India",
-  ].filter(Boolean).join(", ");
-
+async function queryNominatim(query: string) {
   const url = new URL("https://nominatim.openstreetmap.org/search");
   url.searchParams.set("q", query);
   url.searchParams.set("format", "jsonv2");
@@ -190,8 +265,19 @@ async function geocodeArea(area: any) {
   }
 
   const results = await response.json() as any[];
-  const first = results[0];
+  return results[0] || null;
+}
+
+async function geocodeArea(area: any): Promise<any> {
+  let first: any = null;
+  for (const query of geocodeQueries(area)) {
+    first = await queryNominatim(query);
+    if (first?.lat && first?.lon) break;
+  }
+
   if (!first?.lat || !first?.lon) {
+    const fallback = childFallbackArea(area);
+    if (fallback) return geocodeArea(fallback);
     throw new Error("No coordinate found for selected area");
   }
 

@@ -193,10 +193,6 @@ export default function Dashboard() {
           style={{ backgroundImage: "url('https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/gridBackground.png')" }}
         >
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 border border-[var(--color-border)] rounded-full px-4 py-1.5 text-xs text-[var(--color-text-secondary)] mb-5 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              Guest map view
-            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-heading)] max-w-3xl mx-auto">
               Road Conditions In Your Area
             </h1>

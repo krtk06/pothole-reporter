@@ -170,11 +170,17 @@ export default function AndhraLocationSelector({
   function field(level: Level, disabled = false) {
     const open = activeLevel === level;
     const items = options[level];
+    const selectedId =
+      level === "district"
+        ? selection.district?.id
+        : level === "subdistrict"
+        ? selection.subdistrict?.id
+        : selection.village?.id;
 
     return (
-      <div className="relative">
+      <div className="relative min-w-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]" />
           <input
             value={queries[level]}
             disabled={disabled}
@@ -184,7 +190,7 @@ export default function AndhraLocationSelector({
             }}
             onChange={(event) => updateQuery(level, event.target.value)}
             placeholder={placeholders[level]}
-            className="h-11 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] pl-10 pr-10 text-sm text-[var(--color-text-primary)] outline-none transition-colors placeholder:text-[var(--color-text-secondary)] focus:border-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-55"
+            className="h-12 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] pl-10 pr-10 text-sm text-[var(--color-text-primary)] outline-none transition-colors placeholder:text-[var(--color-text-secondary)] focus:border-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-55"
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]">
             {loadingLevel === level ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronDown className="h-4 w-4" />}
@@ -192,22 +198,38 @@ export default function AndhraLocationSelector({
         </div>
 
         {open && !disabled && (
-          <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-50 max-h-56 overflow-y-auto rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xl">
+          <div className="mt-2 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] shadow-xl">
             {items.length === 0 && loadingLevel !== level ? (
               <div className="px-3 py-3 text-xs text-[var(--color-text-secondary)]">No results found</div>
             ) : (
-              items.map((area) => (
-                <button
-                  key={area.id}
-                  type="button"
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => selectArea(level, area)}
-                  className="block w-full border-b border-[var(--color-border)] px-3 py-2.5 text-left text-sm text-[var(--color-text-primary)] transition-colors last:border-b-0 hover:bg-[var(--color-muted)]"
-                >
-                  <span className="block font-medium">{area.name}</span>
-                  <span className="block truncate text-xs text-[var(--color-text-secondary)]">{area.displayName}</span>
-                </button>
-              ))
+              <>
+                <div className="max-h-64 overflow-y-auto p-1.5 [scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent]">
+                  {items.map((area) => {
+                    const selected = selectedId === area.id;
+                    return (
+                      <button
+                        key={area.id}
+                        type="button"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => selectArea(level, area)}
+                        className={`block w-full rounded-md px-3 py-2.5 text-left text-sm transition-colors ${
+                          selected
+                            ? "bg-[var(--color-muted)] text-[var(--color-heading)]"
+                            : "text-[var(--color-text-primary)] hover:bg-[var(--color-muted)]"
+                        }`}
+                      >
+                        <span className="block truncate font-medium leading-5">{area.name}</span>
+                        <span className="mt-0.5 block truncate text-xs leading-4 text-[var(--color-text-secondary)]">
+                          {area.displayName}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="border-t border-[var(--color-border)] px-3 py-2 text-[10px] uppercase tracking-wide text-[var(--color-text-secondary)]">
+                  Showing up to 30 matches
+                </div>
+              </>
             )}
           </div>
         )}
