@@ -47,6 +47,10 @@ function authResponse(result: { user?: unknown; accessToken: string; refreshToke
 
 router.post("/register", generalLimiter, validate(registerSchema), async (req: Request, res: Response) => {
   try {
+    if (!isMobileClient(req)) {
+      return res.status(403).json({ error: "Web users must continue as guest" });
+    }
+
     const { name, email, password, phone, state, district, mandal, admin_scope } = req.body;
     const result = await authService.registerUser(name, email, password, phone, state, district, mandal, admin_scope);
 
@@ -62,7 +66,8 @@ router.post("/register", generalLimiter, validate(registerSchema), async (req: R
 router.post("/login", loginLimiter, validate(loginSchema), async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const result = await authService.loginUser(email, password);
+    const webAdminOnly = !isMobileClient(req);
+    const result = await authService.loginUser(email, password, webAdminOnly ? "admin" : undefined);
 
     res.cookie("accessToken", result.accessToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
     res.cookie("refreshToken", result.refreshToken, { ...TOKEN_COOKIE_OPTIONS, maxAge: 7 * 24 * 60 * 60 * 1000 });

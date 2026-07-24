@@ -5,6 +5,7 @@ export interface User {
   name: string;
   email: string;
   role: "public" | "admin";
+  is_guest?: boolean;
   theme_preference: "light" | "dark";
   state?: string;
   district?: string;

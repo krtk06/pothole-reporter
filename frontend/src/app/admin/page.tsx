@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { getStateBounds, getDistrictBounds } from "@/data/india-locations";
+import { getDistrictBounds, getMandalBounds, getStateBounds } from "@/data/india-locations";
 import dynamic from "next/dynamic";
 
 const DynamicMap = dynamic(() => import("@/components/MapView"), {
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
     if (!user?.admin_scope || !user?.state) return null;
     if (user.admin_scope === "state") return getStateBounds(user.state);
     if (user.admin_scope === "district" && user.district) return getDistrictBounds(user.state, user.district);
-    if (user.admin_scope === "mandal" && user.district) return getDistrictBounds(user.state, user.district);
+    if (user.admin_scope === "mandal" && user.district && user.mandal) return getMandalBounds(user.state, user.district, user.mandal);
     return null;
   })();
 

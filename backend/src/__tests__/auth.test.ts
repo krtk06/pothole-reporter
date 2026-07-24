@@ -92,18 +92,14 @@ describe("Auth and report routes", () => {
       expect(res.body.error).toBe("Validation failed");
     });
 
-    it("does not expose refreshToken to web clients", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue(null);
-      mockPrisma.user.create.mockResolvedValue(testUser());
-      mockPrisma.user.update.mockResolvedValue(testUser());
-
+    it("rejects web registration because public web users continue as guest", async () => {
       const res = await request(app)
         .post("/api/v1/auth/register")
         .send({ name: "Test User", email: "test@example.com", password: "password123" });
 
-      expect(res.status).toBe(201);
-      expect(res.body.accessToken).toBeTruthy();
-      expect(res.body.refreshToken).toBeUndefined();
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe("Web users must continue as guest");
+      expect(mockPrisma.user.create).not.toHaveBeenCalled();
     });
 
     it("returns refreshToken to mobile clients", async () => {

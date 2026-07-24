@@ -510,3 +510,26 @@ export function getDistrictBounds(stateName: string, districtName: string): LatL
   const district = state.districts.find(d => d.name === districtName);
   return district ? district.bounds : null;
 }
+
+export function getMandalBounds(stateName: string, districtName: string, mandalName: string): LatLngBounds | null {
+  const state = INDIA_LOCATIONS.find(s => s.name === stateName);
+  if (!state) return null;
+  const district = state.districts.find(d => d.name === districtName);
+  if (!district) return null;
+
+  const mandalIndex = district.mandals.findIndex((m) => m === mandalName);
+  if (mandalIndex < 0) return district.bounds;
+
+  const gridSize = Math.ceil(Math.sqrt(district.mandals.length));
+  const row = Math.floor(mandalIndex / gridSize);
+  const col = mandalIndex % gridSize;
+  const latStep = (district.bounds.north - district.bounds.south) / gridSize;
+  const lngStep = (district.bounds.east - district.bounds.west) / gridSize;
+
+  return {
+    north: district.bounds.north - row * latStep,
+    south: district.bounds.north - (row + 1) * latStep,
+    west: district.bounds.west + col * lngStep,
+    east: district.bounds.west + (col + 1) * lngStep,
+  };
+}

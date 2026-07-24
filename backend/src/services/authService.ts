@@ -106,7 +106,7 @@ export async function registerUser(
   };
 }
 
-export async function loginUser(email: string, password: string) {
+export async function loginUser(email: string, password: string, requiredRole?: "admin" | "public") {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     throw new Error("Invalid email or password");
@@ -115,6 +115,10 @@ export async function loginUser(email: string, password: string) {
   const valid = await bcrypt.compare(password, user.password_hash);
   if (!valid) {
     throw new Error("Invalid email or password");
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    throw new Error(requiredRole === "admin" ? "Admin access required" : "Invalid email or password");
   }
 
   const payload = buildPayload(user);

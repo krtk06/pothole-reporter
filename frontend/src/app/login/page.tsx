@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { MapPin, Shield } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -11,16 +12,13 @@ import LocationSelector from "@/components/LocationSelector";
 const LoginMap = dynamic(() => import("@/components/LoginMap"), { ssr: false });
 
 export default function LoginPage() {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedMandal, setSelectedMandal] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingAdmin, setLoadingAdmin] = useState(false);
   const router = useRouter();
   const { setUser, setLocation } = useStore();
   const bgRef = useRef<HTMLDivElement>(null);
@@ -40,37 +38,48 @@ export default function LoginPage() {
     return () => window.removeEventListener("mousemove", onMove);
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const continueAsGuest = () => {
+    setError("");
+    if (!selectedState || !selectedDistrict || !selectedMandal) {
+      setError("Select state, district, and mandal to continue as guest.");
+      return;
+    }
+
+    setLocation(selectedState, selectedDistrict, selectedMandal);
+    setUser({
+      id: "guest",
+      name: "Guest",
+      email: "",
+      role: "public",
+      is_guest: true,
+      theme_preference: "dark",
+      state: selectedState,
+      district: selectedDistrict,
+      mandal: selectedMandal,
+    });
+    router.push("/dashboard");
+  };
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setLoadingAdmin(true);
     try {
-      let data;
-      if (isLogin) {
-        data = await api.login(email, password);
-      } else {
-        data = await api.register(
-          name,
-          email,
-          password,
-          phone || undefined,
-          selectedState || undefined,
-          selectedDistrict || undefined,
-          selectedMandal || undefined
-        );
+      const data = await api.login(email, password);
+      if (data.user.role !== "admin") {
+        await api.logout();
+        setError("Public web users must continue as guest.");
+        return;
       }
       setUser(data.user);
-      // Store location selection
-      if (selectedState) {
-        setLocation(selectedState, selectedDistrict, selectedMandal);
-      } else if (data.user.state) {
+      if (data.user.state) {
         setLocation(data.user.state, data.user.district || "", data.user.mandal || "");
       }
-      router.push(data.user.role === "admin" ? "/admin" : "/dashboard");
+      router.push("/admin");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Unable to sign in");
     } finally {
-      setLoading(false);
+      setLoadingAdmin(false);
     }
   };
 
@@ -101,9 +110,8 @@ export default function LoginPage() {
       />
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Navbar */}
         <div className="flex items-center justify-between px-6 py-4">
-          <a href="/" className="flex items-center gap-2">
+          <a href="/login" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[var(--color-text-primary)] flex items-center justify-center">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="var(--color-bg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -116,64 +124,15 @@ export default function LoginPage() {
 
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="w-full max-w-5xl flex flex-col lg:flex-row justify-between rounded-2xl overflow-hidden shadow-2xl border border-[var(--color-border)] bg-[var(--color-surface)] backdrop-blur-sm">
-
-            {/* Form side */}
             <div className="w-full lg:w-1/2 px-6 lg:px-10 py-10 lg:py-12 overflow-y-auto max-h-[90vh]">
-              <form onSubmit={handleSubmit} className="grid gap-4">
-                <div className="text-center grid gap-2 mb-2">
-                  <h1 className="text-3xl font-extrabold text-[var(--color-heading)]">
-                    {isLogin ? "Welcome Back" : "Join Us"}
-                  </h1>
+              <div className="grid gap-6">
+                <div className="text-center grid gap-2">
+                  <h1 className="text-3xl font-extrabold text-[var(--color-heading)]">Continue as Guest</h1>
                   <p className="text-sm text-[var(--color-text-secondary)]">
-                    {isLogin ? "Sign in to report potholes" : "Create an account to start reporting"}
+                    Select your area to view live pothole data. No user record will be created.
                   </p>
-                  <div className="flex items-center gap-3 text-xs text-[var(--color-text-secondary)] my-1">
-                    <div className="h-px flex-1 bg-[var(--color-border)]" />
-                    <span>or use your account</span>
-                    <div className="h-px flex-1 bg-[var(--color-border)]" />
-                  </div>
                 </div>
 
-                {!isLogin && (
-                  <input
-                    placeholder="Full Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className={inputClass}
-                    required
-                  />
-                )}
-
-                <input
-                  placeholder="Email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={inputClass}
-                  required
-                />
-
-                <input
-                  placeholder="Password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={inputClass}
-                  required
-                  minLength={8}
-                />
-
-                {!isLogin && (
-                  <input
-                    placeholder="Phone (optional)"
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className={inputClass}
-                  />
-                )}
-
-                {/* Location Selection */}
                 <div className="border border-[var(--color-border)] rounded-lg p-4 bg-[var(--color-bg)]">
                   <LocationSelector
                     selectedState={selectedState}
@@ -182,52 +141,73 @@ export default function LoginPage() {
                     onStateChange={setSelectedState}
                     onDistrictChange={setSelectedDistrict}
                     onMandalChange={setSelectedMandal}
-                    required={false}
-                    label={true}
+                    required
+                    label
                   />
                 </div>
 
-                {isLogin && (
-                  <button
-                    type="button"
-                    onClick={() => router.push("/forgot-password")}
-                    className="font-light text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] text-left"
-                  >
-                    Forgot your password?
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={continueAsGuest}
+                  className="group/button relative inline-flex items-center justify-center overflow-hidden rounded-md bg-[var(--color-border)] px-8 py-3 text-sm font-normal text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-lg disabled:opacity-50"
+                >
+                  <MapPin className="relative z-10 mr-2 h-4 w-4" />
+                  <span className="relative z-10">Continue as Guest</span>
+                  <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
+                    <div className="relative h-full w-8 bg-white/20" />
+                  </div>
+                </button>
 
-                {error && <p className="text-xs text-red-400 text-center">{error}</p>}
-
-                <div className="flex gap-3 justify-center mt-1">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="group/button relative inline-flex items-center overflow-hidden rounded-md bg-[var(--color-border)] px-8 py-2.5 text-sm font-normal text-white transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50"
-                  >
-                    <span className="relative z-10">
-                      {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
-                    </span>
-                    <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
-                      <div className="relative h-full w-8 bg-white/20" />
-                    </div>
-                  </button>
+                <div className="flex items-center gap-3 text-xs text-[var(--color-text-secondary)]">
+                  <div className="h-px flex-1 bg-[var(--color-border)]" />
+                  <span>admin access</span>
+                  <div className="h-px flex-1 bg-[var(--color-border)]" />
                 </div>
 
-                <p className="text-xs text-[var(--color-text-secondary)] text-center">
-                  {isLogin ? "Don't have an account? " : "Already have an account? "}
-                  <button
-                    type="button"
-                    onClick={() => { setIsLogin(!isLogin); setError(""); }}
-                    className="text-[var(--color-text-primary)] hover:underline font-medium"
-                  >
-                    {isLogin ? "Register" : "Sign In"}
-                  </button>
-                </p>
-              </form>
+                <form onSubmit={handleAdminLogin} className="grid gap-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-heading)]">
+                    <Shield className="h-4 w-4 text-[var(--color-text-secondary)]" />
+                    Admin Login
+                  </div>
+                  <input
+                    placeholder="Admin email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={inputClass}
+                    required
+                  />
+                  <input
+                    placeholder="Password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={inputClass}
+                    required
+                    minLength={8}
+                  />
+                  <div className="flex items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={() => router.push("/forgot-password")}
+                      className="font-light text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] text-left"
+                    >
+                      Forgot your password?
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loadingAdmin}
+                      className="rounded-md border border-[var(--color-border)] px-5 py-2 text-sm text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-text-primary)] disabled:opacity-50"
+                    >
+                      {loadingAdmin ? "Signing in..." : "Sign In"}
+                    </button>
+                  </div>
+                </form>
+
+                {error && <p className="text-xs text-red-400 text-center">{error}</p>}
+              </div>
             </div>
 
-            {/* Map side */}
             <div className="hidden lg:block w-1/2 relative overflow-hidden rounded-r-2xl" style={{ minHeight: "600px" }}>
               <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] via-transparent to-transparent z-10 pointer-events-none" />
               <LoginMap />
