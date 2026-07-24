@@ -43,14 +43,14 @@ export default function LoginPage() {
 
   const continueAsGuest = async () => {
     setError("");
-    if (!selectedLocation.district || !selectedLocation.subdistrict || !selectedLocation.village) {
-      setError("Select district, mandal, and village/city to continue as guest.");
+    if (!selectedLocation.district || !selectedLocation.subdistrict) {
+      setError("Select district and mandal to continue as guest.");
       return;
     }
 
     setLoadingGuest(true);
     try {
-      const { area } = await api.getCurrentAdministrativeArea(selectedLocation.village);
+      const { area } = await api.getCurrentAdministrativeArea(selectedLocation.subdistrict);
       setAdministrativeArea(area);
       setUser({
         id: "guest",
@@ -61,11 +61,11 @@ export default function LoginPage() {
         theme_preference: "dark",
         state: area.stateName || "Andhra Pradesh",
         district: area.districtName || selectedLocation.district.name,
-        mandal: area.subdistrictName || selectedLocation.subdistrict.name,
+        mandal: area.name || selectedLocation.subdistrict.name,
       });
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Unable to resolve the selected village/city.");
+      setError(err.message || "Unable to resolve the selected mandal.");
     } finally {
       setLoadingGuest(false);
     }
@@ -140,7 +140,7 @@ export default function LoginPage() {
                 <div className="text-center grid gap-2">
                   <h1 className="text-3xl font-extrabold text-[var(--color-heading)]">Continue as Guest</h1>
                   <p className="text-sm text-[var(--color-text-secondary)]">
-                    Select your area to view live pothole data. No user record will be created.
+                    Select your mandal to view live pothole data. No user record will be created.
                   </p>
                 </div>
 
@@ -149,6 +149,7 @@ export default function LoginPage() {
                     value={selectedLocation}
                     onChange={(next) => setSelectedLocation(next)}
                     label
+                    includeVillage={false}
                   />
                 </div>
 

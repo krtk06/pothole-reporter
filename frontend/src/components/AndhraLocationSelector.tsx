@@ -20,6 +20,7 @@ interface AndhraLocationSelectorProps {
   value?: AndhraLocationSelection;
   onChange: (selection: AndhraLocationSelection) => void;
   label?: boolean;
+  includeVillage?: boolean;
 }
 
 type Level = "district" | "subdistrict" | "village";
@@ -42,6 +43,7 @@ export default function AndhraLocationSelector({
   value = emptySelection,
   onChange,
   label = true,
+  includeVillage = true,
 }: AndhraLocationSelectorProps) {
   const [selection, setSelection] = useState<AndhraLocationSelection>(value);
   const [activeLevel, setActiveLevel] = useState<Level | null>(null);
@@ -247,7 +249,7 @@ export default function AndhraLocationSelector({
       )}
       {field("district")}
       {field("subdistrict", !selection.district)}
-      {field("village", !selection.subdistrict)}
+      {includeVillage && field("village", !selection.subdistrict)}
     </div>
   );
 }
