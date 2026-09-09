@@ -13,6 +13,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: "http://billa-195115925.ap-south-2.elb.amazonaws.com/api/v1/:path*",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
