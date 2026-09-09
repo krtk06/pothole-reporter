@@ -17,7 +17,7 @@ const nextConfig = {
     return [
       {
         source: "/api/v1/:path*",
-        destination: "https://pothole-reporter-api-zxzt.onrender.com/api/v1/:path*",
+        destination: "http://32.199.22.201:4000/api/v1/:path*",
       },
     ];
   },
