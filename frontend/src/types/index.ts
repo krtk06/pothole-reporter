@@ -85,3 +85,27 @@ export interface AdministrativeArea {
   bbox?: MapBoundingBox | null;
   boundary?: unknown | null;
 }
+
+export interface TenderSyncConfig {
+  id: string;
+  target_url: string;
+  api_key: string;
+  sync_interval_days: number;
+  is_enabled: boolean;
+  last_sync_at: string | null;
+  next_sync_at: string | null;
+  last_sync_status: string;
+  last_sync_message: string | null;
+  updated_at: string;
+}
+
+export interface TenderSyncLog {
+  id: string;
+  synced_at: string;
+  potholes_count: number;
+  tenders_count: number;
+  status: "success" | "failed";
+  response_status: number | null;
+  error_message: string | null;
+  triggered_by: string;
+}

@@ -51,6 +51,19 @@ export default function PublicMiniMap({
       const L = await import("leaflet");
       if (cancelled || !container || (container as any)._leaflet_id) return;
 
+      if (L && L.DomUtil && !(L.DomUtil as any)._patched_pos) {
+        (L.DomUtil as any)._patched_pos = true;
+        const origGetPos = L.DomUtil.getPosition;
+        L.DomUtil.getPosition = function (el: any) {
+          if (!el) return new L.Point(0, 0);
+          try {
+            return origGetPos ? origGetPos.call(L.DomUtil, el) : (el._leaflet_pos || new L.Point(0, 0));
+          } catch {
+            return el?._leaflet_pos || new L.Point(0, 0);
+          }
+        };
+      }
+
       // Compute initial view from bounds if provided
       let initialCenter: [number, number] = center;
       let initialZoom = zoom;
@@ -65,6 +78,7 @@ export default function PublicMiniMap({
         zoomControl: true,
         attributionControl: false,
         scrollWheelZoom: false,
+        zoomAnimation: false,
         minZoom: 7,
         maxZoom: 18,
       }).setView(initialCenter, initialZoom);

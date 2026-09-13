@@ -148,6 +148,28 @@ class ApiClient {
     });
   }
 
+  async getTenderSyncConfig() {
+    return this.fetch("/admin/tender-sync");
+  }
+
+  async updateTenderSyncConfig(data: {
+    target_url?: string;
+    api_key?: string;
+    sync_interval_days?: number;
+    is_enabled?: boolean;
+  }) {
+    return this.fetch("/admin/tender-sync", {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async triggerTenderSync() {
+    return this.fetch("/admin/tender-sync/trigger", {
+      method: "POST",
+    });
+  }
+
   async updateReportStatus(id: string, status: "pending" | "verified" | "rejected" | "fixed") {
     return this.fetch(`/admin/reports/${id}`, {
       method: "PATCH",

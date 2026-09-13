@@ -6,14 +6,17 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   MapPin, FileText, DollarSign, Loader2, Filter,
   CheckCircle, XCircle, Clock, RefreshCw, Shield,
-  Check, X, ChevronRight, Map, Users, AlertTriangle
+  Check, X, ChevronRight, Map, Users, AlertTriangle,
+  Send, ExternalLink, Key, Eye, EyeOff, Calendar, Save, Play, CheckCheck, Globe
 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api, ApiError } from "@/lib/api";
-import { AdminReport, Tender, MapCluster, PublicPothole } from "@/types";
+import { AdminReport, Tender, MapCluster, PublicPothole, TenderSyncConfig, TenderSyncLog } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -98,6 +101,19 @@ export default function AdminDashboard() {
   const [successMsg, setSuccessMsg] = useState("");
   const [scopeArea, setScopeArea] = useState<AdministrativeArea | null>(null);
 
+  // Tender Sync State
+  const [syncConfig, setSyncConfig] = useState<TenderSyncConfig | null>(null);
+  const [syncLogs, setSyncLogs] = useState<TenderSyncLog[]>([]);
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [syncTriggering, setSyncTriggering] = useState(false);
+  const [syncSaving, setSyncSaving] = useState(false);
+  const [targetUrl, setTargetUrl] = useState("http://localhost:3001/api/sync");
+  const [apiKey, setApiKey] = useState("");
+  const [intervalDays, setIntervalDays] = useState(15);
+  const [isEnabled, setIsEnabled] = useState(true);
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
@@ -180,6 +196,7 @@ export default function AdminDashboard() {
 
       setPublicPotholes(mapReports);
       setClusters(mapData.blockDensity || []);
+      void fetchSyncConfig();
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 401) {
         void logout().finally(() => router.push("/"));
@@ -220,6 +237,81 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchSyncConfig = async () => {
+    setSyncLoading(true);
+    try {
+      const data = await api.getTenderSyncConfig();
+      if (data?.settings) {
+        setSyncConfig(data.settings);
+        setTargetUrl(data.settings.target_url || "http://localhost:3001/api/sync");
+        setApiKey(data.settings.api_key || "");
+        setIntervalDays(data.settings.sync_interval_days || 15);
+        setIsEnabled(data.settings.is_enabled ?? true);
+      }
+      if (data?.logs) {
+        setSyncLogs(data.logs);
+      }
+    } catch (err) {
+      console.error("Failed to load tender sync config", err);
+    } finally {
+      setSyncLoading(false);
+    }
+  };
+
+  const handleSaveSyncConfig = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSyncSaving(true);
+    setSyncFeedback(null);
+    try {
+      const res = await api.updateTenderSyncConfig({
+        target_url: targetUrl,
+        api_key: apiKey,
+        sync_interval_days: Number(intervalDays),
+        is_enabled: isEnabled,
+      });
+      setSyncConfig(res.settings);
+      setSyncFeedback({ type: "success", text: "Tender sync settings updated successfully!" });
+      setTimeout(() => setSyncFeedback(null), 4000);
+    } catch (err: any) {
+      setSyncFeedback({ type: "error", text: err.message || "Failed to save settings." });
+    } finally {
+      setSyncSaving(false);
+    }
+  };
+
+  const handleTriggerSync = async () => {
+    setSyncTriggering(true);
+    setSyncFeedback(null);
+    try {
+      const res = await api.triggerTenderSync();
+      if (res.success) {
+        setSyncFeedback({
+          type: "success",
+          text: `Sync dispatched! ${res.potholes_count} potholes & ${res.tenders_count} tenders sent to tender website.`,
+        });
+      } else {
+        setSyncFeedback({
+          type: "error",
+          text: res.message || "Sync failed. Please ensure the tender website is running.",
+        });
+      }
+      await fetchSyncConfig();
+    } catch (err: any) {
+      setSyncFeedback({ type: "error", text: err.message || "Failed to initiate sync." });
+    } finally {
+      setSyncTriggering(false);
+    }
+  };
+
+  const handleGenerateApiKey = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+    let key = "tndr_";
+    for (let i = 0; i < 32; i++) {
+      key += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setApiKey(key);
+  };
+
   const filteredReports = statusFilter === "all"
     ? reports
     : reports.filter((r) => r.status === statusFilter);
@@ -250,6 +342,16 @@ export default function AdminDashboard() {
           <ScopeLabel user={user} />
         </div>
         <div className="flex items-center gap-3">
+          <a
+            href="http://localhost:3001"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg transition-colors font-medium"
+            title="Open dedicated Tender & Contractor Website"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Tender Website</span> ↗
+          </a>
           <span className="text-sm text-[var(--color-text-secondary)] hidden sm:block">{user.name}</span>
           <ThemeToggle />
           <Button variant="ghost" size="sm" onClick={() => { void logout().finally(() => router.push("/")); }} className="text-[var(--color-text-secondary)]">
@@ -293,6 +395,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="map"><Map className="w-4 h-4 mr-2" />Map View</TabsTrigger>
             <TabsTrigger value="reports"><FileText className="w-4 h-4 mr-2" />Reports</TabsTrigger>
             <TabsTrigger value="tenders"><DollarSign className="w-4 h-4 mr-2" />Tenders</TabsTrigger>
+            <TabsTrigger value="integration"><Send className="w-4 h-4 mr-2" />Tender Sync (15–30 Days)</TabsTrigger>
           </TabsList>
 
           {/* MAP TAB */}
@@ -514,6 +617,359 @@ export default function AdminDashboard() {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          {/* TENDER INTEGRATION & SCHEDULER TAB */}
+          <TabsContent value="integration">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-[var(--color-heading)] flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-amber-500" />
+                  Tender Website Integration & Periodic Sync
+                </h2>
+                <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                  Automatically export verified potholes, high-res photos, and GPS coordinates to the contractor tender website via API key every 15 to 30 days.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={fetchSyncConfig}
+                  disabled={syncLoading}
+                  className="text-xs border-[var(--color-border)]"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${syncLoading ? "animate-spin" : ""}`} />
+                  Refresh
+                </Button>
+                <a
+                  href="http://localhost:3001"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs bg-amber-500 hover:bg-amber-600 text-black font-semibold px-3 py-2 rounded-lg transition-colors shadow-sm"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Open Tender Website
+                </a>
+              </div>
+            </div>
+
+            {/* Notification alert */}
+            {syncFeedback && (
+              <div
+                className={`mb-6 p-4 rounded-xl border flex items-center justify-between ${
+                  syncFeedback.type === "success"
+                    ? "bg-green-900/30 border-green-500/40 text-green-300"
+                    : "bg-red-900/30 border-red-500/40 text-red-300"
+                }`}
+              >
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  {syncFeedback.type === "success" ? <CheckCircle className="w-4 h-4 text-green-400" /> : <AlertTriangle className="w-4 h-4 text-red-400" />}
+                  <span>{syncFeedback.text}</span>
+                </div>
+                <button
+                  onClick={() => setSyncFeedback(null)}
+                  className="text-xs opacity-70 hover:opacity-100"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            {/* Status Summary Banner */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
+                <p className="text-xs text-[var(--color-text-secondary)] mb-1">Integration Status</p>
+                <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${isEnabled ? "bg-green-500 animate-pulse" : "bg-zinc-500"}`} />
+                  <span className="font-semibold text-[var(--color-heading)]">{isEnabled ? "Active & Scheduled" : "Sync Disabled"}</span>
+                </div>
+              </Card>
+              <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
+                <p className="text-xs text-[var(--color-text-secondary)] mb-1">Sync Cycle</p>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-blue-400" />
+                  <span className="font-semibold text-[var(--color-heading)]">Every {intervalDays} Days</span>
+                </div>
+              </Card>
+              <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
+                <p className="text-xs text-[var(--color-text-secondary)] mb-1">Next Scheduled Dispatch</p>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-400" />
+                  <span className="font-semibold text-[var(--color-heading)] text-sm">
+                    {syncConfig?.next_sync_at
+                      ? new Date(syncConfig.next_sync_at).toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })
+                      : "Pending setup"}
+                  </span>
+                </div>
+              </Card>
+              <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
+                <p className="text-xs text-[var(--color-text-secondary)] mb-1">Last Sync Result</p>
+                <div className="flex items-center gap-2">
+                  <Badge variant={syncConfig?.last_sync_status === "success" ? "default" : syncConfig?.last_sync_status === "failed" ? "destructive" : "secondary"}>
+                    {syncConfig?.last_sync_status === "success" ? "Delivered" : syncConfig?.last_sync_status === "failed" ? "Failed" : "Idle"}
+                  </Badge>
+                  {syncConfig?.last_sync_at && (
+                    <span className="text-xs text-[var(--color-text-secondary)]">
+                      {new Date(syncConfig.last_sync_at).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              {/* Configuration Form (Left 2 cols) */}
+              <Card className="lg:col-span-2 p-6 bg-[var(--color-surface)] border-[var(--color-border)]">
+                <div className="flex items-center justify-between mb-4 border-b border-[var(--color-border)] pb-3">
+                  <div>
+                    <h3 className="font-semibold text-[var(--color-heading)]">Configuration & Schedule</h3>
+                    <p className="text-xs text-[var(--color-text-secondary)]">Configure destination tender API endpoint, security credentials, and frequency.</p>
+                  </div>
+                  <Badge variant="outline" className="text-xs font-mono">Admin Managed</Badge>
+                </div>
+
+                <form onSubmit={handleSaveSyncConfig} className="space-y-5">
+                  <div>
+                    <Label htmlFor="targetUrl" className="text-xs text-[var(--color-text-secondary)] mb-1.5 block">
+                      Tender Website Ingestion Endpoint URL
+                    </Label>
+                    <Input
+                      id="targetUrl"
+                      type="url"
+                      value={targetUrl}
+                      onChange={(e) => setTargetUrl(e.target.value)}
+                      placeholder="http://localhost:3001/api/sync"
+                      required
+                      className="bg-[var(--color-bg)] border-[var(--color-border)] text-sm font-mono"
+                    />
+                    <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
+                      The tender portal route that accepts HTTP POST with JSON pothole & tender payload.
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <Label htmlFor="apiKey" className="text-xs text-[var(--color-text-secondary)]">
+                        API Key (Authentication Secret)
+                      </Label>
+                      <button
+                        type="button"
+                        onClick={handleGenerateApiKey}
+                        className="text-[11px] text-amber-500 hover:text-amber-400 underline font-medium"
+                      >
+                        Generate New Key
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <Input
+                        id="apiKey"
+                        type={showApiKey ? "text" : "password"}
+                        value={apiKey}
+                        onChange={(e) => setApiKey(e.target.value)}
+                        placeholder="Enter secret API key shared with tender website"
+                        required
+                        className="bg-[var(--color-bg)] border-[var(--color-border)] text-sm font-mono pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKey(!showApiKey)}
+                        className="absolute right-3 top-2.5 text-[var(--color-text-secondary)] hover:text-[var(--color-heading)]"
+                      >
+                        {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
+                      Sent in the <code className="bg-[var(--color-muted)] px-1 rounded">X-API-Key</code> request header. The tender website verifies this key before accepting any pothole batch.
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs text-[var(--color-text-secondary)] mb-2 block">
+                      Automatic Sync Frequency (Between 15 and 30 Days)
+                    </Label>
+                    <div className="flex items-center gap-2 mb-3">
+                      {[15, 20, 25, 30].map((days) => (
+                        <button
+                          key={days}
+                          type="button"
+                          onClick={() => setIntervalDays(days)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                            intervalDays === days
+                              ? "bg-[var(--color-text-primary)] text-[var(--color-bg)] border-[var(--color-text-primary)] font-bold"
+                              : "bg-[var(--color-bg)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:border-[var(--color-text-primary)]/50"
+                          }`}
+                        >
+                          Every {days} Days
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-4 bg-[var(--color-bg)] p-3 rounded-lg border border-[var(--color-border)]">
+                      <input
+                        type="range"
+                        min="15"
+                        max="30"
+                        step="1"
+                        value={intervalDays}
+                        onChange={(e) => setIntervalDays(Number(e.target.value))}
+                        className="flex-1 accent-amber-500 cursor-pointer"
+                      />
+                      <span className="font-mono text-sm font-semibold text-[var(--color-heading)] min-w-[70px] text-right">
+                        {intervalDays} Days
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={isEnabled}
+                        onChange={(e) => setIsEnabled(e.target.checked)}
+                        className="rounded border-[var(--color-border)] accent-amber-500 w-4 h-4"
+                      />
+                      <span className="text-sm font-medium text-[var(--color-heading)]">
+                        Enable Automated Background Scheduling
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="pt-3 border-t border-[var(--color-border)] flex items-center justify-between">
+                    <Button
+                      type="submit"
+                      disabled={syncSaving}
+                      className="bg-amber-500 hover:bg-amber-600 text-black font-semibold h-9 px-4 text-xs rounded-lg"
+                    >
+                      {syncSaving ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-3.5 h-3.5 mr-1.5" />
+                          Save Configuration
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-[var(--color-text-secondary)]">Changes apply immediately to scheduler.</p>
+                  </div>
+                </form>
+              </Card>
+
+              {/* Actions & Dispatch Panel (Right 1 col) */}
+              <div className="space-y-4">
+                <Card className="p-5 bg-[var(--color-surface)] border-[var(--color-border)] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 text-amber-400">
+                      <Play className="w-4 h-4" />
+                      <h4 className="font-semibold text-sm text-[var(--color-heading)]">Manual Trigger</h4>
+                    </div>
+                    <p className="text-xs text-[var(--color-text-secondary)] mb-4 leading-relaxed">
+                      Need to dispatch immediately without waiting for the 15–30 day timer? Trigger an instant sync to push all current verified potholes and tenders to the tender website now.
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={handleTriggerSync}
+                    disabled={syncTriggering}
+                    className="w-full bg-[var(--color-text-primary)] text-[var(--color-bg)] font-semibold h-10 rounded-lg text-xs hover:opacity-90"
+                  >
+                    {syncTriggering ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        Transmitting Payload...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Sync Now to Tender Website
+                      </>
+                    )}
+                  </Button>
+                </Card>
+
+                <Card className="p-5 bg-[var(--color-surface)] border-[var(--color-border)]">
+                  <div className="flex items-center gap-2 mb-2 text-blue-400">
+                    <Globe className="w-4 h-4" />
+                    <h4 className="font-semibold text-sm text-[var(--color-heading)]">What Gets Sent</h4>
+                  </div>
+                  <ul className="text-xs text-[var(--color-text-secondary)] space-y-2 mt-2 list-disc list-inside">
+                    <li><strong className="text-[var(--color-heading)]">Verified Potholes:</strong> GPS latitude & longitude coordinates.</li>
+                    <li><strong className="text-[var(--color-heading)]">Visual Evidence:</strong> Presigned photo download URLs.</li>
+                    <li><strong className="text-[var(--color-heading)]">Tender Packages:</strong> Pothole cluster counts & estimated budgets (₹).</li>
+                    <li><strong className="text-[var(--color-heading)]">Location:</strong> Mandals, blocks, and road notes.</li>
+                  </ul>
+                </Card>
+              </div>
+            </div>
+
+            {/* Sync Audit Logs Table */}
+            <Card className="p-6 bg-[var(--color-surface)] border-[var(--color-border)]">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div>
+                  <h3 className="font-semibold text-[var(--color-heading)] text-sm">Sync Audit Logs</h3>
+                  <p className="text-xs text-[var(--color-text-secondary)]">History of periodic and manual transmissions to the tender website</p>
+                </div>
+                <Badge variant="outline" className="text-xs font-mono">{syncLogs.length} Records</Badge>
+              </div>
+
+              {syncLogs.length === 0 ? (
+                <div className="text-center py-10 border border-dashed border-[var(--color-border)] rounded-xl">
+                  <Clock className="w-8 h-8 mx-auto mb-2 text-[var(--color-text-secondary)] opacity-40" />
+                  <p className="text-xs text-[var(--color-text-secondary)]">No sync transmissions logged yet.</p>
+                  <p className="text-[11px] text-[var(--color-text-secondary)] opacity-70 mt-0.5">Click &ldquo;Sync Now&rdquo; above to run the initial transmission.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-[var(--color-border)] text-[var(--color-text-secondary)]">
+                        <th className="py-2.5 px-3 font-medium">Timestamp</th>
+                        <th className="py-2.5 px-3 font-medium">Trigger Source</th>
+                        <th className="py-2.5 px-3 font-medium">Potholes Sent</th>
+                        <th className="py-2.5 px-3 font-medium">Tenders Sent</th>
+                        <th className="py-2.5 px-3 font-medium">Status</th>
+                        <th className="py-2.5 px-3 font-medium">HTTP Code</th>
+                        <th className="py-2.5 px-3 font-medium">Details</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--color-border)]">
+                      {syncLogs.map((log) => (
+                        <tr key={log.id} className="hover:bg-[var(--color-muted)]/50 transition-colors">
+                          <td className="py-3 px-3 font-mono text-[var(--color-heading)]">
+                            {new Date(log.synced_at).toLocaleString()}
+                          </td>
+                          <td className="py-3 px-3 font-mono">
+                            <span className="bg-[var(--color-muted)] px-2 py-0.5 rounded text-[11px]">
+                              {log.triggered_by}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 font-semibold text-[var(--color-heading)]">{log.potholes_count}</td>
+                          <td className="py-3 px-3 font-semibold text-[var(--color-heading)]">{log.tenders_count}</td>
+                          <td className="py-3 px-3">
+                            <Badge variant={log.status === "success" ? "default" : "destructive"}>
+                              {log.status === "success" ? "Success" : "Failed"}
+                            </Badge>
+                          </td>
+                          <td className="py-3 px-3 font-mono text-[var(--color-text-secondary)]">
+                            {log.response_status ? log.response_status : "—"}
+                          </td>
+                          <td className="py-3 px-3 text-[var(--color-text-secondary)] max-w-xs truncate">
+                            {log.error_message || "Payload delivered successfully"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </Card>
           </TabsContent>
         </Tabs>
       </main>

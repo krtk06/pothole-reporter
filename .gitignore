@@ -63,3 +63,13 @@ coverage/
 
 # TypeScript build info
 tsconfig.tsbuildinfo
+
+# Owner policy: markdown files are never committed (tracked README.md exempt)
+*.md
+!README.md
+
+# Windows ADS junk files
+*:Zone.Identifier
+
+# Tender website runtime data store (auto-seeded on first run)
+tender-website/data/tenders.json

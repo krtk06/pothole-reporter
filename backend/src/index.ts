@@ -104,8 +104,11 @@ app.get("/api/health", async (_req, res) => {
   }
 });
 
+import { startTenderScheduler, stopTenderScheduler } from "./services/tenderScheduler";
+
 async function shutdown(signal: string) {
   logger.info({ signal }, "Shutting down");
+  stopTenderScheduler();
   await prisma.$disconnect();
   process.exit(0);
 }
@@ -119,6 +122,7 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 
 app.listen(PORT, () => {
   logger.info(`Backend running on http://localhost:${PORT}`);
+  startTenderScheduler();
 });
 
 export default app;

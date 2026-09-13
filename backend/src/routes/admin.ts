@@ -287,4 +287,48 @@ router.patch("/tenders/:id", validate(updateTenderSchema), async (req: Authentic
   }
 });
 
+// ─── TENDER WEBSITE SYNC & SCHEDULING (ADMIN ONLY) ──────────────────────────
+
+const updateSyncConfigSchema = z.object({
+  target_url: z.string().url().optional(),
+  api_key: z.string().min(6).optional(),
+  sync_interval_days: z.number().int().min(15).max(30).optional(),
+  is_enabled: z.boolean().optional(),
+});
+
+router.get("/tender-sync", async (_req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { getTenderSyncConfig } = await import("../services/tenderSyncService");
+    const data = await getTenderSyncConfig();
+    res.json(data);
+  } catch (err: any) {
+    logger.error({ err }, "Fetch tender sync config error");
+    res.status(500).json({ error: "Failed to fetch tender sync configuration" });
+  }
+});
+
+router.put("/tender-sync", validate(updateSyncConfigSchema), async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { updateTenderSyncConfig } = await import("../services/tenderSyncService");
+    const updated = await updateTenderSyncConfig(req.body);
+    logger.info({ adminId: req.user?.userId, config: req.body }, "Tender sync settings updated");
+    res.json({ settings: updated });
+  } catch (err: any) {
+    logger.error({ err }, "Update tender sync config error");
+    res.status(500).json({ error: "Failed to update tender sync configuration" });
+  }
+});
+
+router.post("/tender-sync/trigger", async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { performTenderSync } = await import("../services/tenderSyncService");
+    const adminIdentifier = req.user?.userId || "admin";
+    const result = await performTenderSync(`admin:${adminIdentifier}`);
+    res.json(result);
+  } catch (err: any) {
+    logger.error({ err }, "Trigger tender sync error");
+    res.status(500).json({ error: "Failed to perform tender sync" });
+  }
+});
+
 export default router;

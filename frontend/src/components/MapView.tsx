@@ -13,6 +13,19 @@ const shadowUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({ iconUrl, iconRetinaUrl, shadowUrl });
 
+// Guard against unmounted pane position errors (_leaflet_pos)
+if (typeof window !== "undefined" && L && L.DomUtil) {
+  const origGetPos = L.DomUtil.getPosition;
+  L.DomUtil.getPosition = function (el: any) {
+    if (!el) return new L.Point(0, 0);
+    try {
+      return origGetPos ? origGetPos.call(L.DomUtil, el) : (el._leaflet_pos || new L.Point(0, 0));
+    } catch {
+      return el?._leaflet_pos || new L.Point(0, 0);
+    }
+  };
+}
+
 const STATUS_COLORS: Record<string, string> = {
   verified: "#22c55e",
   pending: "#f59e0b",
@@ -35,8 +48,10 @@ function BoundsController({ bounds }: { bounds: MapBoundingBox }) {
       [bounds.south, bounds.west],
       [bounds.north, bounds.east]
     );
-    map.fitBounds(leafletBounds, { padding: [20, 20] });
-    map.setMaxBounds(leafletBounds.pad(0.1));
+    try {
+      map.fitBounds(leafletBounds, { padding: [20, 20], animate: false });
+      map.setMaxBounds(leafletBounds.pad(0.1));
+    } catch {}
   }, [bounds, map]);
   return null;
 }
@@ -50,7 +65,9 @@ function ClusterMarkers({ clusters }: { clusters: MapCluster[] }) {
         clusters.map((c) => [c.avg_latitude, c.avg_longitude] as [number, number])
       );
       if (bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [50, 50] });
+        try {
+          map.fitBounds(bounds, { padding: [50, 50], animate: false });
+        } catch {}
       }
     }
   }, [clusters, map]);
@@ -130,6 +147,7 @@ export default function MapView({
         maxZoom={18}
         className="h-full w-full"
         zoomControl={true}
+        zoomAnimation={false}
         maxBoundsViscosity={bounds ? 0.9 : undefined}
       >
         <TileLayer
