@@ -258,6 +258,26 @@ export function ingestSyncPayload(payload: any, source: string = "pothole-report
   const incomingPotholes: Pothole[] = payload.potholes || [];
   const incomingTenders = payload.tenders || [];
 
+  // Withdrawal reconciliation: tenders marked "rejected" by the backend were
+  // withdrawn by an admin — remove them (and their bids) from the portal so a
+  // failed direct DELETE call heals on the next scheduled sync.
+  let withdrawnCount = 0;
+  const upsertCandidates = incomingTenders.filter((incT: any) => {
+    if (incT.status !== "rejected") return true;
+    const before = store.tenders.length;
+    store.tenders = store.tenders.filter(
+      t => !(t.id === incT.id || (incT.block_id && t.block_id === incT.block_id))
+    );
+    if (store.tenders.length !== before) withdrawnCount += 1;
+    return false;
+  });
+  const removedBids = withdrawnCount > 0
+    ? store.bids.filter(b => !store.tenders.some(t => t.id === b.tender_id))
+    : [];
+  if (removedBids.length > 0) {
+    store.bids = store.bids.filter(b => store.tenders.some(t => t.id === b.tender_id));
+  }
+
   // Group incoming potholes by block_id
   const potholesByBlock = new Map<string, Pothole[]>();
   for (const p of incomingPotholes) {
@@ -271,7 +291,7 @@ export function ingestSyncPayload(payload: any, source: string = "pothole-report
   // Merge or create tenders
   const updatedTenders: TenderItem[] = [...store.tenders];
 
-  for (const incT of incomingTenders) {
+  for (const incT of upsertCandidates) {
     const existingIndex = updatedTenders.findIndex(t => t.id === incT.id || t.block_id === incT.block_id);
     const blockPotholes = potholesByBlock.get(incT.block_id) || [];
     const { district, mandal } = parseBlockDistrictMandal(incT.block_id);
@@ -331,7 +351,8 @@ export function ingestSyncPayload(payload: any, source: string = "pothole-report
     source,
     triggered_by: payload.triggered_by || "api-dispatch",
     status: "success",
-    details: `Successfully ingested ${incomingPotholes.length} potholes & ${incomingTenders.length} tenders`,
+    details: `Ingested ${incomingPotholes.length} potholes & ${upsertCandidates.length} tenders` +
+      (withdrawnCount > 0 ? `; withdrew ${withdrawnCount} tender(s) and ${removedBids.length} bid(s)` : ""),
   };
 
   store.tenders = updatedTenders;
@@ -345,6 +366,55 @@ export function ingestSyncPayload(payload: any, source: string = "pothole-report
     received_potholes: incomingPotholes.length,
     received_tenders: incomingTenders.length,
   };
+}
+
+/**
+ * Removes a tender (and its bids) from the portal. Used by the backend's
+ * admin "unsend" flow: accepts a tender id or a block_id; at least one must
+ * be provided.
+ */
+export function withdrawTender(params: {
+  tender_id?: string;
+  block_id?: string;
+  triggered_by?: string;
+}): { success: boolean; removed: number; message?: string } {
+  if (!params.tender_id && !params.block_id) {
+    return { success: false, removed: 0, message: "Provide 'tender_id' or 'block_id'." };
+  }
+
+  const store = ensureDataFile();
+
+  const matches = store.tenders.filter(
+    t => (params.tender_id && t.id === params.tender_id) ||
+         (params.block_id && t.block_id === params.block_id)
+  );
+
+  if (matches.length === 0) {
+    return { success: false, removed: 0, message: "No matching tender found." };
+  }
+
+  const removedBids = store.bids.filter(b => matches.some(t => t.id === b.tender_id));
+  const removedPotholes = matches.reduce((sum, t) => sum + (t.potholes?.length || 0), 0);
+
+  store.tenders = store.tenders.filter(t => !matches.includes(t));
+  store.bids = store.bids.filter(b => !matches.some(t => t.id === b.tender_id));
+
+  const logEntry: SyncLogEntry = {
+    id: `withdraw-${Date.now()}`,
+    received_at: new Date().toISOString(),
+    potholes_count: removedPotholes,
+    tenders_count: matches.length,
+    source: "withdraw-api",
+    triggered_by: params.triggered_by || "backend-withdraw",
+    status: "rejected",
+    details: `Withdrew tender(s) ${matches.map(t => t.id).join(", ")} and ${removedBids.length} bid(s) from the portal`,
+  };
+  store.syncLogs.unshift(logEntry);
+  store.lastSyncAt = logEntry.received_at;
+
+  saveData(store);
+
+  return { success: true, removed: matches.length };
 }
 
 export function submitContractorBid(bid: Omit<ContractorBid, "id" | "submitted_at">): ContractorBid {

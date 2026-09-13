@@ -1,32 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTenderData, ingestSyncPayload } from "@/lib/tenderStore";
-
-const CONFIGURED_API_KEY = process.env.TENDER_API_KEY || "tender_portal_secret_key_2026";
-
-function extractApiKey(request: NextRequest): string | null {
-  const headerKey = request.headers.get("x-api-key");
-  if (headerKey) return headerKey.trim();
-
-  const authHeader = request.headers.get("authorization");
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    return authHeader.split(" ")[1].trim();
-  }
-
-  return null;
-}
+import { isAuthorized, UNAUTHORIZED_RESPONSE_BODY } from "@/lib/apiAuth";
 
 export async function POST(request: NextRequest) {
   try {
-    const providedKey = extractApiKey(request);
-
-    if (!providedKey || providedKey !== CONFIGURED_API_KEY) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized",
-          message: "Invalid or missing API key. Pass 'X-API-Key' or 'Authorization: Bearer <key>'.",
-        },
-        { status: 401 }
-      );
+    if (!isAuthorized(request)) {
+      return NextResponse.json(UNAUTHORIZED_RESPONSE_BODY, { status: 401 });
     }
 
     const payload = await request.json();
