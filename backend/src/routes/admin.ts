@@ -5,7 +5,6 @@ import { requireAdmin } from "../middleware/rbac";
 import { validate } from "../middleware/validate";
 import prisma from "../config/database";
 import logger from "../config/logger";
-import { getTenders } from "../services/tenderService";
 import { generatePresignedDownloadUrl } from "../services/s3Service";
 import { AuthenticatedRequest } from "../types";
 
@@ -17,36 +16,75 @@ const statusFilterSchema = z.object({
   status: z.enum(["pending", "verified", "rejected", "fixed"]).optional(),
 });
 
-/** Build scope prefix string for tender filtering */
+/** Build scope prefix string for tender filtering.
+ * Returns null when the admin's jurisdiction cannot be resolved — callers must
+ * fail closed (no data) in that case. */
 function getScopePrefix(req: AuthenticatedRequest): string | null {
   const scope = req.user?.admin_scope;
   const state = req.user?.admin_state;
   const district = req.user?.admin_district;
   const mandal = req.user?.admin_mandal;
 
-  if (!scope || !state) return null;
-
-  if (scope === "mandal" && district && mandal) {
-    return `${state.toLowerCase()}/${district.toLowerCase()}/${mandal.toLowerCase()}`;
-  } else if (scope === "district" && district) {
-    return `${state.toLowerCase()}/${district.toLowerCase()}`;
+  if (!scope || !state) {
+    logger.warn(
+      { adminId: req.user?.userId, admin_scope: scope },
+      "Admin jurisdiction unresolved — failing closed (no data)"
+    );
+    return null;
   }
-  return state.toLowerCase();
+
+  const statePrefix = state.toLowerCase();
+
+  if (scope === "mandal") {
+    if (!district || !mandal) {
+      logger.warn({ adminId: req.user?.userId }, "Mandal admin missing district/mandal — failing closed");
+      return null;
+    }
+    return `${statePrefix}/${district.toLowerCase()}/${mandal.toLowerCase()}`;
+  } else if (scope === "district") {
+    if (!district) {
+      logger.warn({ adminId: req.user?.userId }, "District admin missing district — failing closed");
+      return null;
+    }
+    return `${statePrefix}/${district.toLowerCase()}`;
+  }
+  return statePrefix;
 }
 
 function getScopeCondition(scopePrefix: string | null, column: string, parameterIndex: number) {
-  if (!scopePrefix) return { clause: "", params: [] as string[] };
+  // Fail closed: an unresolved jurisdiction matches nothing
+  if (!scopePrefix) return { clause: "1 = 0", params: [] as string[] };
   return {
     clause: `(${column} = $${parameterIndex} OR ${column} LIKE $${parameterIndex + 1})`,
     params: [scopePrefix, `${scopePrefix}/%`],
   };
 }
 
+/** Fail-closed scope condition derived straight from the request. */
+function getScopeConditionForRequest(req: AuthenticatedRequest, column: string, parameterIndex: number) {
+  return getScopeCondition(getScopePrefix(req), column, parameterIndex);
+}
+
+/** Prisma where-clause limiting tenders to the admin's jurisdiction; empty set when unresolved. */
+function getPrismaScopeWhere(req: AuthenticatedRequest): any {
+  const scopePrefix = getScopePrefix(req);
+  if (!scopePrefix) return { block_id: { in: [] } };
+  return {
+    OR: [
+      { block_id: scopePrefix },
+      { block_id: { startsWith: `${scopePrefix}/` } },
+    ],
+  };
+}
+
+function isStateScopeAdmin(req: AuthenticatedRequest): boolean {
+  return req.user?.admin_scope === "state";
+}
+
 router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
   try {
     const parsed = statusFilterSchema.safeParse(req.query);
     const status = parsed.success ? parsed.data.status : undefined;
-    const scopePrefix = getScopePrefix(req);
 
     let conditions: string[] = [];
     let params: any[] = [];
@@ -58,12 +96,11 @@ router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
       paramIdx++;
     }
 
-    if (scopePrefix) {
-      const scopeCondition = getScopeCondition(scopePrefix, "p.block_id", paramIdx);
-      conditions.push(scopeCondition.clause);
-      params.push(...scopeCondition.params);
-      paramIdx += 2;
-    }
+    // Always apply scope (fails closed when the jurisdiction is unresolved)
+    const scopeCondition = getScopeConditionForRequest(req, "p.block_id", paramIdx);
+    conditions.push(scopeCondition.clause);
+    params.push(...scopeCondition.params);
+    paramIdx += 2;
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
@@ -117,7 +154,7 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
       return;
     }
     const id = idResult.data;
-    const scopeCondition = getScopeCondition(getScopePrefix(req), "block_id", 3);
+    const scopeCondition = getScopeConditionForRequest(req, "block_id", 3);
 
     const result: any[] = await prisma.$queryRawUnsafe(`
       UPDATE potholes
@@ -141,16 +178,15 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
 
 router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const scopePrefix = getScopePrefix(req);
+    const scopeCondition = getScopeConditionForRequest(req, "p.block_id", 1);
+    const densityScopeCondition = getScopeConditionForRequest(req, "block_id", 1);
 
     let conditions = [`p.status = 'verified'`];
     let params: any[] = [];
 
-    if (scopePrefix) {
-      const scopeCondition = getScopeCondition(scopePrefix, "p.block_id", 1);
-      conditions.push(scopeCondition.clause);
-      params.push(...scopeCondition.params);
-    }
+    // Always apply scope (fails closed when the jurisdiction is unresolved)
+    conditions.push(scopeCondition.clause);
+    params.push(...scopeCondition.params);
 
     const whereClause = `WHERE ${conditions.join(" AND ")}`;
 
@@ -186,11 +222,8 @@ router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => 
     let densityConditions = [`status = 'verified'`, `block_id IS NOT NULL`];
     let densityParams: any[] = [];
 
-    if (scopePrefix) {
-      const scopeCondition = getScopeCondition(scopePrefix, "block_id", 1);
-      densityConditions.push(scopeCondition.clause);
-      densityParams.push(...scopeCondition.params);
-    }
+    densityConditions.push(densityScopeCondition.clause);
+    densityParams.push(...densityScopeCondition.params);
 
     const densityWhere = `WHERE ${densityConditions.join(" AND ")}`;
 
@@ -223,7 +256,7 @@ router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => 
 router.get("/tenders", async (req: AuthenticatedRequest, res: Response) => {
   try {
     const scopePrefix = getScopePrefix(req);
-    let tenders;
+    let tenders: any[];
 
     if (scopePrefix) {
       tenders = await prisma.tender.findMany({
@@ -236,7 +269,8 @@ router.get("/tenders", async (req: AuthenticatedRequest, res: Response) => {
         orderBy: { generated_at: "desc" },
       });
     } else {
-      tenders = await getTenders();
+      // Fail closed: unresolved jurisdiction sees no tenders
+      tenders = [];
     }
 
     res.json({ tenders });
@@ -258,15 +292,7 @@ router.patch("/tenders/:id", validate(updateTenderSchema), async (req: Authentic
       return res.status(400).json({ error: "Invalid tender ID" });
     }
     const id = idResult.data;
-    const scopePrefix = getScopePrefix(req);
-    const scopeWhere = scopePrefix
-      ? {
-          OR: [
-            { block_id: scopePrefix },
-            { block_id: { startsWith: `${scopePrefix}/` } },
-          ],
-        }
-      : {};
+    const scopeWhere = getPrismaScopeWhere(req);
 
     const updateResult = await prisma.tender.updateMany({
       where: { id, ...scopeWhere },
@@ -314,15 +340,7 @@ router.post("/tenders/:id/withdraw", async (req: AuthenticatedRequest, res: Resp
       return res.status(400).json({ error: "Invalid tender ID" });
     }
     const id = idResult.data;
-    const scopePrefix = getScopePrefix(req);
-    const scopeWhere = scopePrefix
-      ? {
-          OR: [
-            { block_id: scopePrefix },
-            { block_id: { startsWith: `${scopePrefix}/` } },
-          ],
-        }
-      : {};
+    const scopeWhere = getPrismaScopeWhere(req);
 
     const tender = await prisma.tender.findFirst({ where: { id, ...scopeWhere } });
     if (!tender) {
@@ -405,8 +423,11 @@ const updateSyncConfigSchema = z.object({
   is_enabled: z.boolean().optional(),
 });
 
-router.get("/tender-sync", async (_req: AuthenticatedRequest, res: Response) => {
+router.get("/tender-sync", async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (!isStateScopeAdmin(req)) {
+      return res.status(403).json({ error: "Tender sync is managed by state-level admins only" });
+    }
     const { getTenderSyncConfig } = await import("../services/tenderSyncService");
     const data = await getTenderSyncConfig();
     res.json(data);
@@ -418,6 +439,9 @@ router.get("/tender-sync", async (_req: AuthenticatedRequest, res: Response) => 
 
 router.put("/tender-sync", validate(updateSyncConfigSchema), async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (!isStateScopeAdmin(req)) {
+      return res.status(403).json({ error: "Tender sync is managed by state-level admins only" });
+    }
     const { updateTenderSyncConfig } = await import("../services/tenderSyncService");
     const updated = await updateTenderSyncConfig(req.body);
     logger.info({ adminId: req.user?.userId, config: req.body }, "Tender sync settings updated");
@@ -430,6 +454,9 @@ router.put("/tender-sync", validate(updateSyncConfigSchema), async (req: Authent
 
 router.post("/tender-sync/trigger", async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (!isStateScopeAdmin(req)) {
+      return res.status(403).json({ error: "Tender sync is managed by state-level admins only" });
+    }
     const { performTenderSync } = await import("../services/tenderSyncService");
     const adminIdentifier = req.user?.userId || "admin";
     const result = await performTenderSync(`admin:${adminIdentifier}`);

@@ -87,6 +87,7 @@ function ScopeLabel({ user }: { user: any }) {
 
 export default function AdminDashboard() {
   const { user, logout } = useStore();
+  const isStateAdmin = user?.admin_scope === "state";
   const router = useRouter();
   const [reports, setReports] = useState<AdminReport[]>([]);
   const [tenders, setTenders] = useState<Tender[]>([]);
@@ -664,6 +665,18 @@ export default function AdminDashboard() {
 
           {/* TENDER INTEGRATION & SCHEDULER TAB */}
           <TabsContent value="integration">
+            {!isStateAdmin && (
+              <div className="mb-6 p-4 rounded-xl border border-amber-500/40 bg-amber-900/20 flex items-start gap-3">
+                <Shield className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-amber-400">State admin access only</p>
+                  <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                    Tender website integration, API keys and the 15–30 day sync schedule are managed exclusively by state-level administrators. Your jurisdiction (mandal/district) does not include this configuration.
+                  </p>
+                </div>
+              </div>
+            )}
+            {isStateAdmin && (<>
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
               <div>
                 <h2 className="text-lg font-semibold text-[var(--color-heading)] flex items-center gap-2">
@@ -1013,6 +1026,7 @@ export default function AdminDashboard() {
                 </div>
               )}
             </Card>
+            </>)}
           </TabsContent>
         </Tabs>
       </main>
