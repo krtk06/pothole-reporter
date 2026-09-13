@@ -26,8 +26,11 @@ export interface TenderSyncLog {
   triggered_by: string;
 }
 
+// Bootstrap defaults for the tender sync settings row; no hardcoded secrets —
+// when TENDER_API_KEY is unset the row starts with an empty key and every
+// push/sync reports a configuration error until it is provided.
 const DEFAULT_TARGET_URL = process.env.TENDER_WEBSITE_URL || "http://localhost:3001/api/sync";
-const DEFAULT_API_KEY = process.env.TENDER_API_KEY || "tender_portal_secret_key_2026";
+const DEFAULT_API_KEY = process.env.TENDER_API_KEY || "";
 const DEFAULT_INTERVAL_DAYS = 15;
 
 let tablesInitialized = false;
@@ -40,7 +43,7 @@ export async function ensureTenderSyncTablesExist(): Promise<void> {
       CREATE TABLE IF NOT EXISTS tender_sync_settings (
         id VARCHAR(50) PRIMARY KEY,
         target_url TEXT NOT NULL DEFAULT 'http://localhost:3001/api/sync',
-        api_key VARCHAR(255) NOT NULL DEFAULT 'tender_portal_secret_key_2026',
+        api_key VARCHAR(255) NOT NULL DEFAULT '',
         sync_interval_days INT NOT NULL DEFAULT 15,
         is_enabled BOOLEAN NOT NULL DEFAULT true,
         last_sync_at TIMESTAMP WITH TIME ZONE,

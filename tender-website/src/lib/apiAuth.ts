@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 
-const CONFIGURED_API_KEY = process.env.TENDER_API_KEY || "tender_portal_secret_key_2026";
+// No hardcoded fallback: until TENDER_API_KEY is configured, every
+// authenticated endpoint rejects requests with 401.
+const CONFIGURED_API_KEY = process.env.TENDER_API_KEY || "";
 
 /**
  * Extracts the API key from either the 'X-API-Key' header or an

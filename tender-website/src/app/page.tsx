@@ -956,10 +956,15 @@ export default function TenderPortalHome() {
               <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 font-mono">
                 <p className="text-amber-400 font-bold text-[11px]">API ENDPOINT SPECIFICATION:</p>
                 <p className="text-slate-200">
-                  <span className="text-green-400 font-bold">POST</span> http://localhost:3001/api/sync
+                  <span className="text-green-400 font-bold">POST</span> /api/sync
+                  <span className="text-slate-500"> (ingest potholes &amp; tenders)</span>
+                </p>
+                <p className="text-slate-200">
+                  <span className="text-green-400 font-bold">DELETE</span> /api/tenders
+                  <span className="text-slate-500"> (withdraw a tender: {"{ tender_id }"})</span>
                 </p>
                 <p className="text-slate-400">
-                  Header: <strong className="text-slate-200">X-API-Key: tender_portal_secret_key_2026</strong>
+                  Header: <strong className="text-slate-200">X-API-Key: &lt;configured TENDER_API_KEY&gt;</strong>
                 </p>
                 <p className="text-slate-400">
                   Header: <strong className="text-slate-200">Content-Type: application/json</strong>

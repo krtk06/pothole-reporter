@@ -14,8 +14,8 @@ async function main() {
 
   console.log("3. Updating interval to 20 days...");
   const updated = await updateTenderSyncConfig({
-    target_url: "http://localhost:3001/api/sync",
-    api_key: "tender_portal_secret_key_2026",
+    target_url: process.env.TENDER_WEBSITE_URL || "http://localhost:3001/api/sync",
+    api_key: process.env.TENDER_API_KEY || "",
     sync_interval_days: 20,
     is_enabled: true,
   });
