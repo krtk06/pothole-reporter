@@ -289,6 +289,113 @@ router.patch("/tenders/:id", validate(updateTenderSchema), async (req: Authentic
 
 // ─── TENDER WEBSITE SYNC & SCHEDULING (ADMIN ONLY) ──────────────────────────
 
+/** Derive the tender website's withdraw endpoint from the configured sync target URL. */
+function withdrawUrlFromTarget(targetUrl: string): string {
+  try {
+    const parsed = new URL(targetUrl);
+    const basePath = parsed.pathname.replace(/\/api\/sync\/?$/i, "");
+    return `${parsed.origin}${basePath}/api/tenders`;
+  } catch {
+    return targetUrl;
+  }
+}
+
+/**
+ * Unsend a tender: marks it rejected in the backend (a rejected tender is
+ * excluded from future scheduled syncs and cannot be re-created for the same
+ * block) and removes it from the tender website. The DELETE dispatch is
+ * best-effort — the next scheduled sync heals any failure because rejected
+ * tenders are removed on ingestion.
+ */
+router.post("/tenders/:id/withdraw", async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const idResult = uuidParam.safeParse(req.params.id);
+    if (!idResult.success) {
+      return res.status(400).json({ error: "Invalid tender ID" });
+    }
+    const id = idResult.data;
+    const scopePrefix = getScopePrefix(req);
+    const scopeWhere = scopePrefix
+      ? {
+          OR: [
+            { block_id: scopePrefix },
+            { block_id: { startsWith: `${scopePrefix}/` } },
+          ],
+        }
+      : {};
+
+    const tender = await prisma.tender.findFirst({ where: { id, ...scopeWhere } });
+    if (!tender) {
+      return res.status(404).json({ error: "Tender not found" });
+    }
+    if (tender.status !== "open") {
+      return res.status(409).json({
+        error: `Only open tenders can be withdrawn (current status: ${tender.status})`,
+      });
+    }
+
+    const updateResult = await prisma.tender.updateMany({
+      where: { id, status: "open" },
+      data: { status: "rejected" },
+    });
+    if (updateResult.count === 0) {
+      return res.status(404).json({ error: "Tender not found" });
+    }
+
+    const { getTenderSyncConfig } = await import("../services/tenderSyncService");
+    const { settings } = await getTenderSyncConfig();
+
+    let withdrawDispatched = false;
+    let withdrawError: string | null = null;
+
+    if (!settings.target_url || !settings.api_key) {
+      withdrawError = "Tender website URL or API key not configured; withdrawal will reconcile on next scheduled sync";
+      logger.warn({ tenderId: id }, withdrawError);
+    } else {
+      try {
+        const response = await fetch(withdrawUrlFromTarget(settings.target_url), {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": settings.api_key,
+            "Authorization": `Bearer ${settings.api_key}`,
+          },
+          body: JSON.stringify({
+            tender_id: id,
+            block_id: tender.block_id,
+            triggered_by: `admin:${req.user?.userId || "admin"}`,
+          }),
+          signal: AbortSignal.timeout(15000),
+        });
+        withdrawDispatched = response.ok;
+        if (!response.ok) {
+          withdrawError = `Tender website withdraw call returned status ${response.status}; scheduled sync will reconcile`;
+          logger.warn({ tenderId: id, status: response.status }, withdrawError);
+        }
+      } catch (dispatchErr: any) {
+        withdrawError = `Failed to reach tender website: ${dispatchErr.message}; scheduled sync will reconcile`;
+        logger.warn({ err: dispatchErr, tenderId: id }, withdrawError);
+      }
+    }
+
+    try {
+      await prisma.$executeRawUnsafe(`
+        INSERT INTO tender_sync_logs (potholes_count, tenders_count, status, error_message, triggered_by)
+        VALUES (0, 1, $1, $2, $3)
+      `, withdrawDispatched ? "success" : "failed", withdrawError, `withdraw:admin:${req.user?.userId || "admin"}`);
+    } catch (logErr) {
+      logger.error({ err: logErr }, "Failed to write withdraw log");
+    }
+
+    const updated = await prisma.tender.findUnique({ where: { id } });
+    logger.info({ tenderId: id, adminId: req.user!.userId, withdrawDispatched }, "Tender withdrawn (unsent)");
+    res.json({ success: true, tender: updated, withdraw_dispatched: withdrawDispatched });
+  } catch (err: any) {
+    logger.error({ err }, "Withdraw tender error");
+    return res.status(500).json({ error: "Failed to withdraw tender" });
+  }
+});
+
 const updateSyncConfigSchema = z.object({
   target_url: z.string().url().optional(),
   api_key: z.string().min(6).optional(),
