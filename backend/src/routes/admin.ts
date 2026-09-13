@@ -335,11 +335,13 @@ router.post("/tenders/:id/withdraw", async (req: AuthenticatedRequest, res: Resp
     }
 
     const updateResult = await prisma.tender.updateMany({
-      where: { id, status: "open" },
+      where: { id, status: "open", ...scopeWhere },
       data: { status: "rejected" },
     });
     if (updateResult.count === 0) {
-      return res.status(404).json({ error: "Tender not found" });
+      return res.status(409).json({
+        error: "Tender is no longer open — it may have been accepted, completed or already withdrawn",
+      });
     }
 
     const { getTenderSyncConfig } = await import("../services/tenderSyncService");
