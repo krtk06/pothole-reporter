@@ -48,7 +48,7 @@ const tenderStatusBadge: Record<string, { label: string; color: "default" | "sec
   open: { label: "Open", color: "secondary" },
   assigned: { label: "Accepted", color: "default" },
   completed: { label: "Completed", color: "outline" },
-  rejected: { label: "Rejected", color: "destructive" },
+  rejected: { label: "Withdrawn", color: "destructive" },
 };
 
 function normalize(value?: string | null) {
@@ -97,6 +97,7 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [mounted, setMounted] = useState(false);
   const [tenderLoading, setTenderLoading] = useState<string | null>(null);
+  const [withdrawConfirmId, setWithdrawConfirmId] = useState<string | null>(null);
   const [reportUpdating, setReportUpdating] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState("");
   const [scopeArea, setScopeArea] = useState<AdministrativeArea | null>(null);
@@ -218,6 +219,37 @@ export default function AdminDashboard() {
       setTimeout(() => setSuccessMsg(""), 3000);
     } catch (err: any) {
       console.error(err);
+    } finally {
+      setTenderLoading(null);
+    }
+  };
+
+  const handleTenderWithdraw = async (tenderId: string) => {
+    // Two-step confirm: first click arms the button, second click executes.
+    if (withdrawConfirmId !== tenderId) {
+      setWithdrawConfirmId(tenderId);
+      return;
+    }
+    setWithdrawConfirmId(null);
+    setTenderLoading(tenderId);
+    try {
+      const result = await api.withdrawTender(tenderId);
+      setTenders((prev) =>
+        prev.map((t) =>
+          t.id === tenderId
+            ? { ...t, status: result?.tender?.status || "rejected" }
+            : t
+        )
+      );
+      setSuccessMsg(
+        result?.withdraw_dispatched
+          ? "Tender withdrawn and removed from the tendering website"
+          : "Tender withdrawn — removal from tender website will complete on the next sync"
+      );
+      setTimeout(() => setSuccessMsg(""), 4000);
+    } catch (err: any) {
+      console.error(err);
+      setWithdrawConfirmId(null);
     } finally {
       setTenderLoading(null);
     }
@@ -528,7 +560,7 @@ export default function AdminDashboard() {
               <div>
                 <h2 className="text-lg font-semibold text-[var(--color-heading)]">Tenders</h2>
                 <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                  Review and accept or reject generated tenders
+                  Review tenders — accept them or unsend to remove from the tendering website
                 </p>
               </div>
               <Button variant="ghost" size="sm" onClick={fetchAll} className="text-[var(--color-text-secondary)]">
@@ -573,7 +605,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
 
-                    {/* Accept / Reject buttons — only for open tenders */}
+                    {/* Accept / Unsend buttons — only for open tenders.
+                        Unsend withdraws the tender from the tendering website. */}
                     {tender.status === "open" && (
                       <div className="flex gap-2 mt-auto pt-2 border-t border-[var(--color-border)]">
                         <Button
@@ -589,12 +622,22 @@ export default function AdminDashboard() {
                           )}
                         </Button>
                         <Button
-                          className="flex-1 h-9 bg-red-900/30 hover:bg-red-900/50 text-red-400 border border-red-500/30 rounded-lg text-sm"
+                          className={`flex-1 h-9 rounded-lg text-sm border transition-colors ${
+                            withdrawConfirmId === tender.id
+                              ? "bg-red-600/60 hover:bg-red-600/80 text-white border-red-400/50"
+                              : "bg-red-900/30 hover:bg-red-900/50 text-red-400 border-red-500/30"
+                          }`}
                           variant="ghost"
                           disabled={tenderLoading === tender.id}
-                          onClick={() => handleTenderAction(tender.id, "rejected")}
+                          onClick={() => handleTenderWithdraw(tender.id)}
                         >
-                          <X className="w-4 h-4 mr-1.5" /> Reject
+                          {tenderLoading === tender.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : withdrawConfirmId === tender.id ? (
+                            <><AlertTriangle className="w-4 h-4 mr-1.5" /> Confirm Unsend</>
+                          ) : (
+                            <><Send className="w-4 h-4 mr-1.5 rotate-180" /> Unsend</>
+                          )}
                         </Button>
                       </div>
                     )}
@@ -610,7 +653,7 @@ export default function AdminDashboard() {
                     {tender.status === "rejected" && (
                       <div className="flex items-center gap-2 mt-auto pt-2 border-t border-[var(--color-border)]">
                         <XCircle className="w-4 h-4 text-red-400" />
-                        <span className="text-xs text-red-400">Rejected</span>
+                        <span className="text-xs text-red-400">Withdrawn — removed from tendering website</span>
                       </div>
                     )}
                   </Card>

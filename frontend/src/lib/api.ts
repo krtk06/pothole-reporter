@@ -148,6 +148,12 @@ class ApiClient {
     });
   }
 
+  async withdrawTender(id: string) {
+    return this.fetch(`/admin/tenders/${id}/withdraw`, {
+      method: "POST",
+    });
+  }
+
   async getTenderSyncConfig() {
     return this.fetch("/admin/tender-sync");
   }
