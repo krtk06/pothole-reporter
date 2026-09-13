@@ -1,5 +1,5 @@
 import prisma from "../config/database";
-import { notifyExternalWebhook } from "./externalWebhookService";
+import { pushBlockToTenderWebsite } from "./tenderSyncService";
 
 const THRESHOLD = parseInt(process.env.POTHOLE_TENDER_THRESHOLD || "5", 10);
 const COST_PER_POTHOLE = 150.0;
@@ -27,8 +27,8 @@ export async function checkAndGenerateTender(blockId: string): Promise<boolean> 
           estimated_cost: count * COST_PER_POTHOLE,
         },
       });
-      // Notify external website — non-blocking
-      notifyExternalWebhook(blockId).catch(() => {});
+      // Push block to tender website immediately — non-blocking
+      pushBlockToTenderWebsite(blockId, "threshold").catch(() => {});
       return true;
     }
   }

@@ -208,6 +208,95 @@ export async function updateTenderSyncConfig(data: {
 }
 
 
+interface DispatchResult {
+  ok: boolean;
+  status: number | null;
+  responseText: string;
+}
+
+/** Fetch the verified potholes for a single block (join reporter for display name). */
+async function fetchBlockPotholes(blockId: string): Promise<any[]> {
+  return prisma.$queryRawUnsafe(`
+    SELECT
+      p.id,
+      p.image_s3_key,
+      ST_X(p.location::geometry) as longitude,
+      ST_Y(p.location::geometry) as latitude,
+      p.address_notes,
+      p.block_id,
+      p.status,
+      p.created_at,
+      u.name as reporter_name
+    FROM potholes p
+    JOIN users u ON u.id = p.reporter_id
+    WHERE p.block_id = $1 AND p.status = 'verified'
+    ORDER BY p.created_at DESC
+  `, blockId);
+}
+
+/** Attach a presigned S3 download URL to each pothole row (null when unavailable). */
+async function enrichPotholeRows(potholes: any[]): Promise<any[]> {
+  return Promise.all(
+    potholes.map(async (p: any) => ({
+      id: p.id,
+      latitude: Number(p.latitude),
+      longitude: Number(p.longitude),
+      address_notes: p.address_notes,
+      block_id: p.block_id,
+      status: p.status,
+      created_at: p.created_at,
+      reporter_name: p.reporter_name,
+      image_url: await generatePresignedDownloadUrl(p.image_s3_key).catch(() => null),
+      image_s3_key: p.image_s3_key,
+    }))
+  );
+}
+
+function mapTenderRows(tenders: any[]): any[] {
+  return tenders.map((t: any) => ({
+    id: t.id,
+    block_id: t.block_id,
+    pothole_count: Number(t.pothole_count),
+    estimated_cost: Number(t.estimated_cost),
+    status: t.status,
+    generated_at: t.generated_at,
+  }));
+}
+
+/** POST a sync payload to the tender website with API-key auth and a hard timeout. */
+async function postPayloadToTenderWebsite(
+  payload: unknown,
+  targetUrl: string,
+  apiKey: string
+): Promise<DispatchResult> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const response = await fetch(targetUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+
+    let responseText = "";
+    try {
+      responseText = await response.text();
+    } catch {
+      responseText = "";
+    }
+
+    return { ok: response.ok, status: response.status, responseText };
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export async function performTenderSync(triggeredBy: string = "scheduler"): Promise<{
   success: boolean;
   potholes_count: number;
@@ -234,7 +323,7 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
   }
 
   try {
-    // 1. Fetch verified potholes
+    // 1. Fetch verified potholes that are still awaiting a tender
     const potholes: any[] = await prisma.$queryRawUnsafe(`
       SELECT
         p.id,
@@ -252,7 +341,7 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
       ORDER BY p.created_at DESC
     `);
 
-    // 2. Fetch all tenders
+    // 2. Fetch all tenders (reconciliation channel: upsert + withdrawal healing)
     const tenders: any[] = await prisma.$queryRawUnsafe(`
       SELECT
         id,
@@ -266,29 +355,7 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
     `);
 
     // 3. Enrich potholes with image presigned URLs
-    const enrichedPotholes = await Promise.all(
-      potholes.map(async (p: any) => {
-        let imageUrl: string | null = null;
-        try {
-          imageUrl = await generatePresignedDownloadUrl(p.image_s3_key);
-        } catch {
-          imageUrl = null;
-        }
-
-        return {
-          id: p.id,
-          latitude: Number(p.latitude),
-          longitude: Number(p.longitude),
-          address_notes: p.address_notes,
-          block_id: p.block_id,
-          status: p.status,
-          created_at: p.created_at,
-          reporter_name: p.reporter_name,
-          image_url: imageUrl,
-          image_s3_key: p.image_s3_key,
-        };
-      })
-    );
+    const enrichedPotholes = await enrichPotholeRows(potholes);
 
     const payload = {
       source: "pothole-reporter",
@@ -298,41 +365,13 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
         total_potholes: enrichedPotholes.length,
         total_tenders: tenders.length,
       },
-      tenders: tenders.map((t: any) => ({
-        id: t.id,
-        block_id: t.block_id,
-        pothole_count: Number(t.pothole_count),
-        estimated_cost: Number(t.estimated_cost),
-        status: t.status,
-        generated_at: t.generated_at,
-      })),
+      tenders: mapTenderRows(tenders),
       potholes: enrichedPotholes,
     };
 
     // 4. Send payload to Tender Website with API Key
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-    const response = await fetch(settings.target_url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-Key": settings.api_key,
-        "Authorization": `Bearer ${settings.api_key}`,
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    const isSuccess = response.ok;
-    const responseStatus = response.status;
-    let responseText = "";
-    try {
-      responseText = await response.text();
-    } catch {
-      responseText = "";
-    }
+    const { ok: isSuccess, status: responseStatus, responseText } =
+      await postPayloadToTenderWebsite(payload, settings.target_url, settings.api_key);
 
     if (isSuccess) {
       const now = new Date();
@@ -368,7 +407,7 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
         potholes_count: enrichedPotholes.length,
         tenders_count: tenders.length,
         message: `Successfully synchronized ${enrichedPotholes.length} potholes and ${tenders.length} tenders to tender website.`,
-        response_status: responseStatus,
+        response_status: responseStatus ?? undefined,
       };
     } else {
       const errMsg = `Tender website returned status ${responseStatus}: ${responseText.slice(0, 200)}`;
@@ -397,7 +436,7 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
         potholes_count: enrichedPotholes.length,
         tenders_count: tenders.length,
         message: errMsg,
-        response_status: responseStatus,
+        response_status: responseStatus ?? undefined,
       };
     }
   } catch (err: any) {
@@ -420,6 +459,110 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
       tenders_count: 0,
       message: `Sync failed: ${errMsg}`,
     };
+  }
+}
+
+/**
+ * Immediately dispatches a block's verified potholes and its tender to the
+ * tender website. Called when a block crosses POTHOLE_TENDER_THRESHOLD.
+ *
+ * Unlike performTenderSync this is mandatory (independent of the admin's
+ * enable/disable toggle, which governs only the periodic scheduler) and never
+ * advances last_sync_at / next_sync_at so the periodic cycle is unaffected.
+ * Failures are logged and healed by the next scheduled sync via block_id upsert.
+ */
+export async function pushBlockToTenderWebsite(
+  blockId: string,
+  triggeredBy: string = "threshold"
+): Promise<{ success: boolean; potholes_count: number; message: string }> {
+  await ensureTenderSyncTablesExist();
+  const { settings } = await getTenderSyncConfig();
+
+  if (!settings.target_url || !settings.api_key) {
+    const errorMsg = "Tender website push skipped: target URL or API key is not configured.";
+    logger.warn({ blockId, triggeredBy }, errorMsg);
+    return { success: false, potholes_count: 0, message: errorMsg };
+  }
+
+  try {
+    const potholes = await fetchBlockPotholes(blockId);
+    if (potholes.length === 0) {
+      const message = `No verified potholes found for block ${blockId}; nothing to push.`;
+      logger.warn({ blockId, triggeredBy }, message);
+      return { success: false, potholes_count: 0, message };
+    }
+
+    const tenders: any[] = await prisma.$queryRawUnsafe(`
+      SELECT
+        id,
+        block_id,
+        pothole_count,
+        estimated_cost,
+        status,
+        generated_at
+      FROM tenders
+      WHERE block_id = $1
+      ORDER BY generated_at DESC
+      LIMIT 1
+    `, blockId);
+
+    const enrichedPotholes = await enrichPotholeRows(potholes);
+
+    const payload = {
+      source: "pothole-reporter",
+      sync_type: "threshold",
+      exported_at: new Date().toISOString(),
+      triggered_by: triggeredBy,
+      summary: {
+        total_potholes: enrichedPotholes.length,
+        total_tenders: tenders.length,
+      },
+      tenders: mapTenderRows(tenders),
+      potholes: enrichedPotholes,
+    };
+
+    const { ok, status, responseText } = await postPayloadToTenderWebsite(
+      payload,
+      settings.target_url,
+      settings.api_key
+    );
+
+    if (ok) {
+      await logSyncResult(
+        enrichedPotholes.length,
+        tenders.length,
+        "success",
+        status,
+        null,
+        triggeredBy
+      );
+      logger.info(
+        { blockId, potholesCount: enrichedPotholes.length, triggeredBy, status },
+        "Threshold tender push completed successfully"
+      );
+      return {
+        success: true,
+        potholes_count: enrichedPotholes.length,
+        message: `Pushed ${enrichedPotholes.length} potholes for block ${blockId} to tender website.`,
+      };
+    }
+
+    const errMsg = `Tender website returned status ${status}: ${responseText.slice(0, 200)}`;
+    await logSyncResult(
+      enrichedPotholes.length,
+      tenders.length,
+      "failed",
+      status,
+      errMsg,
+      triggeredBy
+    );
+    logger.warn({ blockId, triggeredBy, status, responseText }, "Threshold tender push failed with non-2xx status");
+    return { success: false, potholes_count: enrichedPotholes.length, message: errMsg };
+  } catch (err: any) {
+    const errMsg = err.message || "Failed to reach tender website";
+    await logSyncResult(0, 0, "failed", null, errMsg, triggeredBy);
+    logger.error({ err, blockId, triggeredBy }, "Threshold tender push failed (non-blocking)");
+    return { success: false, potholes_count: 0, message: `Push failed: ${errMsg}` };
   }
 }
 
