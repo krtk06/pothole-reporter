@@ -324,6 +324,9 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
 
   try {
     // 1. Fetch verified potholes that are still awaiting a tender
+    //    (below threshold — blocks with any tender record are excluded because
+    //    above-threshold blocks are dispatched immediately on tender creation,
+    //    and withdrawn blocks keep their rejected tender record by design)
     const potholes: any[] = await prisma.$queryRawUnsafe(`
       SELECT
         p.id,
@@ -338,6 +341,9 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
       FROM potholes p
       JOIN users u ON u.id = p.reporter_id
       WHERE p.status = 'verified'
+        AND (p.block_id IS NULL OR p.block_id NOT IN (
+          SELECT DISTINCT block_id FROM tenders WHERE block_id IS NOT NULL
+        ))
       ORDER BY p.created_at DESC
     `);
 
@@ -359,6 +365,7 @@ export async function performTenderSync(triggeredBy: string = "scheduler"): Prom
 
     const payload = {
       source: "pothole-reporter",
+      sync_type: "scheduled",
       exported_at: new Date().toISOString(),
       triggered_by: triggeredBy,
       summary: {
