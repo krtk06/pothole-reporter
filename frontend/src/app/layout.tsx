@@ -1,22 +1,14 @@
 import type { Metadata } from "next";
-import { Press_Start_2P, VT323 } from "next/font/google";
+import { Archivo } from "next/font/google";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
-import PixelBackground from "@/components/pixel/PixelBackground";
-import BootScreen from "@/components/pixel/BootScreen";
-import PixelCursor from "@/components/pixel/PixelCursor";
+import Ground from "@/components/macadam/Ground";
+import { themeInitScript } from "@/components/macadam/useTheme";
 
-const pixel = Press_Start_2P({
+const archivo = Archivo({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-pixel",
-  display: "swap",
-});
-
-const body = VT323({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-body",
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -37,13 +29,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${pixel.variable} ${body.variable}`}
+      className={`dark ${archivo.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="font-body antialiased">
-        <PixelBackground />
-        <BootScreen />
-        <PixelCursor />
+      <body className="font-sans antialiased">
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript("dark") }} />
+        <Ground />
         <div className="relative z-10">{children}</div>
       </body>
     </html>

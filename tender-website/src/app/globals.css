@@ -59,6 +59,10 @@
     --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
     --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
 
+    /* type — Archivo is both the UI and the display face; Geist Mono is data */
+    --font-sans: var(--font-display);
+    --font-mono: var(--font-geist-mono);
+
     /* shadcn / tailwind token bridge */
     --background: var(--bg);
     --foreground: var(--text);
