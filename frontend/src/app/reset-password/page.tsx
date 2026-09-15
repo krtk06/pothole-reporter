@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Check, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
-import Link from "next/link";
+import AuthShell from "@/components/AuthShell";
+import { Field, Input, MagneticButton } from "@/components/macadam";
 
 function ResetForm() {
   const searchParams = useSearchParams();
@@ -48,52 +50,63 @@ function ResetForm() {
   if (!token && !error) return null;
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center p-4">
-      <div className="w-full max-w-md border border-[var(--color-border)] rounded-2xl bg-[var(--color-surface)] p-8">
-        <h1 className="text-2xl font-bold text-[var(--color-heading)] text-center mb-2">Reset Password</h1>
-
-        {success ? (
-          <div className="text-center">
-            <p className="text-sm text-green-500 mb-4">Password has been reset. You can now log in.</p>
-            <Link href="/" className="text-sm text-[var(--color-text-primary)] hover:underline">Go to login</Link>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <input
+    <AuthShell title="Reset password" description="Choose a new password for your admin account.">
+      {success ? (
+        <div className="flex items-start gap-3 rounded-lg border border-ok/40 bg-ok/10 px-4 py-3">
+          <Check className="mt-0.5 h-4 w-4 shrink-0 text-ok" />
+          <p className="text-sm text-ink">Password has been reset. You can now sign in.</p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Field label="New password" htmlFor="new-password" required>
+            <Input
+              id="new-password"
               type="password"
-              placeholder="New password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border-2 border-[var(--color-border)] h-12 w-full rounded-md bg-[var(--color-bg)] px-4 outline-none focus:border-[var(--color-text-primary)]"
+              placeholder="••••••••"
+              autoComplete="new-password"
               required
               minLength={8}
             />
-            <input
+          </Field>
+          <Field label="Confirm new password" htmlFor="confirm-password" required>
+            <Input
+              id="confirm-password"
               type="password"
-              placeholder="Confirm new password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              className="border-2 border-[var(--color-border)] h-12 w-full rounded-md bg-[var(--color-bg)] px-4 outline-none focus:border-[var(--color-text-primary)]"
+              placeholder="••••••••"
+              autoComplete="new-password"
               required
             />
-            {error && <p className="text-xs text-red-400">{error}</p>}
-            <button
-              type="submit"
-              disabled={loading || !token}
-              className="rounded-md bg-[var(--color-border)] px-8 py-2.5 text-sm text-white hover:scale-105 transition-all disabled:opacity-50"
-            >
-              {loading ? "Resetting..." : "Reset Password"}
-            </button>
-          </form>
-        )}
-      </div>
-    </div>
+          </Field>
+          {error && <p className="text-sm text-bad">{error}</p>}
+          <MagneticButton type="submit" variant="primary" block disabled={loading || !token}>
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Resetting
+              </>
+            ) : (
+              "Reset password"
+            )}
+          </MagneticButton>
+        </form>
+      )}
+    </AuthShell>
   );
 }
 
 export default function ResetPassword() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center"><p className="text-[var(--color-text-secondary)]">Loading...</p></div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-dvh items-center justify-center">
+          <span className="font-mono text-sm text-ink3">Loading…</span>
+        </div>
+      }
+    >
       <ResetForm />
     </Suspense>
   );

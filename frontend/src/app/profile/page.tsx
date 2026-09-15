@@ -16,5 +16,9 @@ export default function Profile() {
     router.replace(user ? "/dashboard" : "/login");
   }, [router, user]);
 
-  return <div className="min-h-screen bg-[var(--color-bg)]" />;
+  return (
+    <div className="flex min-h-dvh items-center justify-center">
+      <span className="font-mono text-sm text-ink3">Redirecting…</span>
+    </div>
+  );
 }

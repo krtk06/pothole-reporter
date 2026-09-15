@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
-import Link from "next/link";
+import AuthShell from "@/components/AuthShell";
+import { Field, Input, MagneticButton } from "@/components/macadam";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -25,40 +27,43 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center p-4">
-      <div className="w-full max-w-md border border-[var(--color-border)] rounded-2xl bg-[var(--color-surface)] p-8">
-        <h1 className="text-2xl font-bold text-[var(--color-heading)] text-center mb-2">Forgot Password</h1>
-        <p className="text-sm text-[var(--color-text-secondary)] text-center mb-6">
-          Enter your email and we'll send you a reset link.
-        </p>
-
-        {sent ? (
-          <div className="text-center">
-            <p className="text-sm text-green-500 mb-4">If that email is registered, a reset link has been sent.</p>
-            <Link href="/" className="text-sm text-[var(--color-text-primary)] hover:underline">Back to login</Link>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <input
+    <AuthShell
+      title="Forgot password"
+      description="Enter your email and we'll send you a reset link."
+    >
+      {sent ? (
+        <div className="flex items-start gap-3 rounded-lg border border-ok/40 bg-ok/10 px-4 py-3">
+          <Check className="mt-0.5 h-4 w-4 shrink-0 text-ok" />
+          <p className="text-sm text-ink">
+            If that email is registered, a reset link has been sent.
+          </p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Field label="Email" htmlFor="email" required>
+            <Input
+              id="email"
               type="email"
-              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border-2 border-[var(--color-border)] h-12 w-full rounded-md bg-[var(--color-bg)] px-4 outline-none focus:border-[var(--color-text-primary)]"
+              placeholder="name@department.gov.in"
+              autoComplete="email"
               required
             />
-            {error && <p className="text-xs text-red-400">{error}</p>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-md bg-[var(--color-border)] px-8 py-2.5 text-sm text-white hover:scale-105 transition-all disabled:opacity-50"
-            >
-              {loading ? "Sending..." : "Send Reset Link"}
-            </button>
-            <Link href="/" className="text-xs text-[var(--color-text-secondary)] text-center hover:underline">Back to login</Link>
-          </form>
-        )}
-      </div>
-    </div>
+          </Field>
+          {error && <p className="text-sm text-bad">{error}</p>}
+          <MagneticButton type="submit" variant="primary" block disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Sending
+              </>
+            ) : (
+              "Send reset link"
+            )}
+          </MagneticButton>
+        </form>
+      )}
+    </AuthShell>
   );
 }
