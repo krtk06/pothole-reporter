@@ -5,16 +5,27 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { Pothole } from "@/lib/tenderStore";
 
-// Seal-pin markers: brass-ringed dossier pins, lamp-filled by tender status.
-// No remote icon assets; fully offline-safe divIcons.
-const pinIcon = (status?: string) =>
-  new L.DivIcon({
-    className: "seal-pin-wrap",
-    html: `<span class="seal-pin seal-pin--${status || "open"}"></span>`,
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-    popupAnchor: [0, -10],
+const PIN_FOR_STATUS: Record<string, string> = {
+  open: "open",
+  under_review: "under_review",
+  assigned: "assigned",
+  completed: "completed",
+  rejected: "rejected",
+  verified: "open",
+  pending: "under_review",
+  fixed: "assigned",
+};
+
+function pinIcon(status?: string) {
+  const pin = PIN_FOR_STATUS[status || "open"] || "reported";
+  return new L.DivIcon({
+    className: "macadam-pin-wrap",
+    html: `<span class="macadam-pin macadam-pin--${pin}"></span>`,
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
+    popupAnchor: [0, -11],
   });
+}
 
 // Guard against unmounted pane position errors (_leaflet_pos)
 if (typeof window !== "undefined" && L && L.DomUtil) {
@@ -62,9 +73,9 @@ export default function TenderMap({
     return (
       <div
         style={{ height }}
-        className="w-full rounded-xl bg-slate-900 animate-pulse border border-slate-800 flex items-center justify-center text-slate-500 text-xs"
+        className="flex w-full animate-pulse items-center justify-center rounded-xl border border-hairline bg-sunken text-xs text-ink3"
       >
-        Loading interactive map...
+        Loading interactive map…
       </div>
     );
   }
@@ -73,7 +84,7 @@ export default function TenderMap({
     (p) => !isNaN(p.latitude) && !isNaN(p.longitude) && p.latitude !== 0 && p.longitude !== 0
   );
 
-  let center: [number, number] = initialCenter || [16.5062, 80.648]; // default Vijayawada center
+  let center: [number, number] = initialCenter || [16.5062, 80.648];
 
   if (!initialCenter && validPotholes.length > 0) {
     const avgLat = validPotholes.reduce((sum, p) => sum + p.latitude, 0) / validPotholes.length;
@@ -81,56 +92,70 @@ export default function TenderMap({
     center = [avgLat, avgLng];
   }
 
+  const resolvedZoom = validPotholes.length > 1 ? 11 : zoom;
+
   return (
-    <div style={{ height }} className="w-full rounded-xl overflow-hidden border border-slate-800 relative z-0">
+    <div style={{ height }} className="macadam-map relative z-0 w-full overflow-hidden">
       <MapContainer
         center={center}
-        zoom={validPotholes.length > 1 ? 11 : zoom}
+        zoom={resolvedZoom}
         scrollWheelZoom={false}
         zoomAnimation={false}
         style={{ height: "100%", width: "100%" }}
       >
-        <MapRecenter center={center} zoom={validPotholes.length > 1 ? 11 : zoom} />
+        <MapRecenter center={center} zoom={resolvedZoom} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {validPotholes.map((p) => (
-          <Marker
-            key={p.id}
-            position={[p.latitude, p.longitude]}
-            icon={pinIcon(p.status)}
-          >
+          <Marker key={p.id} position={[p.latitude, p.longitude]} icon={pinIcon(p.status)}>
             <Popup>
-              <div className="p-1 max-w-xs text-parchment">
+              <div style={{ display: "grid", gap: 4, maxWidth: 260 }}>
                 {p.image_url && (
-                  <div className="mb-2 rounded overflow-hidden bg-ink aspect-video relative border border-brass/30">
+                  <div
+                    style={{
+                      overflow: "hidden",
+                      borderRadius: 8,
+                      border: "1px solid var(--line)",
+                      aspectRatio: "16 / 9",
+                    }}
+                  >
                     <img
                       src={p.image_url}
                       alt="Pothole evidence"
-                      className="w-full h-full object-cover"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = "none";
                       }}
                     />
                   </div>
                 )}
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <span className="font-semibold text-xs text-turmeric">Pothole Evidence</span>
-                  <span className="text-[10px] bg-green-900/60 text-green-300 border border-green-700/50 px-1.5 py-0.5 rounded font-mono">
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                  <span style={{ fontWeight: 600, fontSize: 12, color: "var(--text)" }}>
+                    Pothole evidence
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontFamily: "var(--font-mono), monospace",
+                      color: "var(--accent-2)",
+                      border: "1px solid var(--line)",
+                      borderRadius: 999,
+                      padding: "1px 6px",
+                    }}
+                  >
                     {p.status}
                   </span>
                 </div>
                 {p.address_notes && (
-                  <p className="text-[11px] text-slate-300 mb-1.5 line-clamp-3">
-                    {p.address_notes}
-                  </p>
+                  <p style={{ fontSize: 11, color: "var(--text-2)", margin: 0 }}>{p.address_notes}</p>
                 )}
-                <p className="text-[10px] text-slate-400 font-mono">
+                <p style={{ fontSize: 10, fontFamily: "var(--font-mono), monospace", color: "var(--text-3)", margin: 0 }}>
                   GPS: {p.latitude.toFixed(5)}, {p.longitude.toFixed(5)}
                 </p>
                 {p.block_id && (
-                  <p className="text-[10px] text-slate-400 font-mono truncate mt-0.5">
+                  <p style={{ fontSize: 10, fontFamily: "var(--font-mono), monospace", color: "var(--text-3)", margin: 0 }}>
                     Block: {p.block_id}
                   </p>
                 )}

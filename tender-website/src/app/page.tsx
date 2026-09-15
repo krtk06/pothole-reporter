@@ -2,57 +2,75 @@
 
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { ExternalLink } from "lucide-react";
-import PixelIcon from "@/components/pixel/PixelIcon";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import {
-  PixelWindow,
-  PixelButton,
-  PixelChip,
-} from "@/components/pixel/PixelUI";
-import DotPager from "@/components/pixel/DotPager";
-import PixelSprite from "@/components/pixel/PixelSprite";
-import BrandLogo from "@/components/pixel/BrandLogo";
+  ArrowRight,
+  Building2,
+  CalendarDays,
+  Check,
+  ExternalLink,
+  Hash,
+  HelpCircle,
+  Image as ImageIcon,
+  LayoutGrid,
+  Map as MapIcon,
+  MapPin,
+  Plus,
+  RefreshCw,
+  Search,
+  Users,
+  Wallet,
+  X,
+} from "lucide-react";
+import {
+  Counter,
+  Field,
+  Ignition,
+  Input,
+  Logo,
+  MagneticButton,
+  NavBar,
+  NavInner,
+  NavSpacer,
+  Pill,
+  type PillTone,
+  Reveal,
+  SandHero,
+  Select,
+  Surface,
+  Textarea,
+  ThemeToggle,
+  useTheme,
+} from "@/components/macadam";
 import { sanitizeTenders } from "@/lib/liveSource";
 import type { TenderItem, Pothole, ContractorBid, SyncLogEntry } from "@/lib/tenderStore";
 
-// Dynamically load Leaflet map to avoid SSR issues
 const TenderMap = dynamic(() => import("@/components/TenderMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full w-full items-center justify-center bg-well">
-      <span className="ledger text-dim">LOADING INTERACTIVE MAP…</span>
+    <div className="flex h-full w-full items-center justify-center bg-sunken">
+      <span className="font-mono text-xs text-ink3">Loading interactive map…</span>
     </div>
   ),
 });
 
-const sealFor = (status: string) =>
-  status === "open"
-    ? "seal-open"
-    : status === "under_review"
-    ? "seal-review"
-    : status === "assigned"
-    ? "seal-assigned"
-    : "seal-done";
+const TENDER_TONE: Record<string, PillTone> = {
+  open: "ok",
+  under_review: "warn",
+  assigned: "info",
+  completed: "neutral",
+};
 
-const lampFor = (status: string) =>
-  status === "open"
-    ? "lamp-open"
-    : status === "under_review"
-    ? "lamp-review"
-    : status === "assigned"
-    ? "lamp-assigned"
-    : "lamp-done";
-
-const PAGES = [
-  { id: "board", label: "Tender Board" },
-  { id: "map", label: "State Map" },
-  { id: "dossier", label: "Tender Dossier" },
-];
-
-const fieldInput =
-  "mt-1 w-full border-2 border-line bg-void p-1.5 font-body text-sm text-body placeholder:text-dim outline-none focus:border-gold";
+const STATUS_LABEL: Record<string, string> = {
+  open: "Open for bidding",
+  under_review: "Under review",
+  assigned: "Assigned",
+  completed: "Completed",
+};
 
 export default function TenderPortalHome() {
+  const { theme, toggleTheme } = useTheme();
+
   const [tenders, setTenders] = useState<TenderItem[]>([]);
   const [bids, setBids] = useState<ContractorBid[]>([]);
   const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([]);
@@ -65,22 +83,16 @@ export default function TenderPortalHome() {
     error?: string;
   } | null>(null);
 
-  // Filters & Search
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [districtFilter, setDistrictFilter] = useState("all");
   const [activeView, setActiveView] = useState<"grid" | "map">("grid");
-  const [pageIndex, setPageIndex] = useState(0);
 
-  // Selected Tender for Modal
   const [selectedTender, setSelectedTender] = useState<TenderItem | null>(null);
   const [modalTab, setModalTab] = useState<"details" | "bid" | "bids">("details");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-
-  // API Key Specs Modal
   const [showApiModal, setShowApiModal] = useState(false);
 
-  // Bid Form State
   const [bidForm, setBidForm] = useState({
     contractor_name: "",
     company_name: "",
@@ -107,7 +119,6 @@ export default function TenderPortalHome() {
         setLive(data.live || null);
         if (Array.isArray(data.bids)) setBids(data.bids);
       }
-      // Bids endpoint stays as the authoritative bid list (portal-local)
       const bidsRes = await fetch("/api/bids", { cache: "no-store" });
       if (bidsRes.ok) {
         const bidsData = await bidsRes.json();
@@ -122,8 +133,6 @@ export default function TenderPortalHome() {
 
   useEffect(() => {
     fetchPortalData();
-    // Real-time refresh: re-pull the live backend feed every 30s and
-    // whenever the tab becomes visible again.
     const interval = setInterval(() => fetchPortalData(true), 30000);
     const onVisible = () => {
       if (document.visibilityState === "visible") fetchPortalData(true);
@@ -136,7 +145,6 @@ export default function TenderPortalHome() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Escape closes the topmost overlay: photo preview, then API specs, then dossier
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
@@ -148,7 +156,6 @@ export default function TenderPortalHome() {
     return () => window.removeEventListener("keydown", onKey);
   }, [previewImage, showApiModal, selectedTender]);
 
-  // Compute available districts
   const districts = useMemo(() => {
     const set = new Set<string>();
     tenders.forEach((t) => {
@@ -157,7 +164,6 @@ export default function TenderPortalHome() {
     return Array.from(set).sort();
   }, [tenders]);
 
-  // Filtered tenders
   const filteredTenders = useMemo(() => {
     return tenders.filter((t) => {
       const matchSearch =
@@ -174,12 +180,10 @@ export default function TenderPortalHome() {
     });
   }, [tenders, searchQuery, statusFilter, districtFilter]);
 
-  // Aggregate stats
   const totalPotholes = tenders.reduce((sum, t) => sum + (t.potholes?.length || t.pothole_count || 0), 0);
   const totalBudget = tenders.reduce((sum, t) => sum + Number(t.estimated_cost || 0), 0);
   const openTendersCount = tenders.filter((t) => t.status === "open").length;
 
-  // All potholes for overall map view
   const allPotholes = useMemo(() => {
     const list: Pothole[] = [];
     tenders.forEach((t) => {
@@ -196,15 +200,9 @@ export default function TenderPortalHome() {
     ? bids.filter((b) => b.tender_id === selectedTender.id)
     : [];
 
-  const handlePageChange = (i: number) => {
-    setPageIndex(i);
-    setActiveView(i === 1 ? "map" : "grid");
-  };
-
   const inspectTender = (tender: TenderItem) => {
     setSelectedTender(tender);
     setModalTab("details");
-    handlePageChange(2);
   };
 
   const handleBidSubmit = async (e: React.FormEvent) => {
@@ -252,673 +250,731 @@ export default function TenderPortalHome() {
     }
   };
 
-  const boardPanel = (
-    <div className="flex h-full flex-col gap-2 p-3">
-      <div className="grid shrink-0 grid-cols-2 gap-2 lg:grid-cols-4">
-        <div className="px-window flex items-center gap-2 p-2">
-          <span className="lamp lamp-open" aria-hidden />
-          <div className="min-w-0">
-            <p className="font-pixel text-base leading-none text-body tnum">{openTendersCount}</p>
-            <p className="ledger mt-1 text-dim">Open Tenders</p>
-          </div>
-        </div>
-        <div className="px-well flex items-center gap-2 p-2">
-          <PixelIcon name="pin" size={18} className="shrink-0 text-red" />
-          <div className="min-w-0">
-            <p className="font-pixel text-base leading-none text-body tnum">{totalPotholes}</p>
-            <p className="ledger mt-1 text-dim">Total Potholes</p>
-          </div>
-        </div>
-        <div className="px-window flex items-center gap-2 p-2">
-          <PixelIcon name="coin" size={18} className="shrink-0 text-gold" />
-          <div className="min-w-0">
-            <p className="font-pixel text-[10px] leading-none text-body tnum truncate">
-              ₹{totalBudget.toLocaleString("en-IN")}
-            </p>
-            <p className="ledger mt-1 text-dim">Estimated Budget</p>
-          </div>
-        </div>
-        <div className="px-well flex items-center gap-2 p-2">
-          <PixelIcon name="user" size={18} className="shrink-0 text-green" />
-          <div className="min-w-0">
-            <p className="font-pixel text-base leading-none text-body tnum">{bids.length}</p>
-            <p className="ledger mt-1 text-dim">Contractor Bids</p>
-          </div>
-        </div>
-      </div>
+  const readings = [
+    { label: "Open tenders", value: openTendersCount, tone: "ok" as PillTone, icon: Wallet, isCurrency: false },
+    { label: "Total potholes", value: totalPotholes, tone: "warn" as PillTone, icon: MapPin, isCurrency: false },
+    { label: "Estimated budget", value: totalBudget, tone: "accent" as PillTone, icon: Wallet, isCurrency: true },
+    { label: "Contractor bids", value: bids.length, tone: "info" as PillTone, icon: Users, isCurrency: false },
+  ];
 
-      <div className="px-window flex shrink-0 flex-col gap-2 p-2 md:flex-row md:items-center">
-        <div className="relative min-w-0 flex-1">
-          <PixelIcon
-            name="search"
-            size={12}
-            className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-dim"
-          />
-          <input
-            type="text"
-            aria-label="Search tender, block, mandal"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search tender, block, mandal..."
-            className="w-full border-2 border-line bg-well py-1.5 pl-7 pr-2 font-body text-sm text-body placeholder:text-dim outline-none focus:border-gold"
-          />
-        </div>
-        <select
-          aria-label="Filter by district"
-          value={districtFilter}
-          onChange={(e) => setDistrictFilter(e.target.value)}
-          className="border-2 border-line bg-well px-2 py-1.5 font-body text-sm text-body outline-none focus:border-gold"
-        >
-          <option value="all">All Districts</option>
-          {districts.map((d) => (
-            <option key={d} value={d}>
-              {d}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label="Filter by status"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="border-2 border-line bg-well px-2 py-1.5 font-body text-sm text-body outline-none focus:border-gold"
-        >
-          <option value="all">All Statuses</option>
-          <option value="open">Open for Bidding</option>
-          <option value="under_review">Under Review</option>
-          <option value="assigned">Assigned</option>
-          <option value="completed">Completed</option>
-        </select>
-      </div>
-
-      <div className="px-scroll min-h-0 flex-1 overflow-y-auto pr-1">
-        {loading ? (
-          <div className="px-window flex h-full min-h-[220px] flex-col items-center justify-center gap-3 p-6 text-center">
-            <PixelSprite name="worker" size={64} className="px-anim-bob text-gold" />
-            <p className="font-pixel text-[10px] text-body">FETCHING LIVE TENDERS…</p>
-            <p className="ledger text-dim">
-              PULLING THE LATEST PACKAGES FROM THE BACKEND (POSTGRES + AWS S3)
-            </p>
-          </div>
-        ) : filteredTenders.length === 0 ? (
-          <div className="px-window flex h-full min-h-[220px] flex-col items-center justify-center gap-3 p-6 text-center">
-            <PixelSprite name="worker" size={64} className="text-gold" />
-            <p className="font-pixel text-[10px] text-body">
-              {tenders.length === 0 ? "NO TENDERS AVAILABLE" : "NO TENDERS MATCH YOUR CRITERIA"}
-            </p>
-            <p className="ledger max-w-md text-dim">
-              {tenders.length === 0
-                ? "THERE ARE CURRENTLY NO ROAD-WORK TENDERS PUBLISHED. NEW PACKAGES APPEAR HERE AUTOMATICALLY VIA SECURE SYNC."
-                : "ADJUST FILTERS OR TRIGGER A SYNC FROM THE POTHOLE REPORTER ADMIN DASHBOARD."}
-            </p>
-            <PixelButton icon="clock" onClick={() => fetchPortalData()} disabled={loading}>
-              Check Again
-            </PixelButton>
-          </div>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredTenders.map((tender, rank) => {
-              const tenderBids = bids.filter((b) => b.tender_id === tender.id);
-              const potholeCount = tender.potholes?.length || tender.pothole_count || 0;
-              const isSelected = selectedTender?.id === tender.id;
-              const leadPhoto = tender.potholes?.find((p) => p.image_url) || null;
-              const extraPhotos = (tender.potholes?.length || 0) - (leadPhoto ? 1 : 0);
-
-              return (
-                <article
-                  key={tender.id}
-                  className={`px-window flex flex-col ${isSelected ? "ants" : ""}`}
-                >
-                  {leadPhoto?.image_url ? (
-                    <button
-                      type="button"
-                      onClick={() => leadPhoto.image_url && setPreviewImage(leadPhoto.image_url)}
-                      className="relative block w-full overflow-hidden border-b-2 border-[var(--px-edge-dk)]"
-                      aria-label="Open full damage evidence photo"
-                    >
-                      <img
-                        src={leadPhoto.image_url}
-                        alt="Pothole damage evidence"
-                        className="aspect-video w-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = "none";
-                        }}
-                      />
-                      {extraPhotos > 0 && (
-                        <span className="ledger absolute bottom-1 right-1 border-2 border-line bg-well px-1.5 py-0.5 text-gold">
-                          +{extraPhotos} MORE
-                        </span>
-                      )}
-                    </button>
-                  ) : (
-                    <div className="flex aspect-video w-full flex-col items-center justify-center gap-1 border-b-2 border-[var(--px-edge-dk)] bg-well text-dim">
-                      <PixelIcon name="image" size={20} />
-                      <span className="ledger">S3 EVIDENCE PENDING SYNC</span>
-                    </div>
-                  )}
-
-                  <div className="flex flex-1 flex-col gap-2 p-2.5">
-                    <div className="flex items-start gap-2">
-                      <span
-                        aria-hidden
-                        className="pt-0.5 font-pixel text-lg leading-none text-gold tnum"
-                      >
-                        {String(rank + 1).padStart(2, "0")}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="line-clamp-2 font-pixel text-[10px] leading-snug text-body">
-                          {tender.title}
-                        </h3>
-                        <p className="ledger mt-1 truncate text-gold">
-                          {tender.district || "AP Region"} • {tender.mandal || "Central"}
-                        </p>
-                      </div>
-                      <span className={`px-chip ${sealFor(tender.status)}`}>
-                        <span className={`lamp ${lampFor(tender.status)}`} aria-hidden />
-                        {tender.status.replace("_", " ")}
-                      </span>
-                    </div>
-
-                    <div className="px-well grid grid-cols-2 gap-2 p-2">
-                      <div>
-                        <p className="ledger text-dim">Potholes</p>
-                        <p className="mt-1 font-pixel text-[10px] text-body tnum">{potholeCount} SITES</p>
-                      </div>
-                      <div>
-                        <p className="ledger text-dim">Budget</p>
-                        <p className="mt-1 font-pixel text-[10px] text-green tnum">
-                          ₹{Number(tender.estimated_cost).toLocaleString("en-IN")}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-auto flex items-center justify-between gap-2 border-t-2 border-line pt-2">
-                      <span className="ledger text-dim">{tenderBids.length} BID(S)</span>
-                      <PixelButton icon="chevR" variant="gold" onClick={() => inspectTender(tender)}>
-                        Inspect &amp; Bid
-                      </PixelButton>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const mapPanel = (
-    <div className="flex h-full flex-col gap-2 p-3">
-      <div className="px-window flex shrink-0 items-center justify-between gap-3 p-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <PixelIcon name="map" size={14} className="shrink-0 text-gold" />
-          <h2 className="truncate font-pixel text-[10px] text-body">
-            ANDHRA PRADESH POTHOLE DISTRIBUTION MAP
-          </h2>
-        </div>
-        <PixelChip className="shrink-0">{allPotholes.length} GEOTAGGED</PixelChip>
-      </div>
-      <div className="px-window min-h-0 flex-1 overflow-hidden p-1">
-        <TenderMap potholes={allPotholes} height="100%" zoom={8} />
-      </div>
-    </div>
-  );
-
-  const dossierPanel = (
-    <div className="flex h-full flex-col p-3">
-      {!selectedTender ? (
-        <div className="px-window flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
-          <PixelSprite name="worker" size={64} className="px-anim-bob text-gold" />
-          <p className="font-pixel text-[10px] text-body">SELECT A TENDER FROM THE BOARD</p>
-          <p className="ledger max-w-md text-dim">
-            OPEN THE BOARD PANEL AND CHOOSE “INSPECT &amp; BID” TO LOAD THE DOSSIER.
-          </p>
-          <PixelButton icon="grid" onClick={() => handlePageChange(0)}>
-            Go to Board
-          </PixelButton>
-        </div>
-      ) : (
+  return (
+    <MotionConfig reducedMotion="user">
+    <main className="min-h-dvh">
+      {/* Sync status strip */}
+      <div className="border-b border-hairline bg-raise">
         <div
-          className={`px-window flex h-full min-h-0 flex-col overflow-hidden ${
-            stampFx ? "px-anim-stamp" : ""
-          }`}
+          className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink3 sm:px-6"
+          aria-label="Synchronization status"
         >
-          <div className="flex shrink-0 items-start justify-between gap-2 border-b-2 border-line bg-well p-3">
-            <div className="min-w-0 space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                {selectedRank > 0 && (
-                  <span className="font-pixel text-sm leading-none text-gold tnum">
-                    {String(selectedRank).padStart(2, "0")}
-                  </span>
-                )}
-                <span className="ledger text-gold">
-                  {selectedTender.district} • {selectedTender.mandal}
-                </span>
-                <span className={`px-chip ${sealFor(selectedTender.status)}`}>
-                  <span className={`lamp ${lampFor(selectedTender.status)}`} aria-hidden />
-                  {selectedTender.status.replace("_", " ")}
-                </span>
-              </div>
-              <h2 className="line-clamp-2 font-pixel text-[11px] leading-snug text-body">
-                {selectedTender.title}
-              </h2>
-              <p className="ledger text-dim">BLOCK ID: {selectedTender.block_id}</p>
-            </div>
-            <PixelButton
-              icon="close"
-              onClick={() => setSelectedTender(null)}
-              aria-label="Close tender dossier"
-              className="shrink-0"
-            />
-          </div>
+          <span className="flex items-center gap-1.5 text-ink">
+            <Building2 className="h-3 w-3 text-signal" />
+            Govt of AP • R&amp;B
+          </span>
+          <span className="hidden md:inline">Public Works e-Procurement</span>
+          <Pill
+            tone={live == null ? "neutral" : live.backend_reachable ? "ok" : "warn"}
+            pulse={live?.backend_reachable ?? false}
+            className="!py-0.5 !text-[10px]"
+          >
+            {live == null
+              ? "Connecting…"
+              : live.backend_reachable
+              ? "Live — backend (Postgres + AWS S3)"
+              : "Offline — last synced cache"}
+          </Pill>
+          <span className="hidden lg:inline">
+            Last sync: {lastSyncAt ? new Date(lastSyncAt).toLocaleString() : "Never"}
+          </span>
+          <span className="hidden xl:inline">Every 15–30 days</span>
+          <span className="hidden font-mono text-signal sm:inline">POST /API/SYNC</span>
+        </div>
+      </div>
 
-          <div className="flex shrink-0 border-b-2 border-line bg-panel">
+      <NavBar>
+        <NavInner>
+          <Logo src="/brand/tendering.png" name="AP Road Works" tagline="Tendering Portal" />
+          <NavSpacer />
+          <MagneticButton
+            variant="secondary"
+            onClick={() => fetchPortalData()}
+            disabled={loading}
+            className="hidden sm:inline-flex"
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+            Refresh
+          </MagneticButton>
+          <MagneticButton variant="secondary" onClick={() => setShowApiModal(true)}>
+            <span className="dot-pulse h-1.5 w-1.5 rounded-full bg-ok" />
+            <span className="hidden sm:inline">API key</span>
+            <HelpCircle className="h-4 w-4" />
+          </MagneticButton>
+          <a
+            href="http://localhost:3000/admin"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden items-center gap-1.5 rounded-lg border border-hairline bg-surface px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-sunken lg:inline-flex"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Pothole admin
+          </a>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+        </NavInner>
+      </NavBar>
+
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-hairline">
+        <div className="pointer-events-none absolute inset-0">
+          <SandHero className="h-full w-full" />
+        </div>
+        <div className="relative mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
+          <Ignition step={110}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink3">
+              Andhra Pradesh • Roads &amp; Buildings
+            </p>
+            <h1 className="mt-4 max-w-3xl font-display text-[clamp(2.4rem,5.4vw,4.25rem)] font-extrabold leading-[0.98] tracking-[-0.03em] text-ink">
+              Road repair tenders, open for bidding.
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-ink2">
+              Verified pothole packages synchronised from the field every 15 to 30 days — with photo
+              evidence, GPS, and budgets attached to every tender.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <MagneticButton
+                variant="primary"
+                onClick={() =>
+                  document.getElementById("board")?.scrollIntoView({ behavior: "smooth", block: "start" })
+                }
+              >
+                Browse the board
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+              <MagneticButton variant="secondary" onClick={() => setShowApiModal(true)}>
+                Integration spec
+              </MagneticButton>
+            </div>
+          </Ignition>
+        </div>
+      </section>
+
+      {/* Readings */}
+      <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {readings.map((reading, index) => (
+            <Reveal key={reading.label} delay={index * 60}>
+              <Surface level={1} className="h-full">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-mono text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+                    {reading.isCurrency ? (
+                      <>₹<Counter value={reading.value} /></>
+                    ) : (
+                      <Counter value={reading.value} />
+                    )}
+                  </p>
+                  <reading.icon className="h-4 w-4 shrink-0 text-ink3" />
+                </div>
+                <div className="mt-3">
+                  <Pill tone={reading.tone}>{reading.label}</Pill>
+                </div>
+              </Surface>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Board */}
+      <section id="board" className="mx-auto w-full max-w-7xl scroll-mt-24 px-4 pb-16 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="flex items-center gap-2 font-display text-xl font-bold text-ink">
+              <Wallet className="h-5 w-5 text-signal" />
+              Tender board
+            </h2>
+            <p className="mt-1 max-w-2xl text-sm text-ink2">
+              Ranked by publication. Inspect the evidence dossier or submit a quotation directly.
+            </p>
+          </div>
+          <div className="inline-flex rounded-lg border border-hairline bg-sunken p-1">
             {(
               [
-                ["details", "DETAILS"],
-                ["bid", "SUBMIT BID"],
-                ["bids", `RECEIVED BIDS (${selectedBids.length})`],
+                ["grid", "Board", LayoutGrid],
+                ["map", "State map", MapIcon],
               ] as const
-            ).map(([key, label]) => (
+            ).map(([key, label, Icon]) => (
               <button
                 key={key}
                 type="button"
-                onClick={() => setModalTab(key)}
-                className={`px-btn flex-1 ${modalTab === key ? "px-btn-gold" : ""}`}
+                onClick={() => setActiveView(key)}
+                aria-pressed={activeView === key}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                  activeView === key ? "bg-surface text-ink shadow-1" : "text-ink2 hover:text-ink"
+                }`}
               >
+                <Icon className="h-4 w-4" />
                 {label}
               </button>
             ))}
           </div>
+        </div>
 
-          <div className="px-scroll min-h-0 flex-1 space-y-4 overflow-y-auto p-3">
-            {modalTab === "details" && (
-              <div className="space-y-4">
-                <div className="px-well grid grid-cols-2 gap-3 p-3 md:grid-cols-4">
-                  <div>
-                    <span className="ledger block text-dim">Pothole Count</span>
-                    <strong className="font-pixel text-[10px] text-body tnum">
-                      {selectedTender.potholes?.length || selectedTender.pothole_count} SITES
-                    </strong>
-                  </div>
-                  <div>
-                    <span className="ledger block text-dim">Estimated Cost</span>
-                    <strong className="font-pixel text-[10px] text-green tnum">
-                      ₹{Number(selectedTender.estimated_cost).toLocaleString("en-IN")}
-                    </strong>
-                  </div>
-                  <div>
-                    <span className="ledger block text-dim">Submission Deadline</span>
-                    <strong className="font-pixel text-[10px] text-gold">
-                      {selectedTender.deadline
-                        ? new Date(selectedTender.deadline).toLocaleDateString()
-                        : "20 Days"}
-                    </strong>
-                  </div>
-                  <div>
-                    <span className="ledger block text-dim">Jurisdiction</span>
-                    <strong className="font-pixel text-[10px] text-body">
-                      {selectedTender.mandal}, {selectedTender.district}
-                    </strong>
-                  </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_200px_200px]">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink3" />
+            <input
+              type="text"
+              aria-label="Search tender, block, mandal"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search tender, block, or mandal…"
+              className="h-11 w-full rounded-lg border border-hairline bg-sunken pl-10 pr-3 text-sm text-ink outline-none transition-colors placeholder:text-ink3 focus:border-signal"
+            />
+          </div>
+          <Select
+            aria-label="Filter by district"
+            value={districtFilter}
+            onChange={(e) => setDistrictFilter(e.target.value)}
+            className="h-11"
+          >
+            <option value="all">All districts</option>
+            {districts.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </Select>
+          <Select
+            aria-label="Filter by status"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="h-11"
+          >
+            <option value="all">All statuses</option>
+            <option value="open">Open for bidding</option>
+            <option value="under_review">Under review</option>
+            <option value="assigned">Assigned</option>
+            <option value="completed">Completed</option>
+          </Select>
+        </div>
+
+        <div className="mt-6">
+          {activeView === "map" ? (
+            <Surface level={2} padded={false} className="overflow-hidden">
+              <div className="flex items-center justify-between gap-3 border-b border-hairline px-5 py-3">
+                <h3 className="font-display text-base font-bold text-ink">
+                  Andhra Pradesh pothole distribution
+                </h3>
+                <Pill tone="neutral" mono>
+                  {allPotholes.length} geotagged
+                </Pill>
+              </div>
+              <div className="h-[560px]">
+                <TenderMap potholes={allPotholes} height="100%" zoom={8} />
+              </div>
+            </Surface>
+          ) : loading ? (
+            <Surface level={1} className="flex flex-col items-center gap-2 py-16 text-center">
+              <RefreshCw className="h-6 w-6 animate-spin text-ink3" />
+              <p className="font-mono text-sm text-ink2">Fetching live tenders…</p>
+              <p className="text-xs text-ink3">
+                Pulling the latest packages from the backend (Postgres + AWS S3).
+              </p>
+            </Surface>
+          ) : filteredTenders.length === 0 ? (
+            <Surface level={1} className="flex flex-col items-center gap-3 py-16 text-center">
+              <Wallet className="h-7 w-7 text-ink3" />
+              <p className="font-display text-base font-bold text-ink">
+                {tenders.length === 0 ? "No tenders available" : "No tenders match your criteria"}
+              </p>
+              <p className="max-w-md text-sm text-ink2">
+                {tenders.length === 0
+                  ? "There are currently no road-work tenders published. New packages appear here automatically via secure sync."
+                  : "Adjust the filters, or trigger a sync from the Pothole Reporter admin dashboard."}
+              </p>
+              <MagneticButton variant="primary" onClick={() => fetchPortalData()} disabled={loading}>
+                <RefreshCw className="h-4 w-4" />
+                Check again
+              </MagneticButton>
+            </Surface>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {filteredTenders.map((tender, rank) => {
+                const tenderBids = bids.filter((b) => b.tender_id === tender.id);
+                const potholeCount = tender.potholes?.length || tender.pothole_count || 0;
+                const isSelected = selectedTender?.id === tender.id;
+                const leadPhoto = tender.potholes?.find((p) => p.image_url) || null;
+                const extraPhotos = (tender.potholes?.length || 0) - (leadPhoto ? 1 : 0);
+
+                return (
+                  <Reveal key={tender.id} delay={Math.min(rank, 5) * 50}>
+                    <article
+                      className={`flex h-full flex-col overflow-hidden rounded-xl border bg-surface shadow-1 transition-colors ${
+                        isSelected ? "border-signal" : "border-hairline"
+                      }`}
+                    >
+                      {leadPhoto?.image_url ? (
+                        <button
+                          type="button"
+                          onClick={() => leadPhoto.image_url && setPreviewImage(leadPhoto.image_url)}
+                          className="relative block w-full overflow-hidden border-b border-hairline"
+                          aria-label="Open full damage evidence photo"
+                        >
+                          <img
+                            src={leadPhoto.image_url}
+                            alt="Pothole damage evidence"
+                            className="aspect-video w-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = "none";
+                            }}
+                          />
+                          {extraPhotos > 0 && (
+                            <span className="absolute bottom-2 right-2 rounded-full border border-hairline bg-surface/95 px-2 py-0.5 font-mono text-[10px] font-semibold text-ink">
+                              +{extraPhotos} more
+                            </span>
+                          )}
+                        </button>
+                      ) : (
+                        <div className="flex aspect-video w-full flex-col items-center justify-center gap-1 border-b border-hairline bg-sunken text-ink3">
+                          <ImageIcon className="h-5 w-5" />
+                          <span className="text-[10px] font-semibold uppercase tracking-[0.08em]">
+                            S3 evidence pending sync
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex flex-1 flex-col gap-4 p-5">
+                        <div className="flex items-start gap-3">
+                          <span className="font-mono text-lg font-semibold leading-none text-signal">
+                            {String(rank + 1).padStart(2, "0")}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="line-clamp-2 font-display text-sm font-bold leading-snug text-ink">
+                              {tender.title}
+                            </h3>
+                            <p className="mt-1 truncate font-mono text-xs text-ink3">
+                              {tender.district || "AP Region"} • {tender.mandal || "Central"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Pill tone={TENDER_TONE[tender.status] ?? "neutral"} pulse={tender.status === "open"}>
+                            {STATUS_LABEL[tender.status] ?? tender.status.replace("_", " ")}
+                          </Pill>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 rounded-lg border border-hairline bg-sunken p-3">
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                              Potholes
+                            </p>
+                            <p className="mt-1 font-mono text-sm text-ink">{potholeCount} sites</p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                              Budget
+                            </p>
+                            <p className="mt-1 font-mono text-sm text-ok">
+                              ₹{Number(tender.estimated_cost).toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-auto flex items-center justify-between gap-3 border-t border-hairline pt-4">
+                          <span className="font-mono text-xs text-ink3">{tenderBids.length} bid(s)</span>
+                          <MagneticButton variant="primary" onClick={() => inspectTender(tender)}>
+                            Inspect &amp; bid
+                            <ArrowRight className="h-4 w-4" />
+                          </MagneticButton>
+                        </div>
+                      </div>
+                    </article>
+                  </Reveal>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <footer className="border-t border-hairline">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-xs text-ink3 sm:px-6">
+          <span>
+            Andhra Pradesh Road Works &amp; pothole repair tendering system — powered by Pothole
+            Reporter.
+          </span>
+          <span className="font-mono">live feed refreshed every 30s · bulk re-sync every 15–30 days</span>
+        </div>
+      </footer>
+
+      {/* Dossier */}
+      <AnimatePresence>
+        {selectedTender && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-3 sm:p-6"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Tender dossier"
+            onClick={() => setSelectedTender(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 14, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.99 }}
+              transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
+              className={`my-4 w-full max-w-4xl ${stampFx ? "animate-mac-pop" : ""}`}
+            >
+              <Surface
+                level={3}
+                padded={false}
+                className="overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+            <div className="flex items-start justify-between gap-4 border-b border-hairline bg-sunken p-5">
+              <div className="min-w-0 space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  {selectedRank > 0 && (
+                    <span className="font-mono text-sm font-semibold text-signal">
+                      {String(selectedRank).padStart(2, "0")}
+                    </span>
+                  )}
+                  <span className="font-mono text-xs text-ink3">
+                    {selectedTender.district} • {selectedTender.mandal}
+                  </span>
+                  <Pill tone={TENDER_TONE[selectedTender.status] ?? "neutral"}>
+                    {STATUS_LABEL[selectedTender.status] ?? selectedTender.status.replace("_", " ")}
+                  </Pill>
                 </div>
+                <h2 className="line-clamp-2 font-display text-lg font-bold leading-snug text-ink">
+                  {selectedTender.title}
+                </h2>
+                <p className="flex items-center gap-1.5 font-mono text-xs text-ink3">
+                  <Hash className="h-3.5 w-3.5" />
+                  {selectedTender.block_id}
+                </p>
+              </div>
+              <MagneticButton
+                variant="ghost"
+                onClick={() => setSelectedTender(null)}
+                aria-label="Close tender dossier"
+                className="shrink-0 !px-2.5"
+              >
+                <X className="h-4 w-4" />
+              </MagneticButton>
+            </div>
 
-                {selectedTender.potholes && selectedTender.potholes.length > 0 && (
-                  <div className="space-y-1.5">
-                    <h4 className="ledger text-body">
-                      GEOTAGGED POTHOLE COORDINATES (OPENSTREETMAP)
-                    </h4>
-                    <div className="px-window p-1">
-                      <TenderMap potholes={selectedTender.potholes} height="240px" zoom={13} />
+            <div className="flex border-b border-hairline bg-surface px-2">
+              {(
+                [
+                  ["details", "Details"],
+                  ["bid", "Submit bid"],
+                  ["bids", `Received bids (${selectedBids.length})`],
+                ] as const
+              ).map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setModalTab(key)}
+                  aria-pressed={modalTab === key}
+                  className={`border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${
+                    modalTab === key
+                      ? "border-signal text-ink"
+                      : "border-transparent text-ink2 hover:text-ink"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className="max-h-[70vh] overflow-y-auto p-5">
+              {modalTab === "details" && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-3 rounded-lg border border-hairline bg-sunken p-4 md:grid-cols-4">
+                    <div>
+                      <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                        Pothole count
+                      </span>
+                      <strong className="font-mono text-sm text-ink">
+                        {selectedTender.potholes?.length || selectedTender.pothole_count} sites
+                      </strong>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                        Estimated cost
+                      </span>
+                      <strong className="font-mono text-sm text-ok">
+                        ₹{Number(selectedTender.estimated_cost).toLocaleString("en-IN")}
+                      </strong>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                        Deadline
+                      </span>
+                      <strong className="flex items-center gap-1.5 font-mono text-sm text-signal">
+                        <CalendarDays className="h-3.5 w-3.5" />
+                        {selectedTender.deadline
+                          ? new Date(selectedTender.deadline).toLocaleDateString()
+                          : "20 days"}
+                      </strong>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                        Jurisdiction
+                      </span>
+                      <strong className="text-sm text-ink">
+                        {selectedTender.mandal}, {selectedTender.district}
+                      </strong>
                     </div>
                   </div>
-                )}
 
-                <div className="space-y-2">
-                  <h4 className="ledger text-body">VISUAL EVIDENCE &amp; DEFECT DOSSIER</h4>
-                  {!selectedTender.potholes || selectedTender.potholes.length === 0 ? (
-                    <p className="ledger text-dim">NO INDIVIDUAL POTHOLE COORDINATES LOADED.</p>
-                  ) : (
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {selectedTender.potholes.map((p, idx) => (
-                        <div key={p.id || idx} className="px-well flex items-start gap-2 p-2">
-                          {p.image_url ? (
-                            <button
-                              type="button"
-                              onClick={() => p.image_url && setPreviewImage(p.image_url)}
-                              className="h-20 w-20 shrink-0 overflow-hidden border-2 border-line bg-void"
-                              aria-label="Open pothole evidence photo"
-                            >
-                              <img
-                                src={p.image_url}
-                                alt="Pothole proof"
-                                className="h-full w-full object-cover"
-                              />
-                            </button>
-                          ) : (
-                            <div className="flex h-20 w-20 shrink-0 items-center justify-center border-2 border-line bg-void p-1 text-center">
-                              <span className="ledger text-dim">S3 PENDING</span>
-                            </div>
-                          )}
-                          <div className="min-w-0 flex-1 space-y-1">
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="font-pixel text-[9px] text-gold">SITE #{idx + 1}</span>
-                              <span className="ledger border border-line bg-void px-1 text-green">
-                                {p.status}
-                              </span>
-                            </div>
-                            {p.address_notes && (
-                              <p className="line-clamp-2 text-sm leading-tight text-body">
-                                {p.address_notes}
+                  {selectedTender.potholes && selectedTender.potholes.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink2">
+                        Geotagged coordinates (OpenStreetMap)
+                      </h4>
+                      <div className="overflow-hidden rounded-lg border border-hairline">
+                        <TenderMap potholes={selectedTender.potholes} height="260px" zoom={13} />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink2">
+                      Visual evidence &amp; defect dossier
+                    </h4>
+                    {!selectedTender.potholes || selectedTender.potholes.length === 0 ? (
+                      <p className="text-sm text-ink3">No individual pothole coordinates loaded.</p>
+                    ) : (
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {selectedTender.potholes.map((p, idx) => (
+                          <div
+                            key={p.id || idx}
+                            className="flex items-start gap-3 rounded-lg border border-hairline bg-sunken p-3"
+                          >
+                            {p.image_url ? (
+                              <button
+                                type="button"
+                                onClick={() => p.image_url && setPreviewImage(p.image_url)}
+                                className="h-20 w-20 shrink-0 overflow-hidden rounded-md border border-hairline bg-surface"
+                                aria-label="Open pothole evidence photo"
+                              >
+                                <img
+                                  src={p.image_url}
+                                  alt="Pothole proof"
+                                  className="h-full w-full object-cover"
+                                />
+                              </button>
+                            ) : (
+                              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-md border border-dashed border-hairline bg-surface p-1 text-center">
+                                <span className="text-[9px] font-semibold uppercase tracking-[0.06em] text-ink3">
+                                  S3 pending
+                                </span>
+                              </div>
+                            )}
+                            <div className="min-w-0 flex-1 space-y-1.5">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="font-mono text-xs font-semibold text-signal">
+                                  Site #{idx + 1}
+                                </span>
+                                <Pill tone="ok" className="!py-0.5 !text-[10px]">
+                                  {p.status}
+                                </Pill>
+                              </div>
+                              {p.address_notes && (
+                                <p className="line-clamp-2 text-sm leading-tight text-ink2">
+                                  {p.address_notes}
+                                </p>
+                              )}
+                              <p className="font-mono text-[11px] text-ink3">
+                                GPS: {p.latitude.toFixed(5)}, {p.longitude.toFixed(5)}
                               </p>
-                            )}
-                            <p className="ledger text-dim tnum">
-                              GPS: {p.latitude.toFixed(5)}, {p.longitude.toFixed(5)}
+                              {p.reporter_name && (
+                                <p className="text-[11px] text-ink3">Reported by: {p.reporter_name}</p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {modalTab === "bid" && (
+                <form onSubmit={handleBidSubmit} className="mx-auto max-w-3xl space-y-5">
+                  <div>
+                    <h3 className="font-display text-base font-bold text-ink">
+                      Submit contractor proposal
+                    </h3>
+                    <p className="mt-1 text-sm text-ink2">
+                      Official quotation for {selectedTender.title} (est. ₹
+                      {Number(selectedTender.estimated_cost).toLocaleString("en-IN")}).
+                    </p>
+                  </div>
+
+                  {bidSuccessMsg && (
+                    <div className="flex items-start gap-2 rounded-lg border border-ok/40 bg-ok/10 px-4 py-3">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-ok" />
+                      <span className="text-sm text-ink">{bidSuccessMsg}</span>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Field label="Contractor full name" htmlFor="bid-contractor" required>
+                      <Input
+                        id="bid-contractor"
+                        type="text"
+                        required
+                        value={bidForm.contractor_name}
+                        onChange={(e) => setBidForm({ ...bidForm, contractor_name: e.target.value })}
+                        placeholder="e.g. Ramesh Naidu"
+                      />
+                    </Field>
+                    <Field label="Company / enterprise" htmlFor="bid-company" required>
+                      <Input
+                        id="bid-company"
+                        type="text"
+                        required
+                        value={bidForm.company_name}
+                        onChange={(e) => setBidForm({ ...bidForm, company_name: e.target.value })}
+                        placeholder="e.g. Apex Infrastructure Pvt Ltd"
+                      />
+                    </Field>
+                    <Field label="License / R&B reg ID" htmlFor="bid-license">
+                      <Input
+                        id="bid-license"
+                        type="text"
+                        value={bidForm.license_number}
+                        onChange={(e) => setBidForm({ ...bidForm, license_number: e.target.value })}
+                        placeholder="e.g. AP-R&B-CL1-2024"
+                      />
+                    </Field>
+                    <Field label="Email" htmlFor="bid-email" required>
+                      <Input
+                        id="bid-email"
+                        type="email"
+                        required
+                        value={bidForm.email}
+                        onChange={(e) => setBidForm({ ...bidForm, email: e.target.value })}
+                        placeholder="bids@company.com"
+                      />
+                    </Field>
+                    <Field label="Contact phone" htmlFor="bid-phone" required>
+                      <Input
+                        id="bid-phone"
+                        type="tel"
+                        required
+                        value={bidForm.phone}
+                        onChange={(e) => setBidForm({ ...bidForm, phone: e.target.value })}
+                        placeholder="+91 98765 43210"
+                      />
+                    </Field>
+                    <Field label="Quotation amount (INR)" htmlFor="bid-amount" required>
+                      <Input
+                        id="bid-amount"
+                        type="number"
+                        required
+                        value={bidForm.bid_amount}
+                        onChange={(e) => setBidForm({ ...bidForm, bid_amount: e.target.value })}
+                        placeholder={`e.g. ${selectedTender.estimated_cost}`}
+                        className="font-mono tnum"
+                      />
+                    </Field>
+                    <Field label="Execution timeline (days)" htmlFor="bid-days" required>
+                      <Input
+                        id="bid-days"
+                        type="number"
+                        required
+                        value={bidForm.estimated_days}
+                        onChange={(e) => setBidForm({ ...bidForm, estimated_days: e.target.value })}
+                        placeholder="15"
+                      />
+                    </Field>
+                    <Field
+                      label="Methodology & proposal notes"
+                      htmlFor="bid-notes"
+                      className="sm:col-span-2"
+                    >
+                      <Textarea
+                        id="bid-notes"
+                        rows={3}
+                        value={bidForm.proposal_notes}
+                        onChange={(e) => setBidForm({ ...bidForm, proposal_notes: e.target.value })}
+                        placeholder="Outline asphalt specifications, compaction machinery, warranty duration…"
+                      />
+                    </Field>
+                  </div>
+
+                  <MagneticButton type="submit" variant="primary" block disabled={bidSubmitting}>
+                    {bidSubmitting ? "Submitting proposal…" : "Confirm & submit bid to R&B portal"}
+                  </MagneticButton>
+                </form>
+              )}
+
+              {modalTab === "bids" && (
+                <div className="space-y-3">
+                  <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink2">
+                    Bids placed for this tender
+                  </h4>
+                  {selectedBids.length === 0 ? (
+                    <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-hairline p-8 text-center">
+                      <p className="text-sm text-ink3">No contractor bids submitted yet.</p>
+                      <MagneticButton variant="secondary" onClick={() => setModalTab("bid")}>
+                        <Plus className="h-4 w-4" />
+                        Be the first to submit a bid
+                      </MagneticButton>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {selectedBids.map((b) => (
+                        <div
+                          key={b.id}
+                          className="flex flex-col gap-3 rounded-lg border border-hairline bg-sunken p-4 sm:flex-row sm:items-center sm:justify-between"
+                        >
+                          <div className="min-w-0 space-y-1">
+                            <p className="font-display text-sm font-bold text-ink">{b.company_name}</p>
+                            <p className="text-xs text-ink2">
+                              Contractor: <span className="text-ink">{b.contractor_name}</span> • License:{" "}
+                              <span className="font-mono tnum">{b.license_number}</span>
                             </p>
-                            {p.reporter_name && (
-                              <p className="ledger text-dim">REPORTED BY: {p.reporter_name}</p>
+                            {b.proposal_notes && (
+                              <p className="text-sm italic text-ink3">&ldquo;{b.proposal_notes}&rdquo;</p>
                             )}
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p className="font-mono text-sm font-semibold text-ok">
+                              ₹{Number(b.bid_amount).toLocaleString("en-IN")}
+                            </p>
+                            <p className="font-mono text-[11px] text-ink3">
+                              {b.estimated_days} days timeline
+                            </p>
                           </div>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+              </Surface>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            {modalTab === "bid" && (
-              <form onSubmit={handleBidSubmit} className="mx-auto max-w-3xl space-y-3">
-                <div className="space-y-1 text-center">
-                  <h3 className="font-pixel text-[11px] text-body">SUBMIT CONTRACTOR PROPOSAL</h3>
-                  <p className="ledger text-dim">
-                    OFFICIAL QUOTATION FOR {selectedTender.title} (EST. ₹
-                    {Number(selectedTender.estimated_cost).toLocaleString("en-IN")})
-                  </p>
-                </div>
-
-                {bidSuccessMsg && (
-                  <div className="flex items-center gap-2 border-2 border-greendk bg-well p-2 text-green">
-                    <PixelIcon name="check" size={12} />
-                    <span className="ledger">{bidSuccessMsg}</span>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div>
-                    <label className="ledger text-dim" htmlFor="bid-contractor">
-                      Contractor Full Name *
-                    </label>
-                    <input
-                      id="bid-contractor"
-                      type="text"
-                      required
-                      value={bidForm.contractor_name}
-                      onChange={(e) => setBidForm({ ...bidForm, contractor_name: e.target.value })}
-                      placeholder="e.g. Ramesh Naidu"
-                      className={fieldInput}
-                    />
-                  </div>
-                  <div>
-                    <label className="ledger text-dim" htmlFor="bid-company">
-                      Company / Enterprise Name *
-                    </label>
-                    <input
-                      id="bid-company"
-                      type="text"
-                      required
-                      value={bidForm.company_name}
-                      onChange={(e) => setBidForm({ ...bidForm, company_name: e.target.value })}
-                      placeholder="e.g. Apex Infrastructure Pvt Ltd"
-                      className={fieldInput}
-                    />
-                  </div>
-                  <div>
-                    <label className="ledger text-dim" htmlFor="bid-license">
-                      License / R&amp;B Reg ID
-                    </label>
-                    <input
-                      id="bid-license"
-                      type="text"
-                      value={bidForm.license_number}
-                      onChange={(e) => setBidForm({ ...bidForm, license_number: e.target.value })}
-                      placeholder="e.g. AP-R&B-CL1-2024"
-                      className={fieldInput}
-                    />
-                  </div>
-                  <div>
-                    <label className="ledger text-dim" htmlFor="bid-email">
-                      Email *
-                    </label>
-                    <input
-                      id="bid-email"
-                      type="email"
-                      required
-                      value={bidForm.email}
-                      onChange={(e) => setBidForm({ ...bidForm, email: e.target.value })}
-                      placeholder="bids@company.com"
-                      className={fieldInput}
-                    />
-                  </div>
-                  <div>
-                    <label className="ledger text-dim" htmlFor="bid-phone">
-                      Contact Phone *
-                    </label>
-                    <input
-                      id="bid-phone"
-                      type="tel"
-                      required
-                      value={bidForm.phone}
-                      onChange={(e) => setBidForm({ ...bidForm, phone: e.target.value })}
-                      placeholder="+91 98765 43210"
-                      className={fieldInput}
-                    />
-                  </div>
-                  <div>
-                    <label className="ledger text-dim" htmlFor="bid-amount">
-                      Quotation Amount (INR ₹) *
-                    </label>
-                    <input
-                      id="bid-amount"
-                      type="number"
-                      required
-                      value={bidForm.bid_amount}
-                      onChange={(e) => setBidForm({ ...bidForm, bid_amount: e.target.value })}
-                      placeholder={`e.g. ${selectedTender.estimated_cost}`}
-                      className={`${fieldInput} font-pixel text-[10px] tnum`}
-                    />
-                  </div>
-                  <div>
-                    <label className="ledger text-dim" htmlFor="bid-days">
-                      Execution Timeline (Days) *
-                    </label>
-                    <input
-                      id="bid-days"
-                      type="number"
-                      required
-                      value={bidForm.estimated_days}
-                      onChange={(e) => setBidForm({ ...bidForm, estimated_days: e.target.value })}
-                      placeholder="15"
-                      className={fieldInput}
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="ledger text-dim" htmlFor="bid-notes">
-                      Methodology &amp; Proposal Notes
-                    </label>
-                    <textarea
-                      id="bid-notes"
-                      rows={3}
-                      value={bidForm.proposal_notes}
-                      onChange={(e) => setBidForm({ ...bidForm, proposal_notes: e.target.value })}
-                      placeholder="Outline asphalt specifications, compaction machinery, warranty duration..."
-                      className={fieldInput}
-                    />
-                  </div>
-                </div>
-
-                <PixelButton
-                  type="submit"
-                  variant="gold"
-                  icon="send"
-                  disabled={bidSubmitting}
-                  className="w-full"
-                >
-                  {bidSubmitting ? "Submitting Proposal..." : "Confirm & Submit Bid to R&B Portal"}
-                </PixelButton>
-              </form>
-            )}
-
-            {modalTab === "bids" && (
-              <div className="space-y-2">
-                <h4 className="ledger text-body">BIDS PLACED FOR THIS TENDER</h4>
-                {selectedBids.length === 0 ? (
-                  <div className="flex flex-col items-center gap-2 border-2 border-dashed border-line p-6 text-center">
-                    <p className="ledger text-dim">NO CONTRACTOR BIDS SUBMITTED YET.</p>
-                    <PixelButton icon="plus" onClick={() => setModalTab("bid")}>
-                      Be the first to submit a bid
-                    </PixelButton>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {selectedBids.map((b) => (
-                      <div
-                        key={b.id}
-                        className="px-well flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between"
-                      >
-                        <div className="min-w-0 space-y-1">
-                          <p className="font-pixel text-[10px] text-body">{b.company_name}</p>
-                          <p className="ledger text-dim">
-                            CONTRACTOR: <span className="text-body">{b.contractor_name}</span> • LICENSE:{" "}
-                            <span className="tnum">{b.license_number}</span>
-                          </p>
-                          {b.proposal_notes && (
-                            <p className="text-sm italic text-dim">&ldquo;{b.proposal_notes}&rdquo;</p>
-                          )}
-                        </div>
-                        <div className="shrink-0 text-right">
-                          <p className="font-pixel text-[11px] text-green tnum">
-                            ₹{Number(b.bid_amount).toLocaleString("en-IN")}
-                          </p>
-                          <p className="ledger text-dim tnum">{b.estimated_days} DAYS TIMELINE</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
-  return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-void font-body text-body">
-      {/* Static sync status strip */}
-      <div
-        className="ledger flex shrink-0 flex-wrap items-center gap-x-4 gap-y-0.5 border-b-2 border-line bg-well px-3 py-1 text-dim"
-        aria-label="Synchronization status"
-      >
-        <span className="flex items-center gap-1.5 text-body">
-          <PixelIcon name="grid" size={10} />
-          GOVT OF AP • R&amp;B
-        </span>
-        <span className="hidden md:inline">PUBLIC WORKS E-PROCUREMENT</span>
-        <span className={live?.backend_reachable ? "text-green" : "text-orange"}>
-          {live == null
-            ? "CONNECTING…"
-            : live.backend_reachable
-            ? "● LIVE — BACKEND (POSTGRES + AWS S3)"
-            : "○ OFFLINE — SHOWING LAST SYNCED CACHE"}
-        </span>
-        <span className="hidden lg:inline">LAST SYNC: {lastSyncAt ? new Date(lastSyncAt).toLocaleString() : "NEVER"}</span>
-        <span className="hidden xl:inline">EVERY 15–30 DAYS</span>
-        <span className="hidden sm:inline text-gold">POST /API/SYNC</span>
-      </div>
-
-      {/* Masthead */}
-      <header className="flex shrink-0 items-center justify-between gap-3 border-b-2 border-line bg-panel px-3 py-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <BrandLogo
-            src="/brand/tendering.png"
-            alt="AP Road Works Tendering"
-            size={42}
-            fallback={
-              <span className="px-bevel flex h-9 w-9 shrink-0 items-center justify-center bg-gold text-[var(--px-on-accent)]">
-                <PixelIcon name="grid" size={16} />
-              </span>
-            }
-          />
-          <div className="min-w-0">
-            <h1 className="truncate font-pixel text-[10px] leading-tight text-body md:text-xs">
-              AP ROAD WORKS TENDERING PORTAL
-            </h1>
-            <p className="ledger truncate text-dim">
-              CROWDSOURCED POTHOLE REMEDIATION PACKAGES &amp; BID INGESTION
-            </p>
-          </div>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-2">
-          <PixelButton
-            onClick={() => fetchPortalData()}
-            disabled={loading}
-            icon="clock"
-            className="hidden sm:inline-flex"
-          >
-            Refresh
-          </PixelButton>
-          <PixelButton onClick={() => setShowApiModal(true)}>
-            <span className="lamp lamp-open" aria-hidden />
-            <span className="hidden sm:inline">API KEY: ACTIVE</span>
-            <PixelIcon name="help" size={12} />
-          </PixelButton>
-          <a
-            href="http://localhost:3000/admin"
-            target="_blank"
-            rel="noreferrer"
-            className="px-btn inline-flex items-center justify-center gap-2"
-          >
-            <ExternalLink className="h-3 w-3" aria-hidden />
-            <span className="hidden sm:inline">Pothole Admin</span>
-          </a>
-        </div>
-      </header>
-
-      {/* Fixed-viewport paged shell */}
-      <DotPager
-        pages={PAGES}
-        active={pageIndex}
-        onChange={handlePageChange}
-        ariaLabel="Tender portal sections"
-        className="min-h-0 flex-1"
-      >
-        {boardPanel}
-        {mapPanel}
-        {dossierPanel}
-      </DotPager>
-
-      {/* Thin static footer */}
-      <footer className="shrink-0 border-t-2 border-line bg-panel px-3 py-1">
-        <p className="ledger truncate text-center text-dim">
-          ANDHRA PRADESH ROAD WORKS &amp; POTHOLE REPAIR TENDERING SYSTEM • POWERED BY POTHOLE
-          REPORTER • LIVE FEED (POSTGRES + AWS S3) REFRESHED EVERY 30S • BULK RE-SYNC EVERY 15–30
-          DAYS
-        </p>
-      </footer>
-
-      {/* FULL PHOTO PREVIEW MODAL */}
+      {/* Photo lightbox */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-3"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-3"
           onClick={() => setPreviewImage(null)}
           role="dialog"
           aria-modal="true"
           aria-label="Full evidence photo preview"
         >
-          <div className="px-window relative max-h-[85vh] max-w-4xl overflow-hidden bg-well p-1">
+          <div className="relative max-h-[88vh] max-w-5xl overflow-hidden rounded-xl border border-hairline bg-surface p-1">
             <button
               type="button"
               onClick={(e) => {
@@ -926,65 +982,91 @@ export default function TenderPortalHome() {
                 setPreviewImage(null);
               }}
               aria-label="Close photo preview"
-              className="px-btn absolute right-1 top-1 z-10 inline-flex items-center justify-center"
+              className="absolute right-2 top-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-hairline bg-surface/95 text-ink transition-colors hover:bg-sunken"
             >
-              <PixelIcon name="close" size={10} />
+              <X className="h-4 w-4" />
             </button>
             <img
               src={previewImage}
               alt="Full evidence preview"
-              className="max-h-[80vh] w-full object-contain"
+              className="max-h-[84vh] w-full rounded-lg object-contain"
             />
           </div>
         </div>
       )}
 
-      {/* API KEY & INTEGRATION DOCUMENTATION MODAL */}
-      {showApiModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3">
-          <PixelWindow
-            title="TENDER PORTAL API & SYNC SPECIFICATIONS"
-            icon="help"
-            className="flex max-h-[90vh] w-full max-w-2xl flex-col"
-            bodyClassName="px-scroll min-h-0 flex-1 space-y-4 overflow-y-auto p-3 text-sm text-body"
-            actions={
-              <button
-                type="button"
+      {/* API specs modal */}
+      <AnimatePresence>
+        {showApiModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-3 sm:p-6"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Tender portal API and sync specifications"
+            onClick={() => setShowApiModal(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 14, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.99 }}
+              transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
+              className="my-4 w-full max-w-2xl"
+            >
+              <Surface
+                level={3}
+                padded={false}
+                className="overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+            <div className="flex items-center justify-between gap-3 border-b border-hairline bg-sunken px-5 py-3">
+              <h3 className="font-display text-base font-bold text-ink">
+                API &amp; sync specifications
+              </h3>
+              <MagneticButton
+                variant="ghost"
                 onClick={() => setShowApiModal(false)}
                 aria-label="Close API specifications"
-                className="px-btn inline-flex items-center justify-center"
+                className="!px-2.5"
               >
-                <PixelIcon name="close" size={10} />
-              </button>
-            }
-          >
-            <p className="leading-snug text-dim">
-              This tendering website exposes an authenticated ingestion API that accepts verified
-              pothole reports, high-res photos, and auto-bundled tenders transmitted by the main
-              Pothole Reporter system every 15 to 30 days.
-            </p>
-
-            <div className="px-well space-y-1 p-3 font-mono text-sm">
-              <p className="ledger text-gold">API ENDPOINT SPECIFICATION:</p>
-              <p>
-                <span className="font-bold text-green">POST</span> /api/sync{" "}
-                <span className="text-dim">(ingest potholes &amp; tenders)</span>
-              </p>
-              <p>
-                <span className="font-bold text-green">DELETE</span> /api/tenders{" "}
-                <span className="text-dim">(withdraw a tender: {"{ tender_id }"})</span>
-              </p>
-              <p className="text-dim">
-                Header: <strong className="text-body">X-API-Key: &lt;configured TENDER_API_KEY&gt;</strong>
-              </p>
-              <p className="text-dim">
-                Header: <strong className="text-body">Content-Type: application/json</strong>
-              </p>
+                <X className="h-4 w-4" />
+              </MagneticButton>
             </div>
+            <div className="max-h-[70vh] space-y-5 overflow-y-auto p-5 text-sm text-ink2">
+              <p className="leading-relaxed">
+                This tendering website exposes an authenticated ingestion API that accepts verified
+                pothole reports, high-res photos, and auto-bundled tenders transmitted by the main
+                Pothole Reporter system every 15 to 30 days.
+              </p>
 
-            <div>
-              <h4 className="ledger mb-1.5 text-body">Sample Sync Payload Format:</h4>
-              <pre className="px-well overflow-x-auto p-3 font-mono text-[11px] text-dim tnum">
+              <div className="space-y-1.5 rounded-lg border border-hairline bg-sunken p-4 font-mono text-sm">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-signal">
+                  API endpoint specification
+                </p>
+                <p>
+                  <span className="font-bold text-ok">POST</span> /api/sync{" "}
+                  <span className="text-ink3">(ingest potholes &amp; tenders)</span>
+                </p>
+                <p>
+                  <span className="font-bold text-ok">DELETE</span> /api/tenders{" "}
+                  <span className="text-ink3">(withdraw a tender: {"{ tender_id }"})</span>
+                </p>
+                <p className="text-ink3">
+                  Header: <strong className="text-ink">X-API-Key: &lt;configured TENDER_API_KEY&gt;</strong>
+                </p>
+                <p className="text-ink3">
+                  Header: <strong className="text-ink">Content-Type: application/json</strong>
+                </p>
+              </div>
+
+              <div>
+                <h4 className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink2">
+                  Sample sync payload
+                </h4>
+                <pre className="overflow-x-auto rounded-lg border border-hairline bg-sunken p-4 font-mono text-[11px] text-ink3 tnum">
 {`{
   "source": "pothole-reporter",
   "exported_at": "${new Date().toISOString()}",
@@ -1011,33 +1093,44 @@ export default function TenderPortalHome() {
     }
   ]
 }`}
-              </pre>
-            </div>
+                </pre>
+              </div>
 
-            <div className="space-y-2">
-              <h4 className="ledger text-body">Recent Inbound Synchronizations:</h4>
-              {syncLogs.length === 0 ? (
-                <p className="ledger text-dim">NO SYNC LOGS RECORDED YET.</p>
-              ) : (
-                <div className="space-y-1.5">
-                  {syncLogs.slice(0, 4).map((l) => (
-                    <div
-                      key={l.id}
-                      className="px-well flex items-center justify-between gap-2 p-2 text-[11px]"
-                    >
-                      <span className="tnum text-dim">{new Date(l.received_at).toLocaleString()}</span>
-                      <span className="tnum font-semibold text-body">
-                        {l.potholes_count} POTHOLE • {l.tenders_count} TENDERS
-                      </span>
-                      <span className="font-mono font-semibold text-green">{l.status}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="space-y-2">
+                <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink2">
+                  Recent inbound synchronisations
+                </h4>
+                {syncLogs.length === 0 ? (
+                  <p className="text-sm text-ink3">No sync logs recorded yet.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {syncLogs.slice(0, 4).map((l) => (
+                      <div
+                        key={l.id}
+                        className="flex items-center justify-between gap-3 rounded-lg border border-hairline bg-sunken p-3 text-xs"
+                      >
+                        <span className="font-mono tnum text-ink3">
+                          {new Date(l.received_at).toLocaleString()}
+                        </span>
+                        <span className="font-mono tnum font-semibold text-ink">
+                          {l.potholes_count} potholes • {l.tenders_count} tenders
+                        </span>
+                        <Pill tone={l.status === "success" ? "ok" : "bad"} className="!py-0.5 !text-[10px]">
+                          {l.status}
+                        </Pill>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </PixelWindow>
-        </div>
-      )}
-    </div>
+              </Surface>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      </main>
+    </MotionConfig>
   );
 }
