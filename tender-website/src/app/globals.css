@@ -399,6 +399,35 @@
     transform: translateX(60%);
   }
 
+  /* --- theme toggle: visuals follow the .dark class, not JS state, so they
+         are correct before hydration and never mismatch ------------------- */
+  .theme-thumb {
+    transform: translateX(0);
+    transition: transform var(--dur-3) var(--ease-out);
+  }
+
+  .dark .theme-thumb {
+    transform: translateX(34px);
+  }
+
+  .theme-sun {
+    color: var(--accent);
+    transition: color var(--dur-2) var(--ease-out);
+  }
+
+  .theme-moon {
+    color: var(--text-3);
+    transition: color var(--dur-2) var(--ease-out);
+  }
+
+  .dark .theme-sun {
+    color: var(--text-3);
+  }
+
+  .dark .theme-moon {
+    color: var(--accent);
+  }
+
   .px-bevel,
   .px-bevel-in {
     border: 1px solid var(--line);
