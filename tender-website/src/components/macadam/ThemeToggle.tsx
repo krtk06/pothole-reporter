@@ -2,7 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Theme } from "./useTheme";
+import type { Theme } from "./theme";
 
 export interface ThemeToggleProps {
   theme: Theme;

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "./motion";
-import { THEME_EVENT } from "./useTheme";
+import { THEME_EVENT } from "./theme";
 
 export interface SandHeroProps {
   className?: string;

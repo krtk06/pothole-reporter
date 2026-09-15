@@ -36,15 +36,9 @@ export type { LogoProps } from "./Logo";
 export { statusDivIcon, neutralDivIcon, MAP_SKIN_CLASS } from "./MapSkin";
 export type { PinStatus, StatusIconOptions } from "./MapSkin";
 
-export {
-  useTheme,
-  applyTheme,
-  readTheme,
-  themeInitScript,
-  THEME_KEY,
-  THEME_EVENT,
-} from "./useTheme";
-export type { Theme } from "./useTheme";
+export { useTheme } from "./useTheme";
+export { applyTheme, readTheme, themeInitScript, THEME_KEY, THEME_EVENT } from "./theme";
+export type { Theme } from "./theme";
 
 export {
   durations,

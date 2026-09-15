@@ -4,7 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import Ground from "@/components/macadam/Ground";
-import { themeInitScript } from "@/components/macadam/useTheme";
+import { themeInitScript } from "@/components/macadam/theme";
 
 const archivo = Archivo({
   subsets: ["latin"],
