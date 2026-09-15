@@ -19,9 +19,9 @@ export default function LoginMap() {
       const L = await import("leaflet");
       if (cancelled || !container || (container as any)._leaflet_id) return;
 
-      const fallbackPos: [number, number] = [20, 0];
+      const fallbackPos: [number, number] = [15.9, 80.5];
       let initialPos: [number, number] = fallbackPos;
-      let initialZoom = 2;
+      let initialZoom = 7;
 
       if (navigator.geolocation) {
         try {

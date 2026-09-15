@@ -3,15 +3,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { Loader2, LogOut, Map, MapPin, RefreshCw } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import { PublicPothole, type AdministrativeArea, type MapBoundingBox } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import AndhraLocationSelector, { type AndhraLocationSelection } from "@/components/AndhraLocationSelector";
 import { ANDHRA_STATE } from "@/data/andhraDirectory";
+import DotPager from "@/components/pixel/DotPager";
+import PixelIcon from "@/components/pixel/PixelIcon";
+import PixelSprite from "@/components/pixel/PixelSprite";
+import BrandLogo from "@/components/pixel/BrandLogo";
+import {
+  PixelWindow,
+  PixelButton,
+  PixelLamp,
+  PixelChip,
+} from "@/components/pixel/PixelUI";
 
 const PublicMiniMap = dynamic(() => import("@/components/PublicMiniMap"), { ssr: false });
 
@@ -162,105 +170,137 @@ export default function Dashboard() {
     fixed: potholes.filter((p) => p.status === "fixed").length,
   };
 
+  const statItems = [
+    { label: "Total", value: stats.total },
+    { label: "Reported", value: stats.pending },
+    { label: "Accepted", value: stats.verified },
+    { label: "Fixed", value: stats.fixed },
+  ];
+
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
-      <nav className="flex items-center justify-between p-4 md:px-16 lg:px-24 xl:px-32 md:py-6 w-full border-b border-[var(--color-border)]">
-        <a className="flex items-center gap-2" href="/dashboard">
-          <div className="w-8 h-8 rounded-lg bg-[var(--color-text-primary)] flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="var(--color-bg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <span className="font-bold text-[var(--color-heading)]">Pothole Reporter</span>
+    <div className="h-[100dvh] flex flex-col overflow-hidden">
+      <header className="px-titlebar flex shrink-0 items-center justify-between gap-2 px-3 py-2">
+        <a href="/dashboard" className="flex min-w-0 items-center gap-2">
+          <BrandLogo
+            src="/brand/pothole-reporter.png"
+            alt="Pothole Reporter"
+            size={32}
+            fallback={
+              <span className="px-bevel flex h-6 w-6 shrink-0 items-center justify-center bg-[var(--px-panel)] text-[var(--px-text)]">
+                <PixelSprite name="worker" size={16} alt="Pothole Reporter" />
+              </span>
+            }
+          />
+          <span className="font-pixel truncate text-[10px]">Pothole Reporter</span>
         </a>
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-2">
           {area && (
-            <div className="hidden md:flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)] border border-[var(--color-border)] rounded-full px-3 py-1">
-              <MapPin className="w-3 h-3" />
-              {area.name}
-            </div>
+            <PixelChip className="hidden min-w-0 sm:inline-flex">
+              <PixelIcon name="pin" size={10} />
+              <span className="truncate">{area.name}</span>
+            </PixelChip>
           )}
-          <span className="text-sm text-[var(--color-text-secondary)] hidden sm:block">Guest</span>
+          <span className="ledger hidden text-[var(--px-on-accent)] sm:block">Guest</span>
           <ThemeToggle />
-          <Button variant="ghost" size="sm" onClick={() => { void logout().finally(() => router.push("/login")); }} className="text-[var(--color-text-secondary)]">
-            <LogOut className="w-4 h-4" />
+          <PixelButton
+            variant="red"
+            icon="close"
+            onClick={() => { void logout().finally(() => router.push("/login")); }}
+          >
             Exit
-          </Button>
+          </PixelButton>
         </div>
-      </nav>
+      </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-10">
-        <div
-          className="text-center mb-8 bg-no-repeat bg-cover bg-center rounded-2xl py-12 px-4 relative overflow-hidden border border-[var(--color-border)]"
-          style={{ backgroundImage: "url('https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/gridBackground.png')" }}
-        >
-          <div className="relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-heading)] max-w-3xl mx-auto">
-              Road Conditions In Your Area
-            </h1>
-            <p className="text-[var(--color-text-secondary)] mt-4 max-w-xl mx-auto">
-              Select a district, mandal, and city/village to keep the map focused on that area only.
-            </p>
-          </div>
-        </div>
+      <DotPager
+        className="flex-1 min-h-0"
+        ariaLabel="Dashboard sections"
+        pages={[
+          { id: "status", label: "Status" },
+          { id: "map", label: "Map" },
+        ]}
+      >
+        {/* Panel 1 — STATUS */}
+        <div className="px-scroll h-full overflow-y-auto p-3 md:p-4">
+          <div className="mx-auto grid max-w-3xl gap-4">
+            <PixelWindow title="Area Filter" icon="filter" bodyClassName="p-4">
+              <AndhraLocationSelector
+                value={locationSelection}
+                onChange={handleLocationChange}
+                label={false}
+              />
+              {resolvingArea && (
+                <p className="mt-4 flex items-center gap-2 text-sm text-dim">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Resolving selected city/village...
+                </p>
+              )}
+              {!area && !resolvingArea && (
+                <p className="mt-4 text-sm text-orange">
+                  Choose district, mandal, and city/village to load the scoped map.
+                </p>
+              )}
+              {error && <p className="mt-4 text-sm text-red">{error}</p>}
+            </PixelWindow>
 
-        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
-          <Card className="p-5 h-fit bg-[var(--color-surface)] border-[var(--color-border)]">
-            <div className="flex items-center gap-2 mb-4">
-              <MapPin className="w-4 h-4 text-[var(--color-text-secondary)]" />
-              <h2 className="text-lg font-semibold text-[var(--color-heading)]">Area Filter</h2>
-            </div>
-            <AndhraLocationSelector
-              value={locationSelection}
-              onChange={handleLocationChange}
-              label={false}
-            />
-            {resolvingArea && (
-              <p className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)] mt-4">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                Resolving selected city/village...
-              </p>
-            )}
-            {!area && !resolvingArea && (
-              <p className="text-xs text-amber-500 mt-4">Choose district, mandal, and city/village to load the scoped map.</p>
-            )}
-            {error && <p className="text-xs text-red-400 mt-4">{error}</p>}
-          </Card>
-
-          <div className="grid gap-5">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { label: "Total", value: stats.total },
-                { label: "Reported", value: stats.pending },
-                { label: "Accepted", value: stats.verified },
-                { label: "Fixed", value: stats.fixed },
-              ].map((item) => (
-                <Card key={item.label} className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
-                  <p className="text-xs text-[var(--color-text-secondary)]">{item.label}</p>
-                  <p className="text-2xl font-bold text-[var(--color-heading)]">{item.value}</p>
-                </Card>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {statItems.map((item) => (
+                <PixelWindow key={item.label} title={item.label} bodyClassName="p-3">
+                  <p className="font-pixel tnum text-lg">{item.value}</p>
+                </PixelWindow>
               ))}
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-xl font-bold text-[var(--color-heading)]">
-                    <Map className="w-5 h-5 inline-block mr-2 text-[var(--color-text-secondary)]" />
-                    {area?.name || "Select Area"}
-                  </h2>
-                  <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                    {area ? `Map is scoped to ${locationLabel}` : "No area selected"}
-                  </p>
-                </div>
-                <Button variant="ghost" size="sm" onClick={fetchPotholes} className="text-[var(--color-text-secondary)]" disabled={loadingMap || !scopedBounds}>
-                  {loadingMap ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-                </Button>
-              </div>
+            <PixelWindow title="Map Legend" icon="map" bodyClassName="flex flex-wrap gap-2 p-4">
+              <PixelChip>
+                <PixelLamp status="open" />
+                Accepted
+              </PixelChip>
+              <PixelChip>
+                <PixelLamp status="review" />
+                Reported
+              </PixelChip>
+              <PixelChip>
+                <PixelLamp status="done" className="!bg-red" />
+                Rejected
+              </PixelChip>
+              <PixelChip>
+                <PixelLamp status="assigned" />
+                Fixed
+              </PixelChip>
+            </PixelWindow>
+          </div>
+        </div>
 
+        {/* Panel 2 — MAP */}
+        <div className="flex h-full min-h-0 flex-col">
+          <div className="flex shrink-0 items-center justify-between gap-3 px-3 py-2">
+            <div className="min-w-0">
+              <h2 className="flex items-center gap-2 font-pixel text-[10px] truncate">
+                <PixelIcon name="map" size={12} />
+                {area?.name || "Select Area"}
+              </h2>
+              <p className="ledger truncate text-dim">
+                {area ? `Map is scoped to ${locationLabel}` : "No area selected"}
+              </p>
+            </div>
+            <PixelButton
+              icon="search"
+              onClick={fetchPotholes}
+              disabled={loadingMap || !scopedBounds}
+            >
+              {loadingMap ? "Loading" : "Refresh"}
+            </PixelButton>
+          </div>
+
+          <div className="min-h-0 flex-1 px-3 pb-3">
+            <div className="h-full">
               {loadingMap ? (
-                <div className="flex items-center justify-center h-[480px] rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
-                  <Loader2 className="w-6 h-6 animate-spin text-[var(--color-text-secondary)]" />
+                <div className="px-well flex h-full items-center justify-center">
+                  <span className="ledger flex items-center gap-2 text-dim">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    Loading map data...
+                  </span>
                 </div>
               ) : (
                 <PublicMiniMap
@@ -268,7 +308,7 @@ export default function Dashboard() {
                   potholes={potholes}
                   bounds={scopedBounds || ANDHRA_STATE.bbox}
                   boundary={area?.boundary || null}
-                  height={480}
+                  height="100%"
                   center={area?.latitude && area.longitude ? [area.latitude, area.longitude] : undefined}
                   zoom={area ? 13 : 7}
                 />
@@ -276,7 +316,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </main>
+      </DotPager>
     </div>
   );
 }

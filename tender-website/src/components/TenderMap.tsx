@@ -5,16 +5,16 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { Pothole } from "@/lib/tenderStore";
 
-// Configure default Leaflet icon using data URIs to avoid missing asset issues in SSR
-const markerIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
+// Seal-pin markers: brass-ringed dossier pins, lamp-filled by tender status.
+// No remote icon assets; fully offline-safe divIcons.
+const pinIcon = (status?: string) =>
+  new L.DivIcon({
+    className: "seal-pin-wrap",
+    html: `<span class="seal-pin seal-pin--${status || "open"}"></span>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -10],
+  });
 
 // Guard against unmounted pane position errors (_leaflet_pos)
 if (typeof window !== "undefined" && L && L.DomUtil) {
@@ -99,12 +99,12 @@ export default function TenderMap({
           <Marker
             key={p.id}
             position={[p.latitude, p.longitude]}
-            icon={markerIcon}
+            icon={pinIcon(p.status)}
           >
             <Popup>
-              <div className="p-1 max-w-xs text-slate-100">
+              <div className="p-1 max-w-xs text-parchment">
                 {p.image_url && (
-                  <div className="mb-2 rounded overflow-hidden bg-slate-800 aspect-video relative">
+                  <div className="mb-2 rounded overflow-hidden bg-ink aspect-video relative border border-brass/30">
                     <img
                       src={p.image_url}
                       alt="Pothole evidence"
@@ -116,7 +116,7 @@ export default function TenderMap({
                   </div>
                 )}
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <span className="font-semibold text-xs text-amber-400">Pothole Evidence</span>
+                  <span className="font-semibold text-xs text-turmeric">Pothole Evidence</span>
                   <span className="text-[10px] bg-green-900/60 text-green-300 border border-green-700/50 px-1.5 py-0.5 rounded font-mono">
                     {p.status}
                   </span>

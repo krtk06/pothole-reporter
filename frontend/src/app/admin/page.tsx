@@ -1,55 +1,69 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "motion/react";
-import {
-  MapPin, FileText, DollarSign, Loader2, Filter,
-  CheckCircle, XCircle, Clock, RefreshCw, Shield,
-  Check, X, ChevronRight, Map, Users, AlertTriangle,
-  Send, ExternalLink, Key, Eye, EyeOff, Calendar, Save, Play, CheckCheck, Globe
-} from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api, ApiError } from "@/lib/api";
 import { AdminReport, Tender, MapCluster, PublicPothole, TenderSyncConfig, TenderSyncLog } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ANDHRA_STATE, getFallbackDistricts, getFallbackSubdistricts } from "@/data/andhraDirectory";
 import type { AdministrativeArea, MapBoundingBox } from "@/types";
 import dynamic from "next/dynamic";
+import PixelIcon from "@/components/pixel/PixelIcon";
+import BrandLogo from "@/components/pixel/BrandLogo";
+import { PixelWindow, PixelButton, PixelLamp, PixelChip } from "@/components/pixel/PixelUI";
+import DotPager from "@/components/pixel/DotPager";
 
 const DynamicMap = dynamic(() => import("@/components/MapView"), {
   ssr: false,
-  loading: () => <div className="h-[500px] w-full rounded-lg bg-[var(--color-muted)] animate-pulse border border-[var(--color-border)]" />,
+  loading: () => <div className="px-well h-[420px] w-full" />,
 });
-const PublicMiniMap = dynamic(() => import("@/components/PublicMiniMap"), { ssr: false });
 
-const statusColors: Record<string, string> = {
-  pending: "text-amber-500",
-  verified: "text-green-500",
-  rejected: "text-red-400",
-  fixed: "text-indigo-400",
+const PAGE_SIZE = 6;
+
+type LampStatus = "open" | "review" | "assigned" | "done";
+
+const reportLamp: Record<string, LampStatus> = {
+  pending: "review",
+  verified: "open",
+  rejected: "done",
+  fixed: "assigned",
 };
 
-const statusIcons: Record<string, ReactNode> = {
-  pending: <Clock className="w-4 h-4" />,
-  verified: <CheckCircle className="w-4 h-4" />,
-  rejected: <XCircle className="w-4 h-4" />,
-  fixed: <CheckCircle className="w-4 h-4" />,
+const reportTone: Record<string, string> = {
+  pending: "text-orange",
+  verified: "text-green",
+  rejected: "text-red",
+  fixed: "text-blue",
 };
 
-const tenderStatusBadge: Record<string, { label: string; color: "default" | "secondary" | "destructive" | "outline" }> = {
-  open: { label: "Open", color: "secondary" },
-  assigned: { label: "Accepted", color: "default" },
-  completed: { label: "Completed", color: "outline" },
-  rejected: { label: "Withdrawn", color: "destructive" },
+const tenderLamp: Record<string, LampStatus> = {
+  open: "open",
+  assigned: "assigned",
+  completed: "done",
+  rejected: "done",
 };
+
+const tenderTone: Record<string, string> = {
+  open: "text-green",
+  assigned: "text-blue",
+  completed: "text-green",
+  rejected: "text-red",
+};
+
+const tenderLabel: Record<string, string> = {
+  open: "Open",
+  assigned: "Accepted",
+  completed: "Completed",
+  rejected: "Withdrawn",
+};
+
+const PAGES = [
+  { id: "map", label: "Map View" },
+  { id: "reports", label: "Reports" },
+  { id: "tenders", label: "Tenders" },
+  { id: "sync", label: "Tender Sync" },
+];
 
 function normalize(value?: string | null) {
   return (value || "").trim().replace(/\s+/g, " ").toLowerCase();
@@ -78,9 +92,48 @@ function ScopeLabel({ user }: { user: any }) {
       : `${user.state || "State"} State`;
 
   return (
-    <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)] border border-[var(--color-border)] rounded-full px-3 py-1">
-      <Shield className="w-3 h-3" />
+    <PixelChip className="hidden sm:inline-flex">
+      <PixelIcon name="user" size={10} />
       <span>{scopeText} Admin</span>
+    </PixelChip>
+  );
+}
+
+function PixelPager({
+  page,
+  pageCount,
+  onChange,
+  className = "",
+}: {
+  page: number;
+  pageCount: number;
+  onChange: (page: number) => void;
+  className?: string;
+}) {
+  if (pageCount <= 1) return null;
+  return (
+    <div
+      className={`flex shrink-0 items-center justify-between gap-2 border-t-2 border-[var(--px-line)] bg-[var(--px-panel)] px-2 py-1.5 ${className}`}
+    >
+      <PixelButton
+        type="button"
+        onClick={() => onChange(page - 1)}
+        disabled={page <= 1}
+      >
+        <PixelIcon name="chevR" size={12} className="rotate-180" />
+        Prev
+      </PixelButton>
+      <span className="ledger text-dim">
+        Page {page} / {pageCount}
+      </span>
+      <PixelButton
+        type="button"
+        onClick={() => onChange(page + 1)}
+        disabled={page >= pageCount}
+      >
+        Next
+        <PixelIcon name="chevR" size={12} />
+      </PixelButton>
     </div>
   );
 }
@@ -103,6 +156,12 @@ export default function AdminDashboard() {
   const [successMsg, setSuccessMsg] = useState("");
   const [scopeArea, setScopeArea] = useState<AdministrativeArea | null>(null);
 
+  // Fixed-viewport pagination + feedback animation state (presentation only)
+  const [reportPage, setReportPage] = useState(1);
+  const [tenderPage, setTenderPage] = useState(1);
+  const [reportFeedback, setReportFeedback] = useState<{ id: string; kind: "verify" | "reject" } | null>(null);
+  const [syncPulse, setSyncPulse] = useState(false);
+
   // Tender Sync State
   const [syncConfig, setSyncConfig] = useState<TenderSyncConfig | null>(null);
   const [syncLogs, setSyncLogs] = useState<TenderSyncLog[]>([]);
@@ -124,6 +183,10 @@ export default function AdminDashboard() {
     fetchAll();
     void resolveAdminScope();
   }, [user]);
+
+  useEffect(() => {
+    setReportPage(1);
+  }, [statusFilter]);
 
   const scopeBounds = areaBounds(scopeArea) || (user?.state === "Andhra Pradesh" ? ANDHRA_STATE.bbox : null);
 
@@ -263,6 +326,8 @@ export default function AdminDashboard() {
       setReports((prev) =>
         prev.map((r) => (r.id === reportId ? { ...r, status } : r))
       );
+      setReportFeedback({ id: reportId, kind: status === "verified" ? "verify" : "reject" });
+      setTimeout(() => setReportFeedback(null), 350);
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -322,6 +387,8 @@ export default function AdminDashboard() {
           type: "success",
           text: `Sync dispatched! ${res.potholes_count} potholes & ${res.tenders_count} tenders sent to tender website.`,
         });
+        setSyncPulse(true);
+        setTimeout(() => setSyncPulse(false), 400);
       } else {
         setSyncFeedback({
           type: "error",
@@ -349,6 +416,15 @@ export default function AdminDashboard() {
     ? reports
     : reports.filter((r) => r.status === statusFilter);
 
+  // Client-side pagination (fixed viewport never scrolls)
+  const reportPageCount = Math.max(1, Math.ceil(filteredReports.length / PAGE_SIZE));
+  const reportPageSafe = Math.min(reportPage, reportPageCount);
+  const pagedReports = filteredReports.slice((reportPageSafe - 1) * PAGE_SIZE, reportPageSafe * PAGE_SIZE);
+
+  const tenderPageCount = Math.max(1, Math.ceil(tenders.length / PAGE_SIZE));
+  const tenderPageSafe = Math.min(tenderPage, tenderPageCount);
+  const pagedTenders = tenders.slice((tenderPageSafe - 1) * PAGE_SIZE, tenderPageSafe * PAGE_SIZE);
+
   // Stats
   const stats = {
     total: reports.length,
@@ -359,95 +435,104 @@ export default function AdminDashboard() {
     assignedTenders: tenders.filter((t) => t.status === "assigned").length,
   };
 
+  const statCards: { label: string; value: number; tone: string }[] = [
+    { label: "Total Reports", value: stats.total, tone: "text-blue" },
+    { label: "Verified", value: stats.verified, tone: "text-green" },
+    { label: "Pending", value: stats.pending, tone: "text-orange" },
+    { label: "Fixed", value: stats.fixed, tone: "text-blue" },
+    { label: "Open Tenders", value: stats.openTenders, tone: "text-gold" },
+    { label: "Accepted", value: stats.assignedTenders, tone: "text-green" },
+  ];
+
   if (!mounted || !user) return null;
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between p-4 md:px-12 md:py-5 w-full border-b border-[var(--color-border)] sticky top-0 z-40 bg-[var(--color-bg)]/95 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[var(--color-text-primary)] flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="var(--color-bg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <span className="font-bold text-[var(--color-heading)]">Admin Panel</span>
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-[var(--px-void)]">
+      {/* Fixed header strip */}
+      <header className="flex shrink-0 items-center justify-between gap-2 border-b-2 border-[var(--px-line)] bg-[var(--px-panel)] px-2 py-2 sm:px-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <BrandLogo
+            src="/brand/pothole-reporter.png"
+            alt="Pothole Reporter"
+            size={34}
+            fallback={
+              <span className="px-bevel grid h-7 w-7 shrink-0 place-items-center bg-[var(--px-gold)] text-[var(--px-on-accent)]">
+                <PixelIcon name="grid" size={14} />
+              </span>
+            }
+          />
+          <span className="font-pixel truncate text-[10px] text-body">ADMIN PANEL</span>
           <ScopeLabel user={user} />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2">
           <a
             href="http://localhost:3001"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg transition-colors font-medium"
+            className="px-btn px-btn-gold hidden items-center gap-1 sm:inline-flex"
             title="Open dedicated Tender & Contractor Website"
           >
-            <ExternalLink className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Tender Website</span> ↗
+            <PixelIcon name="chevR" size={12} />
+            Tender Website
           </a>
-          <span className="text-sm text-[var(--color-text-secondary)] hidden sm:block">{user.name}</span>
+          <span className="hidden font-body text-sm text-dim md:block">{user.name}</span>
           <ThemeToggle />
-          <Button variant="ghost" size="sm" onClick={() => { void logout().finally(() => router.push("/")); }} className="text-[var(--color-text-secondary)]">
+          <PixelButton
+            type="button"
+            variant="red"
+            onClick={() => { void logout().finally(() => router.push("/")); }}
+          >
+            <PixelIcon name="close" size={12} />
             Logout
-          </Button>
+          </PixelButton>
         </div>
-      </nav>
+      </header>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-        {/* Success toast */}
-        <AnimatePresence>
-          {successMsg && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-              className="fixed top-20 right-6 z-50 flex items-center gap-2 bg-green-900/80 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-xl shadow-xl backdrop-blur-sm"
-            >
-              <CheckCircle className="w-4 h-4" /> {successMsg}
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Compact numeral-first stats strip */}
+      <div className="grid shrink-0 grid-cols-3 gap-2 px-2 pt-2 sm:px-3 lg:grid-cols-6">
+        {statCards.map(({ label, value, tone }) => (
+          <div key={label} className="px-window px-2 py-1.5">
+            <p className="font-pixel text-sm leading-none tnum text-body">{value}</p>
+            <p className={`ledger mt-1 truncate ${tone}`}>{label}</p>
+          </div>
+        ))}
+      </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          {[
-            { label: "Total Reports", value: stats.total, icon: <FileText className="w-4 h-4" />, color: "text-blue-400" },
-            { label: "Verified", value: stats.verified, icon: <CheckCircle className="w-4 h-4" />, color: "text-green-500" },
-            { label: "Pending", value: stats.pending, icon: <Clock className="w-4 h-4" />, color: "text-amber-500" },
-            { label: "Fixed", value: stats.fixed, icon: <CheckCircle className="w-4 h-4" />, color: "text-indigo-400" },
-            { label: "Open Tenders", value: stats.openTenders, icon: <FileText className="w-4 h-4" />, color: "text-orange-400" },
-            { label: "Accepted", value: stats.assignedTenders, icon: <DollarSign className="w-4 h-4" />, color: "text-purple-400" },
-          ].map(({ label, value, icon, color }) => (
-            <Card key={label} className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
-              <div className={`flex items-center gap-1.5 mb-2 ${color}`}>{icon}<span className="text-xs text-[var(--color-text-secondary)]">{label}</span></div>
-              <p className="text-2xl font-bold text-[var(--color-heading)]">{value}</p>
-            </Card>
-          ))}
+      {/* Success toast */}
+      {successMsg && (
+        <div className="px-window px-anim-stamp fixed right-4 top-4 z-50 flex items-center gap-2 px-3 py-2">
+          <PixelIcon name="check" size={14} className="text-green" />
+          <span className="font-body text-sm text-body">{successMsg}</span>
         </div>
+      )}
 
-        <Tabs defaultValue="map" className="w-full">
-          <TabsList className="mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
-            <TabsTrigger value="map"><Map className="w-4 h-4 mr-2" />Map View</TabsTrigger>
-            <TabsTrigger value="reports"><FileText className="w-4 h-4 mr-2" />Reports</TabsTrigger>
-            <TabsTrigger value="tenders"><DollarSign className="w-4 h-4 mr-2" />Tenders</TabsTrigger>
-            <TabsTrigger value="integration"><Send className="w-4 h-4 mr-2" />Tender Sync (15–30 Days)</TabsTrigger>
-          </TabsList>
-
-          {/* MAP TAB */}
-          <TabsContent value="map">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-[var(--color-heading)] mb-1">
-                Pothole Distribution
-                {scopeBounds && (
-                  <span className="text-sm font-normal text-[var(--color-text-secondary)] ml-2">
-                    — bounded to {user.admin_scope} level
-                  </span>
-                )}
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                Showing {publicPotholes.length} potholes with {clusters.length} block clusters
-              </p>
+      <DotPager pages={PAGES} className="flex-1 min-h-0 mt-2">
+        {/* ---------- MAP PANEL ---------- */}
+        <div className="flex h-full min-h-0 flex-col px-2 pb-14 pt-2 sm:px-3 lg:pb-3 lg:pr-12">
+          <div className="mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
+            <h2 className="flex items-center gap-2 font-pixel text-[11px] text-body">
+              <PixelIcon name="map" size={14} className="text-gold" />
+              POTHOLE DISTRIBUTION
+              {scopeBounds && (
+                <span className="font-body text-xs font-normal text-dim">
+                  — bounded to {user.admin_scope} level
+                </span>
+              )}
+            </h2>
+            <div className="flex items-center gap-2">
+              <PixelChip>
+                <PixelIcon name="pin" size={10} />
+                {publicPotholes.length} potholes
+              </PixelChip>
+              <PixelChip>
+                <PixelIcon name="grid" size={10} />
+                {clusters.length} clusters
+              </PixelChip>
             </div>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-scroll">
             {loadingMap ? (
-              <div className="h-[500px] rounded-lg bg-[var(--color-muted)] animate-pulse border border-[var(--color-border)]" />
+              <div className="px-well h-[420px] w-full" />
             ) : (
               <DynamicMap
                 clusters={clusters}
@@ -461,575 +546,632 @@ export default function AdminDashboard() {
                 bounds={scopeBounds}
               />
             )}
-          </TabsContent>
+          </div>
+        </div>
 
-          {/* REPORTS TAB */}
-          <TabsContent value="reports">
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-              <h2 className="text-lg font-semibold text-[var(--color-heading)]">All Reports</h2>
-              <div className="flex items-center gap-3">
-                <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v ?? "all")}>
-                  <SelectTrigger className="w-40 bg-[var(--color-surface)] border-[var(--color-border)]">
-                    <Filter className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder="Filter" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="verified">Verified</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                    <SelectItem value="fixed">Fixed</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button variant="ghost" size="sm" onClick={fetchAll} className="text-[var(--color-text-secondary)]">
-                  <RefreshCw className="w-4 h-4" />
-                </Button>
-              </div>
+        {/* ---------- REPORTS PANEL ---------- */}
+        <div className="flex h-full min-h-0 flex-col px-2 pb-14 pt-2 sm:px-3 lg:pb-3 lg:pr-12">
+          <div className="mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
+            <h2 className="flex items-center gap-2 font-pixel text-[11px] text-body">
+              <PixelIcon name="file" size={14} className="text-gold" />
+              ALL REPORTS
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="relative inline-flex items-center">
+                <PixelIcon name="filter" size={12} className="pointer-events-none absolute left-2 text-dim" />
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-well appearance-none bg-[var(--px-well)] py-1.5 pl-7 pr-3 font-pixel text-[9px] uppercase text-body outline-none"
+                  aria-label="Filter reports by status"
+                >
+                  <option value="all">All</option>
+                  <option value="pending">Pending</option>
+                  <option value="verified">Verified</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="fixed">Fixed</option>
+                </select>
+              </span>
+              <PixelButton type="button" onClick={fetchAll} title="Refresh reports">
+                <PixelIcon name="clock" size={12} />
+                Refresh
+              </PixelButton>
             </div>
+          </div>
 
+          <div className="min-h-0 flex-1 overflow-y-auto px-scroll pr-1">
             {loading ? (
-              <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-[var(--color-text-primary)]" /></div>
+              <div className="px-well flex items-center justify-center gap-2 p-6">
+                <PixelIcon name="clock" size={14} className="px-anim-bob text-dim" />
+                <span className="font-pixel text-[10px] text-dim">LOADING</span>
+              </div>
             ) : filteredReports.length === 0 ? (
-              <div className="text-center py-20 border-2 border-dashed border-[var(--color-border)] rounded-2xl">
-                <AlertTriangle className="w-12 h-12 mx-auto mb-3 text-[var(--color-text-secondary)] opacity-40" />
-                <p className="text-[var(--color-text-secondary)]">No reports found</p>
+              <div className="px-well flex flex-col items-center gap-2 p-10 text-center">
+                <PixelIcon name="warn" size={28} className="text-dim" />
+                <p className="font-body text-sm text-dim">No reports found</p>
               </div>
             ) : (
-              <div className="grid gap-3">
-                {filteredReports.map((report) => (
-                  <Card key={report.id} className="p-4 bg-[var(--color-surface)] border-[var(--color-border)] hover:border-[var(--color-text-primary)]/30 transition-colors">
-                    <div className="flex items-start justify-between gap-4 flex-wrap">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          <span className={`flex items-center gap-1 text-xs font-medium ${statusColors[report.status]}`}>
-                            {statusIcons[report.status]} {report.status}
-                          </span>
+              <div className="grid gap-2">
+                {pagedReports.map((report) => (
+                  <div
+                    key={report.id}
+                    className={`px-window p-3 ${
+                      reportFeedback?.id === report.id
+                        ? reportFeedback.kind === "verify"
+                          ? "px-anim-stamp"
+                          : "px-anim-shake"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-1.5 flex flex-wrap items-center gap-2">
+                          <PixelChip>
+                            <PixelLamp status={reportLamp[report.status] ?? "done"} />
+                            <span className={reportTone[report.status] ?? "text-dim"}>{report.status}</span>
+                          </PixelChip>
                           {report.block_id && (
-                            <span className="text-xs font-mono text-[var(--color-text-secondary)] bg-[var(--color-muted)] px-2 py-0.5 rounded">
-                              {report.block_id}
-                            </span>
+                            <PixelChip className="font-mono tnum text-dim">{report.block_id}</PixelChip>
                           )}
                         </div>
-                        <p className="text-sm text-[var(--color-text-secondary)] mb-1">
-                          <Users className="w-3 h-3 inline mr-1" />
+                        <p className="font-body text-sm text-body">
+                          <PixelIcon name="user" size={12} className="mr-1 inline-block align-middle text-dim" />
                           {report.reporter_name} • {report.reporter_phone || "No phone"}
                         </p>
                         {report.address_notes && (
-                          <p className="text-xs text-[var(--color-text-secondary)] line-clamp-2 mb-1">{report.address_notes}</p>
+                          <p className="line-clamp-2 font-body text-xs text-dim">{report.address_notes}</p>
                         )}
-                        <p className="text-xs text-[var(--color-text-secondary)] font-mono">
-                          <MapPin className="w-3 h-3 inline mr-1" />
+                        <p className="font-mono text-xs tnum text-dim">
+                          <PixelIcon name="pin" size={12} className="mr-1 inline-block align-middle" />
                           {Number(report.latitude).toFixed(5)}, {Number(report.longitude).toFixed(5)}
                         </p>
-                        <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                        <p className="font-body text-xs text-dim">
                           {new Date(report.created_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
                         </p>
                       </div>
-                      {/* Quick actions for pending reports */}
                       {report.status === "pending" && (
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <Button
-                            size="sm"
+                        <div className="flex shrink-0 items-center gap-2">
+                          <PixelButton
+                            type="button"
+                            variant="green"
+                            disabled={reportUpdating === report.id}
                             onClick={() => handleReportStatus(report.id, "verified")}
-                            disabled={reportUpdating === report.id}
-                            className="h-8 px-3 bg-green-900/30 hover:bg-green-900/50 text-green-400 border border-green-500/30 rounded-lg"
-                            variant="ghost"
                           >
-                            {reportUpdating === report.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Check className="w-3 h-3 mr-1" />Verify</>}
-                          </Button>
-                          <Button
-                            size="sm"
+                            {reportUpdating === report.id ? (
+                              "…"
+                            ) : (
+                              <>
+                                <PixelIcon name="check" size={12} />
+                                Verify
+                              </>
+                            )}
+                          </PixelButton>
+                          <PixelButton
+                            type="button"
+                            variant="red"
+                            disabled={reportUpdating === report.id}
                             onClick={() => handleReportStatus(report.id, "rejected")}
-                            disabled={reportUpdating === report.id}
-                            className="h-8 px-3 bg-red-900/30 hover:bg-red-900/50 text-red-400 border border-red-500/30 rounded-lg"
-                            variant="ghost"
                           >
-                            <X className="w-3 h-3 mr-1" />Reject
-                          </Button>
+                            <PixelIcon name="close" size={12} />
+                            Reject
+                          </PixelButton>
                         </div>
                       )}
                     </div>
-                  </Card>
+                  </div>
                 ))}
               </div>
             )}
-          </TabsContent>
+          </div>
 
-          {/* TENDERS TAB */}
-          <TabsContent value="tenders">
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-[var(--color-heading)]">Tenders</h2>
-                <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                  Review tenders — accept them or unsend to remove from the tendering website
-                </p>
-              </div>
-              <Button variant="ghost" size="sm" onClick={fetchAll} className="text-[var(--color-text-secondary)]">
-                <RefreshCw className="w-4 h-4" />
-              </Button>
+          <PixelPager
+            page={reportPageSafe}
+            pageCount={reportPageCount}
+            onChange={setReportPage}
+            className="mt-2"
+          />
+        </div>
+
+        {/* ---------- TENDERS PANEL ---------- */}
+        <div className="flex h-full min-h-0 flex-col px-2 pb-14 pt-2 sm:px-3 lg:pb-3 lg:pr-12">
+          <div className="mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 className="flex items-center gap-2 font-pixel text-[11px] text-body">
+                <PixelIcon name="coin" size={14} className="text-gold" />
+                TENDERS
+              </h2>
+              <p className="font-body text-xs text-dim">
+                Accept tenders or unsend to remove them from the tendering website
+              </p>
             </div>
+            <PixelButton type="button" onClick={fetchAll} title="Refresh tenders">
+              <PixelIcon name="clock" size={12} />
+              Refresh
+            </PixelButton>
+          </div>
 
+          <div className="min-h-0 flex-1 overflow-y-auto px-scroll pr-1">
             {loading ? (
-              <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-[var(--color-text-primary)]" /></div>
+              <div className="px-well flex items-center justify-center gap-2 p-6">
+                <PixelIcon name="clock" size={14} className="px-anim-bob text-dim" />
+                <span className="font-pixel text-[10px] text-dim">LOADING</span>
+              </div>
             ) : tenders.length === 0 ? (
-              <div className="text-center py-20 border-2 border-dashed border-[var(--color-border)] rounded-2xl">
-                <FileText className="w-12 h-12 mx-auto mb-3 text-[var(--color-text-secondary)] opacity-40" />
-                <p className="text-[var(--color-text-secondary)]">No tenders yet</p>
-                <p className="text-xs text-[var(--color-text-secondary)] opacity-70 mt-1">Tenders are auto-generated when pothole threshold is met</p>
+              <div className="px-well flex flex-col items-center gap-2 p-10 text-center">
+                <PixelIcon name="file" size={28} className="text-dim" />
+                <p className="font-body text-sm text-dim">No tenders yet</p>
+                <p className="font-body text-xs text-dim">Tenders are auto-generated when pothole threshold is met</p>
               </div>
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {tenders.map((tender) => (
-                  <Card key={tender.id} className="p-5 bg-[var(--color-surface)] border-[var(--color-border)] hover:border-[var(--color-text-primary)]/30 transition-colors flex flex-col gap-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-xs font-mono text-[var(--color-text-secondary)] mb-1">{tender.block_id}</p>
-                        <p className="text-lg font-bold text-[var(--color-heading)]">
+              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                {pagedTenders.map((tender) => (
+                  <div key={tender.id} className="px-window flex flex-col gap-3 p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="ledger truncate text-gold">{tender.block_id}</p>
+                        <p className="font-pixel text-sm tnum text-body">
                           ₹{Number(tender.estimated_cost).toLocaleString("en-IN")}
                         </p>
                       </div>
-                      <Badge variant={tenderStatusBadge[tender.status]?.color || "secondary"}>
-                        {tenderStatusBadge[tender.status]?.label || tender.status}
-                      </Badge>
+                      <PixelChip>
+                        <PixelLamp status={tenderLamp[tender.status] ?? "done"} />
+                        <span className={tenderTone[tender.status] ?? "text-dim"}>
+                          {tenderLabel[tender.status] ?? tender.status}
+                        </span>
+                      </PixelChip>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="bg-[var(--color-muted)] rounded-lg p-2.5">
-                        <p className="text-xs text-[var(--color-text-secondary)]">Potholes</p>
-                        <p className="font-semibold text-[var(--color-heading)]">{tender.pothole_count}</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="px-well p-2">
+                        <p className="ledger text-dim">Potholes</p>
+                        <p className="font-pixel text-[10px] tnum text-body">{tender.pothole_count}</p>
                       </div>
-                      <div className="bg-[var(--color-muted)] rounded-lg p-2.5">
-                        <p className="text-xs text-[var(--color-text-secondary)]">Generated</p>
-                        <p className="font-semibold text-[var(--color-heading)] text-xs">
+                      <div className="px-well p-2">
+                        <p className="ledger text-dim">Generated</p>
+                        <p className="font-body text-xs text-body">
                           {new Date(tender.generated_at).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
 
-                    {/* Accept / Unsend buttons — only for open tenders.
-                        Unsend withdraws the tender from the tendering website. */}
                     {tender.status === "open" && (
-                      <div className="flex gap-2 mt-auto pt-2 border-t border-[var(--color-border)]">
-                        <Button
-                          className="flex-1 h-9 bg-green-900/30 hover:bg-green-900/50 text-green-400 border border-green-500/30 rounded-lg text-sm"
-                          variant="ghost"
+                      <div className="mt-auto flex gap-2 border-t-2 border-[var(--px-line)] pt-2">
+                        <PixelButton
+                          type="button"
+                          variant="green"
+                          className="flex-1"
                           disabled={tenderLoading === tender.id}
                           onClick={() => handleTenderAction(tender.id, "assigned")}
                         >
                           {tenderLoading === tender.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            "…"
                           ) : (
-                            <><Check className="w-4 h-4 mr-1.5" /> Accept</>
+                            <>
+                              <PixelIcon name="check" size={12} />
+                              Accept
+                            </>
                           )}
-                        </Button>
-                        <Button
-                          className={`flex-1 h-9 rounded-lg text-sm border transition-colors ${
-                            withdrawConfirmId === tender.id
-                              ? "bg-red-600/60 hover:bg-red-600/80 text-white border-red-400/50"
-                              : "bg-red-900/30 hover:bg-red-900/50 text-red-400 border-red-500/30"
-                          }`}
-                          variant="ghost"
+                        </PixelButton>
+                        <PixelButton
+                          type="button"
+                          variant="red"
+                          className="flex-1"
                           disabled={tenderLoading === tender.id}
                           onClick={() => handleTenderWithdraw(tender.id)}
                         >
                           {tenderLoading === tender.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            "…"
                           ) : withdrawConfirmId === tender.id ? (
-                            <><AlertTriangle className="w-4 h-4 mr-1.5" /> Confirm Unsend</>
+                            <>
+                              <PixelIcon name="warn" size={12} />
+                              Confirm Unsend
+                            </>
                           ) : (
-                            <><Send className="w-4 h-4 mr-1.5 rotate-180" /> Unsend</>
+                            <>
+                              <PixelIcon name="send" size={12} className="rotate-180" />
+                              Unsend
+                            </>
                           )}
-                        </Button>
+                        </PixelButton>
                       </div>
                     )}
 
-                    {/* Completed tenders can be marked back if needed */}
                     {tender.status === "assigned" && (
-                      <div className="flex items-center gap-2 mt-auto pt-2 border-t border-[var(--color-border)]">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        <span className="text-xs text-green-500">Accepted — pending completion</span>
+                      <div className="mt-auto flex items-center gap-2 border-t-2 border-[var(--px-line)] pt-2">
+                        <PixelLamp status="assigned" />
+                        <span className="font-body text-xs text-blue">Accepted — pending completion</span>
                       </div>
                     )}
 
                     {tender.status === "rejected" && (
-                      <div className="flex items-center gap-2 mt-auto pt-2 border-t border-[var(--color-border)]">
-                        <XCircle className="w-4 h-4 text-red-400" />
-                        <span className="text-xs text-red-400">Withdrawn — removed from tendering website</span>
+                      <div className="mt-auto flex items-center gap-2 border-t-2 border-[var(--px-line)] pt-2">
+                        <PixelLamp status="done" />
+                        <span className="font-body text-xs text-red">Withdrawn — removed from tendering website</span>
                       </div>
                     )}
-                  </Card>
+                  </div>
                 ))}
               </div>
             )}
-          </TabsContent>
+          </div>
 
-          {/* TENDER INTEGRATION & SCHEDULER TAB */}
-          <TabsContent value="integration">
-            {!isStateAdmin && (
-              <div className="mb-6 p-4 rounded-xl border border-amber-500/40 bg-amber-900/20 flex items-start gap-3">
-                <Shield className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
-                <div>
-                  <p className="text-sm font-semibold text-amber-400">State admin access only</p>
-                  <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-                    Tender website integration, API keys and the 15–30 day sync schedule are managed exclusively by state-level administrators. Your jurisdiction (mandal/district) does not include this configuration.
-                  </p>
-                </div>
-              </div>
-            )}
-            {isStateAdmin && (<>
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-[var(--color-heading)] flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-amber-500" />
-                  Tender Website Integration & Periodic Sync
-                </h2>
-                <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                  Automatically export verified potholes, high-res photos, and GPS coordinates to the contractor tender website via API key every 15 to 30 days.
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={fetchSyncConfig}
-                  disabled={syncLoading}
-                  className="text-xs border-[var(--color-border)]"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${syncLoading ? "animate-spin" : ""}`} />
-                  Refresh
-                </Button>
-                <a
-                  href="http://localhost:3001"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs bg-amber-500 hover:bg-amber-600 text-black font-semibold px-3 py-2 rounded-lg transition-colors shadow-sm"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  Open Tender Website
-                </a>
-              </div>
-            </div>
+          <PixelPager
+            page={tenderPageSafe}
+            pageCount={tenderPageCount}
+            onChange={setTenderPage}
+            className="mt-2"
+          />
+        </div>
 
-            {/* Notification alert */}
-            {syncFeedback && (
-              <div
-                className={`mb-6 p-4 rounded-xl border flex items-center justify-between ${
-                  syncFeedback.type === "success"
-                    ? "bg-green-900/30 border-green-500/40 text-green-300"
-                    : "bg-red-900/30 border-red-500/40 text-red-300"
-                }`}
-              >
-                <div className="flex items-center gap-2 text-sm font-medium">
-                  {syncFeedback.type === "success" ? <CheckCircle className="w-4 h-4 text-green-400" /> : <AlertTriangle className="w-4 h-4 text-red-400" />}
-                  <span>{syncFeedback.text}</span>
-                </div>
-                <button
-                  onClick={() => setSyncFeedback(null)}
-                  className="text-xs opacity-70 hover:opacity-100"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
-            {/* Status Summary Banner */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
-                <p className="text-xs text-[var(--color-text-secondary)] mb-1">Integration Status</p>
-                <div className="flex items-center gap-2">
-                  <span className={`w-2.5 h-2.5 rounded-full ${isEnabled ? "bg-green-500 animate-pulse" : "bg-zinc-500"}`} />
-                  <span className="font-semibold text-[var(--color-heading)]">{isEnabled ? "Active & Scheduled" : "Sync Disabled"}</span>
-                </div>
-              </Card>
-              <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
-                <p className="text-xs text-[var(--color-text-secondary)] mb-1">Sync Cycle</p>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-blue-400" />
-                  <span className="font-semibold text-[var(--color-heading)]">Every {intervalDays} Days</span>
-                </div>
-              </Card>
-              <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
-                <p className="text-xs text-[var(--color-text-secondary)] mb-1">Next Scheduled Dispatch</p>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-amber-400" />
-                  <span className="font-semibold text-[var(--color-heading)] text-sm">
-                    {syncConfig?.next_sync_at
-                      ? new Date(syncConfig.next_sync_at).toLocaleDateString(undefined, {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })
-                      : "Pending setup"}
-                  </span>
-                </div>
-              </Card>
-              <Card className="p-4 bg-[var(--color-surface)] border-[var(--color-border)]">
-                <p className="text-xs text-[var(--color-text-secondary)] mb-1">Last Sync Result</p>
-                <div className="flex items-center gap-2">
-                  <Badge variant={syncConfig?.last_sync_status === "success" ? "default" : syncConfig?.last_sync_status === "failed" ? "destructive" : "secondary"}>
-                    {syncConfig?.last_sync_status === "success" ? "Delivered" : syncConfig?.last_sync_status === "failed" ? "Failed" : "Idle"}
-                  </Badge>
-                  {syncConfig?.last_sync_at && (
-                    <span className="text-xs text-[var(--color-text-secondary)]">
-                      {new Date(syncConfig.last_sync_at).toLocaleDateString()}
-                    </span>
-                  )}
-                </div>
-              </Card>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              {/* Configuration Form (Left 2 cols) */}
-              <Card className="lg:col-span-2 p-6 bg-[var(--color-surface)] border-[var(--color-border)]">
-                <div className="flex items-center justify-between mb-4 border-b border-[var(--color-border)] pb-3">
+        {/* ---------- SYNC PANEL ---------- */}
+        <div className="flex h-full min-h-0 flex-col px-2 pb-14 pt-2 sm:px-3 lg:pb-3 lg:pr-12">
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-scroll pr-1">
+            {!isStateAdmin ? (
+              <PixelWindow title="Tender Sync" icon="send" className="p-4">
+                <div className="flex items-start gap-3">
+                  <PixelIcon name="warn" size={20} className="mt-0.5 shrink-0 text-gold" />
                   <div>
-                    <h3 className="font-semibold text-[var(--color-heading)]">Configuration & Schedule</h3>
-                    <p className="text-xs text-[var(--color-text-secondary)]">Configure destination tender API endpoint, security credentials, and frequency.</p>
-                  </div>
-                  <Badge variant="outline" className="text-xs font-mono">Admin Managed</Badge>
-                </div>
-
-                <form onSubmit={handleSaveSyncConfig} className="space-y-5">
-                  <div>
-                    <Label htmlFor="targetUrl" className="text-xs text-[var(--color-text-secondary)] mb-1.5 block">
-                      Tender Website Ingestion Endpoint URL
-                    </Label>
-                    <Input
-                      id="targetUrl"
-                      type="url"
-                      value={targetUrl}
-                      onChange={(e) => setTargetUrl(e.target.value)}
-                      placeholder="http://localhost:3001/api/sync"
-                      required
-                      className="bg-[var(--color-bg)] border-[var(--color-border)] text-sm font-mono"
-                    />
-                    <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
-                      The tender portal route that accepts HTTP POST with JSON pothole & tender payload.
+                    <p className="font-pixel text-[10px] text-gold">STATE ADMIN ACCESS ONLY</p>
+                    <p className="mt-1 font-body text-xs text-dim">
+                      Tender website integration, API keys and the 15–30 day sync schedule are managed
+                      exclusively by state-level administrators. Your jurisdiction (mandal/district) does
+                      not include this configuration.
                     </p>
                   </div>
-
+                </div>
+              </PixelWindow>
+            ) : (
+              <>
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <Label htmlFor="apiKey" className="text-xs text-[var(--color-text-secondary)]">
-                        API Key (Authentication Secret)
-                      </Label>
-                      <button
-                        type="button"
-                        onClick={handleGenerateApiKey}
-                        className="text-[11px] text-amber-500 hover:text-amber-400 underline font-medium"
-                      >
-                        Generate New Key
-                      </button>
-                    </div>
-                    <div className="relative">
-                      <Input
-                        id="apiKey"
-                        type={showApiKey ? "text" : "password"}
-                        value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
-                        placeholder="Enter secret API key shared with tender website"
-                        required
-                        className="bg-[var(--color-bg)] border-[var(--color-border)] text-sm font-mono pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowApiKey(!showApiKey)}
-                        className="absolute right-3 top-2.5 text-[var(--color-text-secondary)] hover:text-[var(--color-heading)]"
-                      >
-                        {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                    <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
-                      Sent in the <code className="bg-[var(--color-muted)] px-1 rounded">X-API-Key</code> request header. The tender website verifies this key before accepting any pothole batch.
+                    <h2 className="flex items-center gap-2 font-pixel text-[11px] text-body">
+                      <PixelIcon name="send" size={14} className="text-gold" />
+                      TENDER WEBSITE INTEGRATION &amp; PERIODIC SYNC
+                    </h2>
+                    <p className="font-body text-xs text-dim">
+                      Automatically export verified potholes, high-res photos, and GPS coordinates to the
+                      contractor tender website via API key every 15 to 30 days.
                     </p>
                   </div>
-
-                  <div>
-                    <Label className="text-xs text-[var(--color-text-secondary)] mb-2 block">
-                      Automatic Sync Frequency (Between 15 and 30 Days)
-                    </Label>
-                    <div className="flex items-center gap-2 mb-3">
-                      {[15, 20, 25, 30].map((days) => (
-                        <button
-                          key={days}
-                          type="button"
-                          onClick={() => setIntervalDays(days)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                            intervalDays === days
-                              ? "bg-[var(--color-text-primary)] text-[var(--color-bg)] border-[var(--color-text-primary)] font-bold"
-                              : "bg-[var(--color-bg)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:border-[var(--color-text-primary)]/50"
-                          }`}
-                        >
-                          Every {days} Days
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-4 bg-[var(--color-bg)] p-3 rounded-lg border border-[var(--color-border)]">
-                      <input
-                        type="range"
-                        min="15"
-                        max="30"
-                        step="1"
-                        value={intervalDays}
-                        onChange={(e) => setIntervalDays(Number(e.target.value))}
-                        className="flex-1 accent-amber-500 cursor-pointer"
-                      />
-                      <span className="font-mono text-sm font-semibold text-[var(--color-heading)] min-w-[70px] text-right">
-                        {intervalDays} Days
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 pt-2">
-                    <label className="flex items-center gap-2 cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={isEnabled}
-                        onChange={(e) => setIsEnabled(e.target.checked)}
-                        className="rounded border-[var(--color-border)] accent-amber-500 w-4 h-4"
-                      />
-                      <span className="text-sm font-medium text-[var(--color-heading)]">
-                        Enable Automated Background Scheduling
-                      </span>
-                    </label>
-                  </div>
-
-                  <div className="pt-3 border-t border-[var(--color-border)] flex items-center justify-between">
-                    <Button
-                      type="submit"
-                      disabled={syncSaving}
-                      className="bg-amber-500 hover:bg-amber-600 text-black font-semibold h-9 px-4 text-xs rounded-lg"
+                  <div className="flex items-center gap-2">
+                    <PixelButton type="button" onClick={fetchSyncConfig} disabled={syncLoading}>
+                      <PixelIcon name="clock" size={12} />
+                      Refresh
+                    </PixelButton>
+                    <a
+                      href="http://localhost:3001"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-btn px-btn-gold inline-flex items-center gap-1"
                     >
-                      {syncSaving ? (
-                        <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <Save className="w-3.5 h-3.5 mr-1.5" />
-                          Save Configuration
-                        </>
-                      )}
-                    </Button>
-                    <p className="text-xs text-[var(--color-text-secondary)]">Changes apply immediately to scheduler.</p>
+                      <PixelIcon name="chevR" size={12} />
+                      Open Tender Website
+                    </a>
                   </div>
-                </form>
-              </Card>
+                </div>
 
-              {/* Actions & Dispatch Panel (Right 1 col) */}
-              <div className="space-y-4">
-                <Card className="p-5 bg-[var(--color-surface)] border-[var(--color-border)] flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2 text-amber-400">
-                      <Play className="w-4 h-4" />
-                      <h4 className="font-semibold text-sm text-[var(--color-heading)]">Manual Trigger</h4>
-                    </div>
-                    <p className="text-xs text-[var(--color-text-secondary)] mb-4 leading-relaxed">
-                      Need to dispatch immediately without waiting for the 15–30 day timer? Trigger an instant sync to push all current verified potholes and tenders to the tender website now.
-                    </p>
-                  </div>
-
-                  <Button
-                    onClick={handleTriggerSync}
-                    disabled={syncTriggering}
-                    className="w-full bg-[var(--color-text-primary)] text-[var(--color-bg)] font-semibold h-10 rounded-lg text-xs hover:opacity-90"
+                {syncFeedback && (
+                  <div
+                    className={`px-window flex items-center justify-between gap-2 p-3 ${
+                      syncFeedback.type === "success" ? "px-anim-stamp" : "px-anim-shake"
+                    }`}
                   >
-                    {syncTriggering ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        Transmitting Payload...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 mr-2" />
-                        Sync Now to Tender Website
-                      </>
-                    )}
-                  </Button>
-                </Card>
-
-                <Card className="p-5 bg-[var(--color-surface)] border-[var(--color-border)]">
-                  <div className="flex items-center gap-2 mb-2 text-blue-400">
-                    <Globe className="w-4 h-4" />
-                    <h4 className="font-semibold text-sm text-[var(--color-heading)]">What Gets Sent</h4>
+                    <span
+                      className={`flex items-center gap-2 font-body text-sm ${
+                        syncFeedback.type === "success" ? "text-green" : "text-red"
+                      }`}
+                    >
+                      <PixelIcon name={syncFeedback.type === "success" ? "check" : "warn"} size={14} />
+                      {syncFeedback.text}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSyncFeedback(null)}
+                      className="text-dim hover:text-body"
+                      aria-label="Dismiss"
+                    >
+                      <PixelIcon name="close" size={14} />
+                    </button>
                   </div>
-                  <ul className="text-xs text-[var(--color-text-secondary)] space-y-2 mt-2 list-disc list-inside">
-                    <li><strong className="text-[var(--color-heading)]">Verified Potholes:</strong> GPS latitude & longitude coordinates.</li>
-                    <li><strong className="text-[var(--color-heading)]">Visual Evidence:</strong> Presigned photo download URLs.</li>
-                    <li><strong className="text-[var(--color-heading)]">Tender Packages:</strong> Pothole cluster counts & estimated budgets (₹).</li>
-                    <li><strong className="text-[var(--color-heading)]">Location:</strong> Mandals, blocks, and road notes.</li>
-                  </ul>
-                </Card>
-              </div>
-            </div>
+                )}
 
-            {/* Sync Audit Logs Table */}
-            <Card className="p-6 bg-[var(--color-surface)] border-[var(--color-border)]">
-              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                <div>
-                  <h3 className="font-semibold text-[var(--color-heading)] text-sm">Sync Audit Logs</h3>
-                  <p className="text-xs text-[var(--color-text-secondary)]">History of periodic and manual transmissions to the tender website</p>
+                {/* Status summary */}
+                <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+                  <div className="px-window p-2.5">
+                    <p className="ledger text-dim">Integration Status</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <PixelLamp status={isEnabled ? "open" : "done"} />
+                      <span className="font-body text-sm text-body">
+                        {isEnabled ? "Active & Scheduled" : "Sync Disabled"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="px-window p-2.5">
+                    <p className="ledger text-dim">Sync Cycle</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <PixelIcon name="clock" size={14} className="text-blue" />
+                      <span className="font-body text-sm text-body">Every {intervalDays} Days</span>
+                    </div>
+                  </div>
+                  <div className="px-window p-2.5">
+                    <p className="ledger text-dim">Next Scheduled Dispatch</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <PixelIcon name="clock" size={14} className="text-orange" />
+                      <span className="font-body text-sm text-body">
+                        {syncConfig?.next_sync_at
+                          ? new Date(syncConfig.next_sync_at).toLocaleDateString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                          : "Pending setup"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="px-window p-2.5">
+                    <p className="ledger text-dim">Last Sync Result</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <PixelChip>
+                        <PixelLamp
+                          status={
+                            syncConfig?.last_sync_status === "success"
+                              ? "open"
+                              : syncConfig?.last_sync_status === "failed"
+                              ? "done"
+                              : "review"
+                          }
+                        />
+                        <span
+                          className={
+                            syncConfig?.last_sync_status === "success"
+                              ? "text-green"
+                              : syncConfig?.last_sync_status === "failed"
+                              ? "text-red"
+                              : "text-dim"
+                          }
+                        >
+                          {syncConfig?.last_sync_status === "success"
+                            ? "Delivered"
+                            : syncConfig?.last_sync_status === "failed"
+                            ? "Failed"
+                            : "Idle"}
+                        </span>
+                      </PixelChip>
+                      {syncConfig?.last_sync_at && (
+                        <span className="font-body text-xs text-dim">
+                          {new Date(syncConfig.last_sync_at).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <Badge variant="outline" className="text-xs font-mono">{syncLogs.length} Records</Badge>
-              </div>
 
-              {syncLogs.length === 0 ? (
-                <div className="text-center py-10 border border-dashed border-[var(--color-border)] rounded-xl">
-                  <Clock className="w-8 h-8 mx-auto mb-2 text-[var(--color-text-secondary)] opacity-40" />
-                  <p className="text-xs text-[var(--color-text-secondary)]">No sync transmissions logged yet.</p>
-                  <p className="text-[11px] text-[var(--color-text-secondary)] opacity-70 mt-0.5">Click &ldquo;Sync Now&rdquo; above to run the initial transmission.</p>
+                <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+                  {/* Configuration form */}
+                  <PixelWindow title="Configuration & Schedule" icon="grid" className="p-3 lg:col-span-2">
+                    <div className="mb-2 flex items-center justify-between gap-2 border-b-2 border-[var(--px-line)] pb-2">
+                      <p className="font-body text-xs text-dim">
+                        Configure destination tender API endpoint, security credentials, and frequency.
+                      </p>
+                      <PixelChip>Admin Managed</PixelChip>
+                    </div>
+
+                    <form onSubmit={handleSaveSyncConfig} className="space-y-3">
+                      <div>
+                        <label htmlFor="targetUrl" className="ledger mb-1 block text-dim">
+                          Tender Website Ingestion Endpoint URL
+                        </label>
+                        <input
+                          id="targetUrl"
+                          type="url"
+                          value={targetUrl}
+                          onChange={(e) => setTargetUrl(e.target.value)}
+                          placeholder="http://localhost:3001/api/sync"
+                          required
+                          className="px-well w-full bg-[var(--px-well)] px-2 py-2 font-mono text-xs text-body outline-none"
+                        />
+                        <p className="mt-1 font-body text-[11px] text-dim">
+                          The tender portal route that accepts HTTP POST with JSON pothole &amp; tender payload.
+                        </p>
+                      </div>
+
+                      <div>
+                        <div className="mb-1 flex items-center justify-between gap-2">
+                          <label htmlFor="apiKey" className="ledger text-dim">
+                            API Key (Authentication Secret)
+                          </label>
+                          <button
+                            type="button"
+                            onClick={handleGenerateApiKey}
+                            className="ledger inline-flex items-center gap-1 text-gold underline"
+                          >
+                            <PixelIcon name="plus" size={10} />
+                            Generate New Key
+                          </button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input
+                            id="apiKey"
+                            type={showApiKey ? "text" : "password"}
+                            value={apiKey}
+                            onChange={(e) => setApiKey(e.target.value)}
+                            placeholder="Enter secret API key shared with tender website"
+                            required
+                            className="px-well min-w-0 flex-1 bg-[var(--px-well)] px-2 py-2 font-mono text-xs text-body outline-none"
+                          />
+                          <PixelButton type="button" onClick={() => setShowApiKey((v) => !v)}>
+                            <PixelIcon name="eye" size={12} />
+                            {showApiKey ? "Hide" : "Show"}
+                          </PixelButton>
+                        </div>
+                        <p className="mt-1 font-body text-[11px] text-dim">
+                          Sent in the{" "}
+                          <code className="px-well bg-[var(--px-well)] px-1">X-API-Key</code> request header.
+                          The tender website verifies this key before accepting any pothole batch.
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="ledger mb-2 block text-dim">
+                          Automatic Sync Frequency (Between 15 and 30 Days)
+                        </label>
+                        <div className="mb-2 flex flex-wrap items-center gap-2">
+                          {[15, 20, 25, 30].map((days) => (
+                            <PixelButton
+                              key={days}
+                              type="button"
+                              variant={intervalDays === days ? "gold" : "default"}
+                              onClick={() => setIntervalDays(days)}
+                            >
+                              {days} Days
+                            </PixelButton>
+                          ))}
+                        </div>
+
+                        <div className="px-well flex items-center gap-3 bg-[var(--px-well)] p-2">
+                          <input
+                            type="range"
+                            min="15"
+                            max="30"
+                            step="1"
+                            value={intervalDays}
+                            onChange={(e) => setIntervalDays(Number(e.target.value))}
+                            className="flex-1 accent-gold"
+                          />
+                          <span className="min-w-[60px] text-right font-pixel text-[10px] tnum text-body">
+                            {intervalDays} Days
+                          </span>
+                        </div>
+                      </div>
+
+                      <label className="flex cursor-pointer select-none items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={isEnabled}
+                          onChange={(e) => setIsEnabled(e.target.checked)}
+                          className="h-4 w-4 accent-gold"
+                        />
+                        <span className="font-body text-sm text-body">
+                          Enable Automated Background Scheduling
+                        </span>
+                      </label>
+
+                      <div className="flex items-center justify-between gap-2 border-t-2 border-[var(--px-line)] pt-3">
+                        <PixelButton type="submit" variant="gold" disabled={syncSaving}>
+                          {syncSaving ? (
+                            "Saving…"
+                          ) : (
+                            <>
+                              <PixelIcon name="check" size={12} />
+                              Save Configuration
+                            </>
+                          )}
+                        </PixelButton>
+                        <p className="font-body text-xs text-dim">Changes apply immediately to scheduler.</p>
+                      </div>
+                    </form>
+                  </PixelWindow>
+
+                  {/* Actions & dispatch */}
+                  <div className="space-y-3">
+                    <PixelWindow title="Manual Trigger" icon="send" className="p-3">
+                      <p className="font-body text-xs text-dim">
+                        Need to dispatch immediately without waiting for the 15–30 day timer? Trigger an
+                        instant sync to push all current verified potholes and tenders to the tender website now.
+                      </p>
+                      <div className={`mt-3 ${syncPulse ? "px-anim-stamp" : ""}`}>
+                        <PixelButton
+                          type="button"
+                          variant="gold"
+                          className="w-full"
+                          onClick={handleTriggerSync}
+                          disabled={syncTriggering}
+                        >
+                          <PixelIcon name="send" size={12} />
+                          {syncTriggering ? "Transmitting Payload…" : "Sync Now to Tender Website"}
+                        </PixelButton>
+                      </div>
+                    </PixelWindow>
+
+                    <PixelWindow title="What Gets Sent" icon="file" className="p-3">
+                      <ul className="list-inside list-disc space-y-1 font-body text-xs text-dim">
+                        <li><strong className="text-body">Verified Potholes:</strong> GPS latitude &amp; longitude coordinates.</li>
+                        <li><strong className="text-body">Visual Evidence:</strong> Presigned photo download URLs.</li>
+                        <li><strong className="text-body">Tender Packages:</strong> Pothole cluster counts &amp; estimated budgets (₹).</li>
+                        <li><strong className="text-body">Location:</strong> Mandals, blocks, and road notes.</li>
+                      </ul>
+                    </PixelWindow>
+                  </div>
                 </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse">
-                    <thead>
-                      <tr className="border-b border-[var(--color-border)] text-[var(--color-text-secondary)]">
-                        <th className="py-2.5 px-3 font-medium">Timestamp</th>
-                        <th className="py-2.5 px-3 font-medium">Trigger Source</th>
-                        <th className="py-2.5 px-3 font-medium">Potholes Sent</th>
-                        <th className="py-2.5 px-3 font-medium">Tenders Sent</th>
-                        <th className="py-2.5 px-3 font-medium">Status</th>
-                        <th className="py-2.5 px-3 font-medium">HTTP Code</th>
-                        <th className="py-2.5 px-3 font-medium">Details</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[var(--color-border)]">
-                      {syncLogs.map((log) => (
-                        <tr key={log.id} className="hover:bg-[var(--color-muted)]/50 transition-colors">
-                          <td className="py-3 px-3 font-mono text-[var(--color-heading)]">
-                            {new Date(log.synced_at).toLocaleString()}
-                          </td>
-                          <td className="py-3 px-3 font-mono">
-                            <span className="bg-[var(--color-muted)] px-2 py-0.5 rounded text-[11px]">
-                              {log.triggered_by}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 font-semibold text-[var(--color-heading)]">{log.potholes_count}</td>
-                          <td className="py-3 px-3 font-semibold text-[var(--color-heading)]">{log.tenders_count}</td>
-                          <td className="py-3 px-3">
-                            <Badge variant={log.status === "success" ? "default" : "destructive"}>
-                              {log.status === "success" ? "Success" : "Failed"}
-                            </Badge>
-                          </td>
-                          <td className="py-3 px-3 font-mono text-[var(--color-text-secondary)]">
-                            {log.response_status ? log.response_status : "—"}
-                          </td>
-                          <td className="py-3 px-3 text-[var(--color-text-secondary)] max-w-xs truncate">
-                            {log.error_message || "Payload delivered successfully"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </Card>
-            </>)}
-          </TabsContent>
-        </Tabs>
-      </main>
+
+                {/* Sync audit logs */}
+                <PixelWindow title="Sync Audit Logs" icon="list" className="p-3">
+                  <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-body text-xs text-dim">
+                      History of periodic and manual transmissions to the tender website
+                    </p>
+                    <PixelChip>{syncLogs.length} Records</PixelChip>
+                  </div>
+
+                  {syncLogs.length === 0 ? (
+                    <div className="px-well flex flex-col items-center gap-1 p-6 text-center">
+                      <PixelIcon name="clock" size={22} className="text-dim" />
+                      <p className="font-body text-xs text-dim">No sync transmissions logged yet.</p>
+                      <p className="font-body text-[11px] text-dim">
+                        Click &ldquo;Sync Now&rdquo; above to run the initial transmission.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="px-scroll max-h-64 overflow-auto">
+                      <table className="w-full border-collapse text-left text-xs">
+                        <thead>
+                          <tr className="border-b-2 border-[var(--px-line)] text-dim">
+                            <th className="ledger px-2 py-2">Timestamp</th>
+                            <th className="ledger px-2 py-2">Trigger Source</th>
+                            <th className="ledger px-2 py-2">Potholes Sent</th>
+                            <th className="ledger px-2 py-2">Tenders Sent</th>
+                            <th className="ledger px-2 py-2">Status</th>
+                            <th className="ledger px-2 py-2">HTTP Code</th>
+                            <th className="ledger px-2 py-2">Details</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {syncLogs.map((log) => (
+                            <tr key={log.id} className="border-b border-[var(--px-line)]">
+                              <td className="px-2 py-2 font-mono tnum text-body">
+                                {new Date(log.synced_at).toLocaleString()}
+                              </td>
+                              <td className="px-2 py-2">
+                                <PixelChip className="font-mono">{log.triggered_by}</PixelChip>
+                              </td>
+                              <td className="px-2 py-2 font-pixel text-[10px] tnum text-body">{log.potholes_count}</td>
+                              <td className="px-2 py-2 font-pixel text-[10px] tnum text-body">{log.tenders_count}</td>
+                              <td className="px-2 py-2">
+                                <PixelChip>
+                                  <PixelLamp status={log.status === "success" ? "open" : "done"} />
+                                  <span className={log.status === "success" ? "text-green" : "text-red"}>
+                                    {log.status === "success" ? "Success" : "Failed"}
+                                  </span>
+                                </PixelChip>
+                              </td>
+                              <td className="px-2 py-2 font-mono text-dim">
+                                {log.response_status ? log.response_status : "—"}
+                              </td>
+                              <td className="max-w-xs truncate px-2 py-2 text-dim">
+                                {log.error_message || "Payload delivered successfully"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </PixelWindow>
+              </>
+            )}
+          </div>
+        </div>
+      </DotPager>
     </div>
   );
 }

@@ -80,7 +80,7 @@ function ClusterMarkers({ clusters }: { clusters: MapCluster[] }) {
           position={[cluster.avg_latitude, cluster.avg_longitude]}
           icon={L.divIcon({
             className: "",
-            html: `<div style="background:#ea580c;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">${cluster.count}</div>`,
+            html: `<div style="background:#e8b93c;color:#1a1408;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;border:2px solid #6b5320;box-shadow:0 2px 6px rgba(0,0,0,.55), 0 8px 20px -8px rgba(0,0,0,.6);font-variant-numeric:tabular-nums;">${cluster.count}</div>`,
             iconSize: [36, 36],
             iconAnchor: [18, 18],
           })}
@@ -111,7 +111,7 @@ function PotholeMarkers({ potholes }: { potholes: PublicPothole[] }) {
             position={[p.latitude, p.longitude]}
             icon={L.divIcon({
               className: "",
-              html: `<div style="width:12px;height:12px;background:${color};border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>`,
+              html: `<div style="width:12px;height:12px;background:${color};border:2px solid #d9a441;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>`,
               iconSize: [12, 12],
               iconAnchor: [6, 6],
             })}

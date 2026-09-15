@@ -64,149 +64,78 @@ export interface TenderStoreData {
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "tenders.json");
 
-const SEED_DATA: TenderStoreData = {
-  lastSyncAt: "2026-09-08T14:30:00.000Z",
-  syncLogs: [
-    {
-      id: "sync-init-001",
-      received_at: "2026-09-08T14:30:00.000Z",
-      potholes_count: 14,
-      tenders_count: 3,
-      source: "pothole-reporter",
-      triggered_by: "scheduler",
-      status: "success",
-      details: "Initial baseline synchronization",
-    },
-  ],
-  bids: [
-    {
-      id: "bid-101",
-      tender_id: "tender-vskp-01",
-      contractor_name: "Ramesh Naidu",
-      company_name: "Apex Infrastructure & Roads Pvt Ltd",
-      license_number: "AP-R&B-CL1-4892",
-      email: "bids@apexinfra.in",
-      phone: "+91 98480 12345",
-      bid_amount: 320000,
-      estimated_days: 14,
-      proposal_notes: "Bituminous cold mix asphalt resurfacing with 2-year maintenance warranty.",
-      submitted_at: "2026-09-09T09:15:00.000Z",
-    },
-  ],
-  tenders: [
-    {
-      id: "tender-vskp-01",
-      block_id: "andhra pradesh/visakhapatnam/gajuwaka",
-      district: "Visakhapatnam",
-      mandal: "Gajuwaka",
-      title: "Gajuwaka Industrial Corridor Pothole Remediation Tender",
-      description: "Comprehensive cold-mix bitumen patching and road stabilization across 6 critical road segments in Gajuwaka.",
-      pothole_count: 6,
-      estimated_cost: 360000,
-      status: "open",
-      generated_at: "2026-09-08T14:30:00.000Z",
-      deadline: "2026-09-28T18:00:00.000Z",
-      potholes: [
-        {
-          id: "pot-101",
-          latitude: 17.6868,
-          longitude: 83.2185,
-          address_notes: "Deep crater near Gajuwaka junction on steel plant main road.",
-          block_id: "andhra pradesh/visakhapatnam/gajuwaka",
-          status: "verified",
-          image_url: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=600&q=80",
-          reporter_name: "Suresh Kumar",
-          created_at: "2026-09-07T11:20:00.000Z",
-        },
-        {
-          id: "pot-102",
-          latitude: 17.6912,
-          longitude: 83.2241,
-          address_notes: "Multiple road fissures opposite Old Bus Station.",
-          block_id: "andhra pradesh/visakhapatnam/gajuwaka",
-          status: "verified",
-          image_url: "https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=600&q=80",
-          reporter_name: "Priya V.",
-          created_at: "2026-09-07T12:05:00.000Z",
-        },
-        {
-          id: "pot-103",
-          latitude: 17.6945,
-          longitude: 83.2299,
-          address_notes: "Edge breakage near Autonagar gate 2.",
-          block_id: "andhra pradesh/visakhapatnam/gajuwaka",
-          status: "verified",
-          image_url: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80",
-          reporter_name: "Anand M.",
-          created_at: "2026-09-08T09:40:00.000Z",
-        },
-      ],
-    },
-    {
-      id: "tender-ntr-02",
-      block_id: "andhra pradesh/ntr/vijayawada urban",
-      district: "NTR",
-      mandal: "Vijayawada Urban",
-      title: "MG Road & Benz Circle Arterial Repair Package",
-      description: "Urgent resurfacing and pothole leveling across major transit arteries near Benz circle.",
-      pothole_count: 5,
-      estimated_cost: 450000,
-      status: "open",
-      generated_at: "2026-09-08T14:30:00.000Z",
-      deadline: "2026-09-26T18:00:00.000Z",
-      potholes: [
-        {
-          id: "pot-201",
-          latitude: 16.5062,
-          longitude: 80.648,
-          address_notes: "Near flyover descent, 15cm depression causing traffic slowing.",
-          block_id: "andhra pradesh/ntr/vijayawada urban",
-          status: "verified",
-          image_url: "https://images.unsplash.com/photo-1584463699039-445851f5038c?auto=format&fit=crop&w=600&q=80",
-          reporter_name: "K. Mohan",
-          created_at: "2026-09-06T15:10:00.000Z",
-        },
-        {
-          id: "pot-202",
-          latitude: 16.5098,
-          longitude: 80.6515,
-          address_notes: "Opposite municipal grounds, water logged cavity.",
-          block_id: "andhra pradesh/ntr/vijayawada urban",
-          status: "verified",
-          image_url: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=600&q=80",
-          reporter_name: "Laxmi T.",
-          created_at: "2026-09-07T08:30:00.000Z",
-        },
-      ],
-    },
-    {
-      id: "tender-tpt-03",
-      block_id: "andhra pradesh/tirupati/tirupati urban",
-      district: "Tirupati",
-      mandal: "Tirupati Urban",
-      title: "Alipiri Bypass Road Safety & Repair Works",
-      description: "High-priority pilgrimage access road repair and asphalt leveling.",
-      pothole_count: 3,
-      estimated_cost: 210000,
-      status: "under_review",
-      generated_at: "2026-09-08T14:30:00.000Z",
-      deadline: "2026-09-22T18:00:00.000Z",
-      potholes: [
-        {
-          id: "pot-301",
-          latitude: 13.6288,
-          longitude: 79.4192,
-          address_notes: "Near Alipiri toll gate approach road.",
-          block_id: "andhra pradesh/tirupati/tirupati urban",
-          status: "verified",
-          image_url: "https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=600&q=80",
-          reporter_name: "Govind R.",
-          created_at: "2026-09-08T10:15:00.000Z",
-        },
-      ],
-    },
-  ],
+// No dummy/seed data: the portal starts empty and only shows real tenders
+// received via POST /api/sync from the Pothole Reporter backend
+// (Postgres + AWS S3 presigned evidence URLs). When nothing has been synced
+// yet — or every tender was withdrawn — the UI shows "No Tenders Available".
+const EMPTY_STORE: TenderStoreData = {
+  lastSyncAt: null,
+  syncLogs: [],
+  bids: [],
+  tenders: [],
 };
+
+/** IDs / markers that only ever appear in local dummy/test fixtures. */
+const DUMMY_TENDER_IDS = new Set([
+  "tender-vskp-01",
+  "tender-ntr-02",
+  "tender-tpt-03",
+  "tender-test-101",
+  "bid-101",
+  "sync-init-001",
+]);
+
+function isDummyPothole(p: Pothole): boolean {
+  if (!p) return false;
+  if (p.image_url && p.image_url.includes("unsplash.com")) return true;
+  if (typeof p.id === "string" && (p.id.startsWith("pot-") || p.id.startsWith("pot-test"))) return true;
+  const notes = (p.address_notes || "").toLowerCase();
+  const reporter = (p.reporter_name || "").toLowerCase();
+  // Local test fixtures pushed during development ("Threshold test pothole N",
+  // "Below-threshold pothole N", reporter "Test Reporter", keys th-test-*.jpg)
+  if (reporter === "test reporter" && (notes.includes("threshold") || notes.includes("test"))) return true;
+  const key = (p.image_s3_key || "").toLowerCase();
+  if (key.includes("th-test-") || key.includes("below-th-")) return true;
+  return false;
+}
+
+function isDummyTender(t: TenderItem): boolean {
+  if (!t) return false;
+  if (DUMMY_TENDER_IDS.has(t.id)) return true;
+  if (typeof t.id === "string" && t.id.startsWith("tender-test-")) return true;
+  if ((t.potholes || []).length > 0 && t.potholes.every(isDummyPothole)) {
+    // A tender whose entire evidence set is dummy/test fixtures is dummy.
+    // Real synced tenders carry real S3 keys and reporter names.
+    const notes = `${t.title || ""} ${t.description || ""}`.toLowerCase();
+    if (t.block_id?.includes("visakhapatnam/gajuwaka") && notes.includes("gajuwaka industrial")) return true;
+    if (t.block_id?.includes("vijayawada urban") && notes.includes("benz circle")) return true;
+    if (t.block_id?.includes("tirupati urban") && notes.includes("alipiri")) return true;
+    if (t.block_id?.includes("mvp colony")) return true;
+    return true;
+  }
+  if (t.potholes?.some((p) => p.image_url?.includes("unsplash.com"))) return true;
+  return false;
+}
+
+/** Strip any legacy dummy/test records from a loaded store. Returns true if cleaned. */
+function purgeDummyRecords(store: TenderStoreData): boolean {
+  const beforeTenders = store.tenders.length;
+  const beforeBids = store.bids.length;
+  store.tenders = (store.tenders || []).filter((t) => !isDummyTender(t));
+  // Drop bids attached to removed tenders + the known dummy bid fixture
+  const liveIds = new Set(store.tenders.map((t) => t.id));
+  store.bids = (store.bids || []).filter(
+    (b) => !DUMMY_TENDER_IDS.has(b.id) && liveIds.has(b.tender_id)
+  );
+  // Within surviving real tenders, drop individual dummy pothole fixtures
+  for (const t of store.tenders) {
+    if (t.potholes?.some(isDummyPothole)) {
+      t.potholes = t.potholes.filter((p) => !isDummyPothole(p));
+      t.pothole_count = t.potholes.length;
+    }
+  }
+  return store.tenders.length !== beforeTenders || store.bids.length !== beforeBids;
+}
 
 function ensureDataFile(): TenderStoreData {
   if (!fs.existsSync(DATA_DIR)) {
@@ -214,15 +143,32 @@ function ensureDataFile(): TenderStoreData {
   }
 
   if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(SEED_DATA, null, 2), "utf-8");
-    return SEED_DATA;
+    // Start empty — no dummy tenders. Real data arrives via POST /api/sync.
+    const fresh: TenderStoreData = { ...EMPTY_STORE, syncLogs: [], bids: [], tenders: [] };
+    fs.writeFileSync(DATA_FILE, JSON.stringify(fresh, null, 2), "utf-8");
+    return fresh;
   }
 
   try {
     const raw = fs.readFileSync(DATA_FILE, "utf-8");
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    const store: TenderStoreData = {
+      lastSyncAt: parsed.lastSyncAt ?? null,
+      syncLogs: Array.isArray(parsed.syncLogs) ? parsed.syncLogs : [],
+      bids: Array.isArray(parsed.bids) ? parsed.bids : [],
+      tenders: Array.isArray(parsed.tenders) ? parsed.tenders : [],
+    };
+    // Heal legacy files: strip dummy/test fixtures once, then persist.
+    if (purgeDummyRecords(store)) {
+      try {
+        saveData(store);
+      } catch {
+        /* best-effort */
+      }
+    }
+    return store;
   } catch {
-    return SEED_DATA;
+    return { ...EMPTY_STORE, syncLogs: [], bids: [], tenders: [] };
   }
 }
 
@@ -235,6 +181,25 @@ function saveData(data: TenderStoreData): void {
 
 export function getTenderData(): TenderStoreData {
   return ensureDataFile();
+}
+
+/**
+ * Quietly refreshes the local cache with a live snapshot (no sync-log spam).
+ * Used by GET /api/tenders so the offline fallback stays fresh. Real syncs
+ * via POST /api/sync still write full log entries and lastSyncAt.
+ */
+export function cacheLiveTenders(liveTenders: TenderItem[]): { cached: number } {
+  const store = ensureDataFile();
+  const clean = (Array.isArray(liveTenders) ? liveTenders : []).filter(
+    (t) => t && !isDummyTender(t)
+  );
+  const liveIds = new Set(clean.map((t) => t.id));
+  store.tenders = clean;
+  store.bids = (store.bids || []).filter(
+    (b) => !DUMMY_TENDER_IDS.has(b.id) && liveIds.has(b.tender_id)
+  );
+  saveData(store);
+  return { cached: clean.length };
 }
 
 export function parseBlockDistrictMandal(blockId?: string | null): { district: string; mandal: string } {

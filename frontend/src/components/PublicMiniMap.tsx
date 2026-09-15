@@ -126,7 +126,7 @@ export default function PublicMiniMap({
             width:${isUser ? 14 : 12}px;
             height:${isUser ? 14 : 12}px;
             background:${color};
-            border:${isUser ? "3px solid white" : "2px solid rgba(255,255,255,0.8)"};
+            border:${isUser ? "3px solid #d9a441" : "2px solid #d9a441"};
             border-radius:50%;
             box-shadow:0 1px 4px rgba(0,0,0,0.4);
             ${isUser ? "outline: 2px solid " + color + ";" : ""}
@@ -181,7 +181,7 @@ export default function PublicMiniMap({
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
           <div key={status} className="flex items-center gap-1.5">
             <div
-              style={{ width: 8, height: 8, borderRadius: "50%", background: color, border: "1.5px solid rgba(255,255,255,0.6)" }}
+              style={{ width: 8, height: 8, borderRadius: "50%", background: color, border: "1.5px solid #d9a441" }}
             />
             <span className="text-[10px] text-[var(--color-text-secondary)] capitalize">
               {STATUS_LABELS[status]}

@@ -73,3 +73,6 @@ tsconfig.tsbuildinfo
 
 # Tender website runtime data store (auto-seeded on first run)
 tender-website/data/tenders.json
+
+# Impeccable working files (briefs, mocks, build state, review captures)
+.impeccable/

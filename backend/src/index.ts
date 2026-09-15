@@ -49,7 +49,51 @@ import mapRoutes from "./routes/map";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const isProduction = (process.env.NODE_ENV || "development") === "production";
+
+// CORS origins must be bare origins (scheme://host[:port]) — never include a path.
+const normalizeOrigin = (value: string): string | null => {
+  const trimmed = value.trim().replace(/\/+$/, "");
+  if (!trimmed) return null;
+  try {
+    return new URL(trimmed).origin;
+  } catch {
+    return null;
+  }
+};
+
+const devOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://localhost:3001",
+  "http://127.0.0.1:3001",
+];
+
+const configuredOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:3000",
+  ...(process.env.CORS_ORIGINS || "").split(","),
+]
+  .map(normalizeOrigin)
+  .filter((origin): origin is string => Boolean(origin));
+
+const allowedOrigins = new Set(
+  isProduction ? configuredOrigins : [...configuredOrigins, ...devOrigins],
+);
+
+const isOriginAllowed = (origin?: string): boolean => {
+  if (!origin) return true;
+  const normalized = normalizeOrigin(origin);
+  if (normalized && allowedOrigins.has(normalized)) return true;
+  if (!isProduction) {
+    try {
+      const { protocol, hostname } = new URL(origin);
+      return protocol === "http:" && (hostname === "localhost" || hostname === "127.0.0.1");
+    } catch {
+      return false;
+    }
+  }
+  return false;
+};
 
 app.set("trust proxy", 1);
 
@@ -60,13 +104,20 @@ app.use(helmet({
       imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "https://raw.githubusercontent.com"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
-      connectSrc: ["'self'", FRONTEND_URL],
+      connectSrc: ["'self'", ...allowedOrigins],
     },
   },
 }));
 
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: (origin, callback) => {
+    if (isOriginAllowed(origin)) {
+      callback(null, true);
+      return;
+    }
+    logger.warn({ origin }, "Blocked by CORS");
+    callback(null, false);
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization", "X-API-Key", "X-Client-Platform"],
