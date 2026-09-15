@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { Map as LeafletMap } from "leaflet";
 import type { MapBoundingBox, PublicPothole } from "@/types";
+import { statusDivIcon, type PinStatus } from "@/components/macadam/MapSkin";
 
 interface PublicMiniMapProps {
   potholes: PublicPothole[];
@@ -14,11 +15,18 @@ interface PublicMiniMapProps {
   zoom?: number;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  verified: "#22c55e",   // green
-  pending: "#f59e0b",    // amber
-  rejected: "#ef4444",   // red
-  fixed: "#6366f1",      // indigo
+const STATUS_PIN: Record<string, PinStatus> = {
+  verified: "open",
+  pending: "under_review",
+  rejected: "rejected",
+  fixed: "assigned",
+};
+
+const STATUS_VAR: Record<string, string> = {
+  verified: "var(--ok)",
+  pending: "var(--warn)",
+  rejected: "var(--bad)",
+  fixed: "var(--info)",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -27,6 +35,12 @@ const STATUS_LABELS: Record<string, string> = {
   rejected: "Rejected",
   fixed: "Fixed",
 };
+
+function cssVar(name: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
 
 export default function PublicMiniMap({
   potholes,
@@ -64,9 +78,8 @@ export default function PublicMiniMap({
         };
       }
 
-      // Compute initial view from bounds if provided
       let initialCenter: [number, number] = center;
-      let initialZoom = zoom;
+      const initialZoom = zoom;
 
       if (bounds) {
         const midLat = (bounds.north + bounds.south) / 2;
@@ -89,7 +102,6 @@ export default function PublicMiniMap({
         maxZoom: 18,
       }).addTo(map);
 
-      // Apply bounds restriction if provided
       if (bounds) {
         const leafletBounds = L.latLngBounds(
           [bounds.south, bounds.west],
@@ -100,57 +112,44 @@ export default function PublicMiniMap({
       }
 
       if (boundary && typeof boundary === "object" && "type" in boundary) {
+        const boundaryColor = cssVar("--accent-2", "#5b6cff");
         L.geoJSON(boundary as any, {
           style: {
-            color: "#60a5fa",
+            color: boundaryColor,
             weight: 2,
-            opacity: 0.8,
-            fillColor: "#60a5fa",
+            opacity: 0.75,
+            fillColor: boundaryColor,
             fillOpacity: 0.08,
           },
         }).addTo(map);
       }
 
-      // Add all potholes to map
       const allPotholes = [...potholes, ...userPotholes];
-      const markers: L.Layer[] = [];
 
       for (const p of allPotholes) {
-        const color = STATUS_COLORS[p.status] || "#94a3b8";
+        const status = STATUS_PIN[p.status] || "reported";
+        const colorVar = STATUS_VAR[p.status] || "var(--text-3)";
         const label = STATUS_LABELS[p.status] || p.status;
         const isUser = userPotholes.some((u) => u.id === p.id);
 
-        const icon = L.divIcon({
-          className: "",
-          html: `<div style="
-            width:${isUser ? 14 : 12}px;
-            height:${isUser ? 14 : 12}px;
-            background:${color};
-            border:${isUser ? "3px solid #d9a441" : "2px solid #d9a441"};
-            border-radius:50%;
-            box-shadow:0 1px 4px rgba(0,0,0,0.4);
-            ${isUser ? "outline: 2px solid " + color + ";" : ""}
-          "></div>`,
-          iconSize: [isUser ? 14 : 12, isUser ? 14 : 12],
-          iconAnchor: [isUser ? 7 : 6, isUser ? 7 : 6],
-        });
+        const icon = statusDivIcon(status, { selected: isUser });
 
-        const marker = L.marker([p.latitude, p.longitude], { icon })
-          .bindPopup(`
-            <div style="font-size:12px;min-width:120px;">
-              <strong style="color:${color}">${label}</strong><br/>
-              <span style="color:#888;">
-                ${new Date(p.created_at).toLocaleDateString()}
-              </span>
-              ${p.block_id ? `<br/><span style="font-family:monospace;font-size:11px;color:#aaa;">${p.block_id}</span>` : ""}
-              ${isUser ? `<br/><span style="color:#60a5fa;font-size:11px;">Your report</span>` : ""}
-            </div>
-          `)
+        L.marker([p.latitude, p.longitude], { icon })
+          .bindPopup(
+            `<div style="font-size:12px;min-width:130px;display:grid;gap:3px;">
+              <strong style="color:${colorVar};font-weight:600;">${label}</strong>
+              <span style="color:var(--text-3);">${new Date(p.created_at).toLocaleDateString()}</span>
+              ${
+                p.block_id
+                  ? `<span style="font-family:var(--font-mono),monospace;font-size:11px;color:var(--text-2);">${p.block_id}</span>`
+                  : ""
+              }
+              ${isUser ? `<span style="color:var(--accent-2);font-size:11px;">Your report</span>` : ""}
+            </div>`
+          )
           .addTo(map);
-        markers.push(marker);
       }
 
-      // Auto-fit to pothole markers if no bounds given
       if (!bounds && allPotholes.length > 0) {
         const pts = allPotholes.map((p) => [p.latitude, p.longitude] as [number, number]);
         const autoBounds = L.latLngBounds(pts);
@@ -172,24 +171,18 @@ export default function PublicMiniMap({
   }, []);
 
   return (
-    <div
-      style={{ height, position: "relative" }}
-      className="w-full rounded-xl overflow-hidden border border-[var(--color-border)]"
-    >
-      {/* Legend */}
-      <div className="absolute bottom-3 left-3 z-[1000] flex flex-wrap gap-2 bg-[var(--color-surface)]/90 backdrop-blur-sm rounded-lg px-3 py-2 border border-[var(--color-border)] shadow-lg">
-        {Object.entries(STATUS_COLORS).map(([status, color]) => (
+    <div style={{ height, position: "relative" }} className="macadam-map w-full overflow-hidden">
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[1000] flex flex-wrap gap-3 rounded-lg border border-hairline bg-surface/95 px-3 py-2 shadow-2">
+        {Object.entries(STATUS_PIN).map(([status, pin]) => (
           <div key={status} className="flex items-center gap-1.5">
-            <div
-              style={{ width: 8, height: 8, borderRadius: "50%", background: color, border: "1.5px solid #d9a441" }}
-            />
-            <span className="text-[10px] text-[var(--color-text-secondary)] capitalize">
+            <span className={`macadam-pin macadam-pin--${pin} !h-2 !w-2 !shadow-none`} />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-ink2">
               {STATUS_LABELS[status]}
             </span>
           </div>
         ))}
       </div>
-      <div ref={containerRef} className="w-full h-full" />
+      <div ref={containerRef} className="h-full w-full" />
     </div>
   );
 }
