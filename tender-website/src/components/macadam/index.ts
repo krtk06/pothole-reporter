@@ -33,7 +33,9 @@ export { NavBar, NavInner, NavSpacer } from "./Nav";
 export { Logo } from "./Logo";
 export type { LogoProps } from "./Logo";
 
-export { statusDivIcon, neutralDivIcon, MAP_SKIN_CLASS } from "./MapSkin";
+/* MapSkin is intentionally NOT re-exported here: it imports leaflet at module
+   scope. Import it directly from "@/components/macadam/MapSkin" inside
+   components that are loaded client-side only (dynamic + ssr: false). */
 export type { PinStatus, StatusIconOptions } from "./MapSkin";
 
 export { useTheme } from "./useTheme";
