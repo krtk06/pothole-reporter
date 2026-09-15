@@ -13,7 +13,7 @@ interface Particle {
   alpha: number;
 }
 
-const DPR_CAP = 1.5;
+const DPR_CAP = 1.25;
 const LINK_RADIUS = 112;
 
 function readSandRgb(): [number, number, number] {
@@ -25,8 +25,8 @@ function readSandRgb(): [number, number, number] {
 }
 
 function particleCount(width: number, height: number): number {
-  const base = Math.round((width * height) / 16000);
-  return Math.max(48, Math.min(190, base));
+  const base = Math.round((width * height) / 22000);
+  return Math.max(40, Math.min(140, base));
 }
 
 /**

@@ -41,7 +41,7 @@ function readRgb(name: string, fallback: [number, number, number]): [number, num
  * holds, then disperses back into the ground. Skippable; static under
  * reduced motion.
  */
-export default function SandHero({ className, density = 900, onComplete }: SandHeroProps) {
+export default function SandHero({ className, density = 520, onComplete }: SandHeroProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const doneRef = useRef(false);
 
@@ -73,7 +73,7 @@ export default function SandHero({ className, density = 900, onComplete }: SandH
       const rect = canvas.getBoundingClientRect();
       width = Math.max(1, rect.width);
       height = Math.max(1, rect.height);
-      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.2);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

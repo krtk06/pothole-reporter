@@ -316,10 +316,9 @@
 
   .mesh-field {
     position: absolute;
-    inset: -25%;
+    inset: -20%;
     opacity: var(--mesh-opacity);
     mix-blend-mode: var(--mesh-blend);
-    filter: blur(60px) saturate(1.1);
     will-change: transform;
   }
 
@@ -327,14 +326,12 @@
     position: absolute;
     inset: 0;
     opacity: var(--sand-opacity);
-    mix-blend-mode: overlay;
   }
 
   .spot-field {
     position: absolute;
     inset: 0;
     opacity: var(--spot-opacity);
-    mix-blend-mode: soft-light;
     background: radial-gradient(
       420px circle at var(--spot-x, 50%) var(--spot-y, 30%),
       rgba(var(--spot-rgb) / 0.9),
