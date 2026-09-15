@@ -9,7 +9,7 @@ export interface NavBarProps extends HTMLAttributes<HTMLElement> {
 export function NavBar({ className, children, ...rest }: NavBarProps) {
   return (
     <header
-      className={cn("sticky top-0 z-40 border-b border-hairline bg-bg", className)}
+      className={cn("sticky top-0 z-40 border-b border-hairline bg-page", className)}
       {...rest}
     >
       {children}
