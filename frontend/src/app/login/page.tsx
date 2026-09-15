@@ -3,15 +3,26 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Loader2, ShieldCheck } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import AndhraLocationSelector, { AndhraLocationSelection } from "@/components/AndhraLocationSelector";
-import PixelIcon from "@/components/pixel/PixelIcon";
-import PixelSprite from "@/components/pixel/PixelSprite";
-import BrandLogo from "@/components/pixel/BrandLogo";
-import { PixelButton } from "@/components/pixel/PixelUI";
+import {
+  Field,
+  Ignition,
+  Input,
+  Logo,
+  MagneticButton,
+  NavBar,
+  NavInner,
+  NavSpacer,
+  Pill,
+  Reveal,
+  SandHero,
+  Surface,
+  ThemeToggle,
+} from "@/components/macadam";
 
 const LoginMap = dynamic(() => import("@/components/LoginMap"), { ssr: false });
 
@@ -27,7 +38,7 @@ export default function LoginPage() {
   const [loadingGuest, setLoadingGuest] = useState(false);
   const [loadingAdmin, setLoadingAdmin] = useState(false);
   const router = useRouter();
-  const { setUser, setLocation, setAdministrativeArea } = useStore();
+  const { setUser, setLocation, setAdministrativeArea, theme, toggleTheme } = useStore();
 
   const continueAsGuest = async () => {
     setError("");
@@ -82,43 +93,79 @@ export default function LoginPage() {
     }
   };
 
-  const inputClass =
-    "px-well h-11 w-full px-3 font-body text-sm text-body outline-none placeholder:text-dim";
-
   return (
-    <div className="h-[100dvh] overflow-hidden">
-      <div className="flex h-full min-h-0 flex-col">
-        <header className="px-titlebar flex shrink-0 items-center justify-between gap-2 px-3 py-2">
-          <a href="/login" className="flex min-w-0 items-center gap-2">
-            <BrandLogo
-              src="/brand/pothole-reporter.png"
-              alt="Pothole Reporter"
-              size={32}
-              fallback={
-                <span className="px-bevel flex h-6 w-6 shrink-0 items-center justify-center bg-[var(--px-panel)] text-[var(--px-text)]">
-                  <PixelSprite name="worker" size={16} alt="Pothole Reporter" />
-                </span>
-              }
-            />
-            <span className="font-pixel truncate text-[10px]">Pothole Reporter</span>
-          </a>
-          <ThemeToggle />
-        </header>
+    <main className="min-h-dvh">
+      <NavBar>
+        <NavInner>
+          <Logo src="/brand/pothole-reporter.png" name="Pothole Reporter" tagline="Road Works" />
+          <NavSpacer />
+          <Pill tone="neutral" className="hidden sm:inline-flex">
+            No sign-up required
+          </Pill>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+        </NavInner>
+      </NavBar>
 
-        <div className="flex min-h-0 flex-1 items-center justify-center p-3 md:p-6">
-          <div className="px-window flex h-full max-h-[720px] w-full max-w-5xl flex-col overflow-hidden lg:flex-row">
-            {/* Left — guest + admin */}
-            <div className="px-scroll min-h-0 w-full overflow-y-auto lg:h-full lg:w-1/2">
-              <div className="grid gap-4 p-4 md:p-6">
-                <div className="grid gap-2 text-center">
-                  <h1 className="font-pixel text-sm md:text-base">Continue as Guest</h1>
-                  <p className="ledger text-gold">Official road-report gate • No sign-up</p>
-                  <p className="text-sm text-dim">
-                    Select your city/village to view live pothole data. No user record will be created.
-                  </p>
+      <section className="relative overflow-hidden border-b border-hairline">
+        <div className="pointer-events-none absolute inset-0">
+          <SandHero className="h-full w-full" />
+        </div>
+        <div className="relative mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 sm:py-28">
+          <Ignition step={110}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink3">
+              Govt of Andhra Pradesh • Roads &amp; Buildings
+            </p>
+            <h1 className="mt-4 max-w-3xl font-display text-[clamp(2.4rem,5.4vw,4.25rem)] font-extrabold leading-[0.98] tracking-[-0.03em] text-ink">
+              Report a pothole. Watch it become a funded repair.
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-ink2">
+              Pick your district, mandal, and village to see live road conditions on the map —
+              no account, no record created.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <MagneticButton
+                variant="primary"
+                onClick={() =>
+                  document.getElementById("gate")?.scrollIntoView({ behavior: "smooth", block: "start" })
+                }
+              >
+                Select your area
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+              <MagneticButton
+                variant="secondary"
+                onClick={() =>
+                  document.getElementById("admin")?.scrollIntoView({ behavior: "smooth", block: "start" })
+                }
+              >
+                <ShieldCheck className="h-4 w-4" />
+                Admin sign in
+              </MagneticButton>
+            </div>
+          </Ignition>
+        </div>
+      </section>
+
+      <section id="gate" className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+          <div className="space-y-6">
+            <Reveal>
+              <Surface level={2}>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="font-display text-xl font-bold text-ink">Continue as guest</h2>
+                    <p className="mt-1 text-sm text-ink2">
+                      Select your location to view live pothole data.
+                    </p>
+                  </div>
+                  <Pill tone="ok" pulse>
+                    Public
+                  </Pill>
                 </div>
 
-                <div className="px-well p-3">
+                <div className="mt-6 rule" />
+
+                <div className="mt-6">
                   <AndhraLocationSelector
                     value={selectedLocation}
                     onChange={(next) => setSelectedLocation(next)}
@@ -126,76 +173,122 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <PixelButton
-                  variant="gold"
-                  icon={loadingGuest ? undefined : "pin"}
-                  onClick={continueAsGuest}
-                  disabled={loadingGuest}
-                  className="w-full"
-                >
-                  {loadingGuest ? (
-                    <>
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      Resolving area...
-                    </>
-                  ) : (
-                    "Continue as Guest"
-                  )}
-                </PixelButton>
+                <div className="mt-6 flex items-center justify-between gap-3">
+                  <p className="text-xs text-ink3">No user record will be created.</p>
+                  <MagneticButton
+                    variant="primary"
+                    onClick={continueAsGuest}
+                    disabled={loadingGuest}
+                  >
+                    {loadingGuest ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Resolving area
+                      </>
+                    ) : (
+                      <>
+                        Continue as guest
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
+                  </MagneticButton>
+                </div>
+              </Surface>
+            </Reveal>
 
-                <div className="flex items-center gap-3">
-                  <span className="tape-thin flex-1" aria-hidden />
-                  <span className="ledger text-dim">Admin Access</span>
-                  <span className="tape-thin flex-1" aria-hidden />
+            <Reveal delay={80}>
+              <Surface level={2} id="admin" className="scroll-mt-24">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="font-display text-xl font-bold text-ink">Admin access</h2>
+                    <p className="mt-1 text-sm text-ink2">
+                      Seeded staff accounts only — no public registration.
+                    </p>
+                  </div>
+                  <Pill tone="info">Staff</Pill>
                 </div>
 
-                <form onSubmit={handleAdminLogin} className="grid gap-3">
-                  <div className="flex items-center gap-2">
-                    <PixelIcon name="stamp" size={12} className="text-gold" />
-                    <span className="font-pixel text-[10px]">Admin Login</span>
-                  </div>
-                  <input
-                    placeholder="Admin email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={inputClass}
-                    required
-                  />
-                  <input
-                    placeholder="Password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={inputClass}
-                    required
-                    minLength={8}
-                  />
-                  <div className="flex items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={() => router.push("/forgot-password")}
-                      className="font-pixel text-[9px] text-dim hover:text-body text-left"
+                <div className="mt-6 rule" />
+
+                <form onSubmit={handleAdminLogin} className="mt-6 space-y-4">
+                  <Field label="Admin email" htmlFor="admin-email" required>
+                    <Input
+                      id="admin-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@department.gov.in"
+                      autoComplete="email"
+                      required
+                    />
+                  </Field>
+                  <Field label="Password" htmlFor="admin-password" required>
+                    <Input
+                      id="admin-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      required
+                      minLength={8}
+                    />
+                  </Field>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <Link
+                      href="/forgot-password"
+                      className="text-sm font-medium text-ink2 underline-offset-4 transition-colors hover:text-ink hover:underline"
                     >
                       Forgot your password?
-                    </button>
-                    <PixelButton type="submit" variant="green" disabled={loadingAdmin}>
-                      {loadingAdmin ? "Signing in..." : "Sign In"}
-                    </PixelButton>
+                    </Link>
+                    <MagneticButton type="submit" variant="secondary" disabled={loadingAdmin}>
+                      {loadingAdmin ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Signing in
+                        </>
+                      ) : (
+                        "Sign in"
+                      )}
+                    </MagneticButton>
                   </div>
                 </form>
+              </Surface>
+            </Reveal>
 
-                {error && <p className="text-center text-sm text-red">{error}</p>}
-              </div>
-            </div>
-
-            {/* Right — map (desktop) */}
-            <div className="relative hidden min-h-0 w-1/2 overflow-hidden border-l-2 border-[var(--px-line)] lg:block">
-              <LoginMap />
-            </div>
+            {error && (
+              <Reveal>
+                <div className="rounded-lg border border-bad/40 bg-bad/10 px-4 py-3 text-sm text-bad">
+                  {error}
+                </div>
+              </Reveal>
+            )}
           </div>
+
+          <Reveal delay={120} className="min-h-[320px]">
+            <Surface level={1} padded={false} className="h-full min-h-[360px] overflow-hidden lg:min-h-[560px]">
+              <div className="flex items-center justify-between gap-3 border-b border-hairline px-5 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                  Live area preview
+                </p>
+                <Pill tone="neutral" mono>
+                  OSM
+                </Pill>
+              </div>
+              <div className="relative h-[calc(100%-49px)] min-h-[320px]">
+                <LoginMap />
+              </div>
+            </Surface>
+          </Reveal>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <footer className="border-t border-hairline">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-xs text-ink3 sm:px-6">
+          <span>Pothole Reporter — crowdsourced road maintenance for Andhra Pradesh.</span>
+          <span className="font-mono">est. 2026</span>
+        </div>
+      </footer>
+    </main>
   );
 }

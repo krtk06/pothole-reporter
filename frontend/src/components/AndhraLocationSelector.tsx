@@ -187,7 +187,7 @@ export default function AndhraLocationSelector({
     return (
       <div className="relative min-w-0">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink3" />
           <input
             value={queries[level]}
             disabled={disabled}
@@ -197,20 +197,20 @@ export default function AndhraLocationSelector({
             }}
             onChange={(event) => updateQuery(level, event.target.value)}
             placeholder={placeholders[level]}
-            className="h-12 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] pl-10 pr-10 text-sm text-[var(--color-text-primary)] outline-none transition-colors placeholder:text-[var(--color-text-secondary)] focus:border-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-55"
+            className="h-12 w-full rounded-lg border border-hairline bg-sunken pl-10 pr-10 text-sm text-ink outline-none transition-colors placeholder:text-ink3 focus:border-signal disabled:cursor-not-allowed disabled:opacity-55"
           />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-ink3">
             {loadingLevel === level ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronDown className="h-4 w-4" />}
           </div>
         </div>
 
         {open && !disabled && (
-          <div className="mt-2 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] shadow-xl">
+          <div className="mt-2 overflow-hidden rounded-lg border border-hairline bg-surface shadow-2">
             {items.length === 0 && loadingLevel !== level ? (
-              <div className="px-3 py-3 text-xs text-[var(--color-text-secondary)]">No results found</div>
+              <div className="px-3 py-3 text-xs text-ink3">No results found</div>
             ) : (
               <>
-                <div className="max-h-64 overflow-y-auto p-1.5 [scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent]">
+                <div className="max-h-64 overflow-y-auto p-1.5 [scrollbar-width:thin] [scrollbar-color:var(--line-strong)_transparent]">
                   {items.map((area) => {
                     const selected = selectedId === area.id;
                     return (
@@ -221,19 +221,19 @@ export default function AndhraLocationSelector({
                         onClick={() => selectArea(level, area)}
                         className={`block w-full rounded-md px-3 py-2.5 text-left text-sm transition-colors ${
                           selected
-                            ? "bg-[var(--color-muted)] text-[var(--color-heading)]"
-                            : "text-[var(--color-text-primary)] hover:bg-[var(--color-muted)]"
+                            ? "bg-sunken text-ink"
+                            : "text-ink hover:bg-sunken"
                         }`}
                       >
                         <span className="block truncate font-medium leading-5">{area.name}</span>
-                        <span className="mt-0.5 block truncate text-xs leading-4 text-[var(--color-text-secondary)]">
+                        <span className="mt-0.5 block truncate text-xs leading-4 text-ink3">
                           {area.displayName}
                         </span>
                       </button>
                     );
                   })}
                 </div>
-                <div className="border-t border-[var(--color-border)] px-3 py-2 text-[10px] uppercase tracking-wide text-[var(--color-text-secondary)]">
+                <div className="border-t border-hairline px-3 py-2 text-[10px] uppercase tracking-wide text-ink3">
                   Showing up to 30 matches
                 </div>
               </>
@@ -247,8 +247,8 @@ export default function AndhraLocationSelector({
   return (
     <div ref={rootRef} className="grid gap-3">
       {label && (
-        <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-heading)]">
-          <MapPin className="h-4 w-4 text-[var(--color-text-secondary)]" />
+        <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink2">
+          <MapPin className="h-3.5 w-3.5 text-ink3" />
           Andhra Pradesh location
         </div>
       )}

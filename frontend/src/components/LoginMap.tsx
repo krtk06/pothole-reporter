@@ -44,10 +44,10 @@ export default function LoginMap() {
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(mapInstance);
 
       const userIcon = L.divIcon({
-        className: "",
-        html: `<div style="width:16px;height:16px;background:#3b82f6;border:3px solid white;border-radius:50%;box-shadow:0 0 20px rgba(59,130,246,0.8);"></div>`,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
+        className: "macadam-pin-wrap",
+        html: `<span class="macadam-pin macadam-pin--neutral is-selected"><span class="macadam-sonar"></span></span>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
       });
       L.marker(initialPos, { icon: userIcon }).addTo(mapInstance).bindPopup("Your location");
     };
