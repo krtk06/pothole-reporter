@@ -11,7 +11,7 @@ export interface LogoProps {
 /** Adaptive brand mark: the supplied emblem plus a wordmark. */
 export function Logo({ src, name, tagline, size = 34, className }: LogoProps) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
+    <span className={cn("inline-flex shrink-0 items-center gap-2.5", className)}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
@@ -21,10 +21,12 @@ export function Logo({ src, name, tagline, size = 34, className }: LogoProps) {
         className="shrink-0 object-contain"
         draggable={false}
       />
-      <span className="flex flex-col leading-none">
-        <span className="font-display text-[15px] font-bold tracking-[-0.01em] text-ink">{name}</span>
+      <span className="flex min-w-0 flex-col">
+        <span className="whitespace-nowrap font-display text-[15px] font-bold leading-tight tracking-[-0.01em] text-ink">
+          {name}
+        </span>
         {tagline && (
-          <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink3">
+          <span className="mt-1 whitespace-nowrap text-[10px] font-semibold uppercase leading-tight tracking-[0.14em] text-ink3">
             {tagline}
           </span>
         )}

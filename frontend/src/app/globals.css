@@ -177,6 +177,14 @@
     @apply border-border;
   }
 
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
   html {
     @apply font-sans;
     background: var(--bg);
