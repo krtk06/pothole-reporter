@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { prefersReducedMotion } from "./motion";
 
@@ -13,7 +13,11 @@ export interface CounterProps {
   className?: string;
 }
 
-/** Counts up to its value when it enters the viewport. Tabular by default. */
+/**
+ * Counts up to its value on first reveal, and animates again on every later
+ * value change (so a refresh, or data that arrives after mount, updates the
+ * reading instead of freezing at zero). Tabular by default.
+ */
 export function Counter({
   value,
   duration = 1200,
@@ -23,32 +27,59 @@ export function Counter({
   className,
 }: CounterProps) {
   const ref = useRef<HTMLSpanElement | null>(null);
+  const displayRef = useRef(0);
+  const revealedRef = useRef(false);
+  const valueRef = useRef(value);
+  const rafRef = useRef(0);
   const [display, setDisplay] = useState(0);
-  const started = useRef(false);
 
+  valueRef.current = value;
+
+  const animateTo = useCallback(
+    (to: number) => {
+      if (prefersReducedMotion()) {
+        displayRef.current = to;
+        setDisplay(to);
+        return;
+      }
+      const from = displayRef.current;
+      if (from === to) {
+        setDisplay(to);
+        return;
+      }
+      cancelAnimationFrame(rafRef.current);
+      const start = performance.now();
+      const step = (now: number) => {
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const next = from + (to - from) * eased;
+        displayRef.current = next;
+        setDisplay(next);
+        if (p < 1) rafRef.current = requestAnimationFrame(step);
+        else displayRef.current = to;
+      };
+      rafRef.current = requestAnimationFrame(step);
+    },
+    [duration]
+  );
+
+  // First reveal: wait until the reading is on screen, then animate.
   useEffect(() => {
-    if (prefersReducedMotion()) {
-      setDisplay(value);
-      return;
-    }
     const el = ref.current;
     if (!el) return;
-
-    let raf = 0;
+    if (prefersReducedMotion()) {
+      revealedRef.current = true;
+      animateTo(valueRef.current);
+      return;
+    }
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting || started.current) continue;
-          started.current = true;
-          io.disconnect();
-          const start = performance.now();
-          const animate = (now: number) => {
-            const p = Math.min(1, (now - start) / duration);
-            const eased = 1 - Math.pow(1 - p, 3);
-            setDisplay(value * eased);
-            if (p < 1) raf = requestAnimationFrame(animate);
-          };
-          raf = requestAnimationFrame(animate);
+          if (entry.isIntersecting && !revealedRef.current) {
+            revealedRef.current = true;
+            io.disconnect();
+            animateTo(valueRef.current);
+          }
         }
       },
       { threshold: 0.35 }
@@ -56,9 +87,15 @@ export function Counter({
     io.observe(el);
     return () => {
       io.disconnect();
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(rafRef.current);
     };
-  }, [value, duration]);
+  }, [animateTo]);
+
+  // Subsequent value changes (data arriving after mount, refreshes).
+  useEffect(() => {
+    if (!revealedRef.current) return;
+    animateTo(value);
+  }, [value, animateTo]);
 
   return (
     <span ref={ref} className={cn("tnum", className)}>
