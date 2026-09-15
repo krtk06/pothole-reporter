@@ -644,6 +644,64 @@
 .seal-pin--completed,
 .seal-pin--rejected { background: var(--text-3); }
 
+.macadam-map {
+  background: var(--surface-2);
+}
+
+.macadam-pin-wrap {
+  background: transparent;
+  border: none;
+}
+
+.macadam-pin {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--text-3);
+  box-shadow: 0 0 0 2px var(--surface), 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.macadam-pin--reported { background: var(--text-3); }
+.macadam-pin--open { background: var(--ok); }
+.macadam-pin--under_review { background: var(--warn); }
+.macadam-pin--assigned { background: var(--info); }
+.macadam-pin--completed { background: var(--ok); opacity: 0.55; }
+.macadam-pin--rejected { background: var(--bad); }
+.macadam-pin--neutral { background: var(--accent-2); }
+
+.macadam-pin.is-selected {
+  transform: scale(1.15);
+}
+
+.macadam-pin-count {
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translate(-50%, -100%);
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.macadam-sonar {
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  border: 2px solid var(--accent);
+  animation: mac-sonar 1.8s var(--ease-out) infinite;
+  pointer-events: none;
+}
+
 /* ============================================================================
    Keyframes
    ============================================================================ */
@@ -665,6 +723,11 @@
 
 @keyframes mac-march {
   to { background-position: 12px 0; }
+}
+
+@keyframes mac-sonar {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  100% { transform: scale(2.4); opacity: 0; }
 }
 
 @keyframes mac-sonar {
