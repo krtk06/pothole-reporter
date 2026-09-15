@@ -2,53 +2,69 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import {
+  AlertTriangle,
+  CalendarDays,
+  Check,
+  Clock,
+  Eye,
+  EyeOff,
+  Hash,
+  KeyRound,
+  Loader2,
+  LogOut,
+  Map as MapIcon,
+  MapPin,
+  Plus,
+  Receipt,
+  RefreshCw,
+  Send,
+  ShieldAlert,
+  UserRound,
+  Wallet,
+  X,
+} from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api, ApiError } from "@/lib/api";
 import { AdminReport, Tender, MapCluster, PublicPothole, TenderSyncConfig, TenderSyncLog } from "@/types";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ANDHRA_STATE, getFallbackDistricts, getFallbackSubdistricts } from "@/data/andhraDirectory";
 import type { AdministrativeArea, MapBoundingBox } from "@/types";
-import dynamic from "next/dynamic";
-import PixelIcon from "@/components/pixel/PixelIcon";
-import BrandLogo from "@/components/pixel/BrandLogo";
-import { PixelWindow, PixelButton, PixelLamp, PixelChip } from "@/components/pixel/PixelUI";
-import DotPager from "@/components/pixel/DotPager";
+import {
+  Counter,
+  Field,
+  Input,
+  Logo,
+  MagneticButton,
+  NavBar,
+  NavInner,
+  NavSpacer,
+  Pill,
+  type PillTone,
+  Reveal,
+  Surface,
+  ThemeToggle,
+} from "@/components/macadam";
 
 const DynamicMap = dynamic(() => import("@/components/MapView"), {
   ssr: false,
-  loading: () => <div className="px-well h-[420px] w-full" />,
+  loading: () => <div className="h-[460px] w-full bg-sunken" />,
 });
 
 const PAGE_SIZE = 6;
 
-type LampStatus = "open" | "review" | "assigned" | "done";
-
-const reportLamp: Record<string, LampStatus> = {
-  pending: "review",
-  verified: "open",
-  rejected: "done",
-  fixed: "assigned",
+const reportTone: Record<string, PillTone> = {
+  pending: "warn",
+  verified: "ok",
+  rejected: "bad",
+  fixed: "info",
 };
 
-const reportTone: Record<string, string> = {
-  pending: "text-orange",
-  verified: "text-green",
-  rejected: "text-red",
-  fixed: "text-blue",
-};
-
-const tenderLamp: Record<string, LampStatus> = {
-  open: "open",
-  assigned: "assigned",
-  completed: "done",
-  rejected: "done",
-};
-
-const tenderTone: Record<string, string> = {
-  open: "text-green",
-  assigned: "text-blue",
-  completed: "text-green",
-  rejected: "text-red",
+const tenderTone: Record<string, PillTone> = {
+  open: "ok",
+  assigned: "info",
+  completed: "ok",
+  rejected: "bad",
 };
 
 const tenderLabel: Record<string, string> = {
@@ -58,12 +74,12 @@ const tenderLabel: Record<string, string> = {
   rejected: "Withdrawn",
 };
 
-const PAGES = [
-  { id: "map", label: "Map View" },
-  { id: "reports", label: "Reports" },
-  { id: "tenders", label: "Tenders" },
-  { id: "sync", label: "Tender Sync" },
-];
+const SECTIONS = [
+  { id: "map", label: "Map View", icon: MapIcon },
+  { id: "reports", label: "Reports", icon: Receipt },
+  { id: "tenders", label: "Tenders", icon: Wallet },
+  { id: "sync", label: "Tender Sync", icon: Send },
+] as const;
 
 function normalize(value?: string | null) {
   return (value || "").trim().replace(/\s+/g, " ").toLowerCase();
@@ -82,64 +98,110 @@ function areaBounds(area: AdministrativeArea | null): MapBoundingBox | null {
   return null;
 }
 
-function ScopeLabel({ user }: { user: any }) {
+function scopeText(user: any) {
   if (!user?.admin_scope) return null;
-  const scopeText =
-    user.admin_scope === "mandal"
-      ? `${user.mandal || "Mandal"} Mandal`
-      : user.admin_scope === "district"
-      ? `${user.district || "District"} District`
-      : `${user.state || "State"} State`;
+  if (user.admin_scope === "mandal") return `${user.mandal || "Mandal"} Mandal`;
+  if (user.admin_scope === "district") return `${user.district || "District"} District`;
+  return `${user.state || "State"} State`;
+}
 
+function SectionRail({ active }: { active: string }) {
   return (
-    <PixelChip className="hidden sm:inline-flex">
-      <PixelIcon name="user" size={10} />
-      <span>{scopeText} Admin</span>
-    </PixelChip>
+    <nav aria-label="Console sections" className="lg:sticky lg:top-24 lg:self-start">
+      <div className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:gap-1 lg:overflow-visible lg:pb-0">
+        {SECTIONS.map(({ id, label, icon: Icon }) => {
+          const isActive = active === id;
+          return (
+            <a
+              key={id}
+              href={`#${id}`}
+              aria-current={isActive ? "true" : undefined}
+              className={`inline-flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                isActive
+                  ? "bg-surface text-ink shadow-1"
+                  : "text-ink2 hover:bg-sunken hover:text-ink"
+              }`}
+            >
+              <Icon className={`h-4 w-4 ${isActive ? "text-signal" : "text-ink3"}`} />
+              {label}
+            </a>
+          );
+        })}
+      </div>
+      <div className="mt-6 hidden rounded-lg border border-hairline bg-sunken p-3 lg:block">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-ink3">
+          Jurisdiction
+        </p>
+        <p className="mt-1 text-xs leading-relaxed text-ink2">
+          Lists are limited to the scope bound to your account. Sync configuration is state-only.
+        </p>
+      </div>
+    </nav>
   );
 }
 
-function PixelPager({
+function PageControl({
   page,
   pageCount,
   onChange,
-  className = "",
 }: {
   page: number;
   pageCount: number;
   onChange: (page: number) => void;
-  className?: string;
 }) {
   if (pageCount <= 1) return null;
   return (
-    <div
-      className={`flex shrink-0 items-center justify-between gap-2 border-t-2 border-[var(--px-line)] bg-[var(--px-panel)] px-2 py-1.5 ${className}`}
-    >
-      <PixelButton
+    <div className="flex items-center justify-between gap-2 border-t border-hairline pt-3">
+      <MagneticButton
         type="button"
-        onClick={() => onChange(page - 1)}
+        variant="secondary"
         disabled={page <= 1}
+        onClick={() => onChange(page - 1)}
       >
-        <PixelIcon name="chevR" size={12} className="rotate-180" />
-        Prev
-      </PixelButton>
-      <span className="ledger text-dim">
+        Previous
+      </MagneticButton>
+      <span className="font-mono text-xs text-ink3">
         Page {page} / {pageCount}
       </span>
-      <PixelButton
+      <MagneticButton
         type="button"
-        onClick={() => onChange(page + 1)}
+        variant="secondary"
         disabled={page >= pageCount}
+        onClick={() => onChange(page + 1)}
       >
         Next
-        <PixelIcon name="chevR" size={12} />
-      </PixelButton>
+      </MagneticButton>
+    </div>
+  );
+}
+
+function SectionHeader({
+  icon: Icon,
+  title,
+  description,
+  children,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="min-w-0">
+        <h2 className="flex items-center gap-2 font-display text-xl font-bold text-ink">
+          <Icon className="h-5 w-5 text-signal" />
+          {title}
+        </h2>
+        {description && <p className="mt-1 max-w-2xl text-sm text-ink2">{description}</p>}
+      </div>
+      {children && <div className="flex shrink-0 flex-wrap items-center gap-2">{children}</div>}
     </div>
   );
 }
 
 export default function AdminDashboard() {
-  const { user, logout } = useStore();
+  const { user, logout, theme, toggleTheme } = useStore();
   const isStateAdmin = user?.admin_scope === "state";
   const router = useRouter();
   const [reports, setReports] = useState<AdminReport[]>([]);
@@ -155,14 +217,13 @@ export default function AdminDashboard() {
   const [reportUpdating, setReportUpdating] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState("");
   const [scopeArea, setScopeArea] = useState<AdministrativeArea | null>(null);
+  const [activeSection, setActiveSection] = useState<string>("map");
 
-  // Fixed-viewport pagination + feedback animation state (presentation only)
   const [reportPage, setReportPage] = useState(1);
   const [tenderPage, setTenderPage] = useState(1);
   const [reportFeedback, setReportFeedback] = useState<{ id: string; kind: "verify" | "reject" } | null>(null);
   const [syncPulse, setSyncPulse] = useState(false);
 
-  // Tender Sync State
   const [syncConfig, setSyncConfig] = useState<TenderSyncConfig | null>(null);
   const [syncLogs, setSyncLogs] = useState<TenderSyncLog[]>([]);
   const [syncLoading, setSyncLoading] = useState(false);
@@ -187,6 +248,31 @@ export default function AdminDashboard() {
   useEffect(() => {
     setReportPage(1);
   }, [statusFilter]);
+
+  useEffect(() => {
+    let raf = 0;
+    const compute = () => {
+      raf = 0;
+      const threshold = 148;
+      let current = SECTIONS[0].id as string;
+      for (const { id } of SECTIONS) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= threshold) current = id;
+      }
+      setActiveSection(current);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(compute);
+    };
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [mounted]);
 
   const scopeBounds = areaBounds(scopeArea) || (user?.state === "Andhra Pradesh" ? ANDHRA_STATE.bbox : null);
 
@@ -249,7 +335,6 @@ export default function AdminDashboard() {
       setReports(reportsData.reports || []);
       setTenders(tendersData.tenders || []);
 
-      // Handle both old and new map API response format
       const mapReports: any[] = mapData.potholes?.features?.map((f: any) => ({
         id: f.properties.id,
         latitude: f.geometry.coordinates[1],
@@ -289,7 +374,6 @@ export default function AdminDashboard() {
   };
 
   const handleTenderWithdraw = async (tenderId: string) => {
-    // Two-step confirm: first click arms the button, second click executes.
     if (withdrawConfirmId !== tenderId) {
       setWithdrawConfirmId(tenderId);
       return;
@@ -416,7 +500,6 @@ export default function AdminDashboard() {
     ? reports
     : reports.filter((r) => r.status === statusFilter);
 
-  // Client-side pagination (fixed viewport never scrolls)
   const reportPageCount = Math.max(1, Math.ceil(filteredReports.length / PAGE_SIZE));
   const reportPageSafe = Math.min(reportPage, reportPageCount);
   const pagedReports = filteredReports.slice((reportPageSafe - 1) * PAGE_SIZE, reportPageSafe * PAGE_SIZE);
@@ -425,7 +508,6 @@ export default function AdminDashboard() {
   const tenderPageSafe = Math.min(tenderPage, tenderPageCount);
   const pagedTenders = tenders.slice((tenderPageSafe - 1) * PAGE_SIZE, tenderPageSafe * PAGE_SIZE);
 
-  // Stats
   const stats = {
     total: reports.length,
     verified: reports.filter((r) => r.status === "verified").length,
@@ -435,469 +517,470 @@ export default function AdminDashboard() {
     assignedTenders: tenders.filter((t) => t.status === "assigned").length,
   };
 
-  const statCards: { label: string; value: number; tone: string }[] = [
-    { label: "Total Reports", value: stats.total, tone: "text-blue" },
-    { label: "Verified", value: stats.verified, tone: "text-green" },
-    { label: "Pending", value: stats.pending, tone: "text-orange" },
-    { label: "Fixed", value: stats.fixed, tone: "text-blue" },
-    { label: "Open Tenders", value: stats.openTenders, tone: "text-gold" },
-    { label: "Accepted", value: stats.assignedTenders, tone: "text-green" },
+  const statCards: { label: string; value: number; tone: PillTone }[] = [
+    { label: "Total reports", value: stats.total, tone: "info" },
+    { label: "Verified", value: stats.verified, tone: "ok" },
+    { label: "Pending", value: stats.pending, tone: "warn" },
+    { label: "Fixed", value: stats.fixed, tone: "info" },
+    { label: "Open tenders", value: stats.openTenders, tone: "accent" },
+    { label: "Accepted", value: stats.assignedTenders, tone: "ok" },
   ];
 
   if (!mounted || !user) return null;
 
+  const scope = scopeText(user);
+
   return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-[var(--px-void)]">
-      {/* Fixed header strip */}
-      <header className="flex shrink-0 items-center justify-between gap-2 border-b-2 border-[var(--px-line)] bg-[var(--px-panel)] px-2 py-2 sm:px-3">
-        <div className="flex min-w-0 items-center gap-2">
-          <BrandLogo
-            src="/brand/pothole-reporter.png"
-            alt="Pothole Reporter"
-            size={34}
-            fallback={
-              <span className="px-bevel grid h-7 w-7 shrink-0 place-items-center bg-[var(--px-gold)] text-[var(--px-on-accent)]">
-                <PixelIcon name="grid" size={14} />
-              </span>
-            }
-          />
-          <span className="font-pixel truncate text-[10px] text-body">ADMIN PANEL</span>
-          <ScopeLabel user={user} />
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
+    <main className="min-h-dvh">
+      <NavBar>
+        <NavInner>
+          <Logo src="/brand/pothole-reporter.png" name="Admin console" tagline={scope || "Jurisdiction"} />
+          <NavSpacer />
           <a
             href="http://localhost:3001"
             target="_blank"
             rel="noreferrer"
-            className="px-btn px-btn-gold hidden items-center gap-1 sm:inline-flex"
-            title="Open dedicated Tender & Contractor Website"
+            className="hidden items-center gap-1.5 rounded-lg border border-hairline bg-surface px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-sunken sm:inline-flex"
+            title="Open the dedicated Tender & Contractor Website"
           >
-            <PixelIcon name="chevR" size={12} />
-            Tender Website
+            Tender website
           </a>
-          <span className="hidden font-body text-sm text-dim md:block">{user.name}</span>
-          <ThemeToggle />
-          <PixelButton
-            type="button"
-            variant="red"
-            onClick={() => { void logout().finally(() => router.push("/")); }}
+          {scope && (
+            <Pill tone="accent" className="hidden md:inline-flex">
+              <ShieldAlert className="h-3 w-3" />
+              {scope}
+            </Pill>
+          )}
+          <span className="hidden font-mono text-xs text-ink3 lg:block">{user.name}</span>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <MagneticButton
+            variant="danger"
+            onClick={() => {
+              void logout().finally(() => router.push("/"));
+            }}
           >
-            <PixelIcon name="close" size={12} />
-            Logout
-          </PixelButton>
-        </div>
-      </header>
+            <LogOut className="h-4 w-4" />
+            <span className="hidden sm:inline">Logout</span>
+          </MagneticButton>
+        </NavInner>
+      </NavBar>
 
-      {/* Compact numeral-first stats strip */}
-      <div className="grid shrink-0 grid-cols-3 gap-2 px-2 pt-2 sm:px-3 lg:grid-cols-6">
-        {statCards.map(({ label, value, tone }) => (
-          <div key={label} className="px-window px-2 py-1.5">
-            <p className="font-pixel text-sm leading-none tnum text-body">{value}</p>
-            <p className={`ledger mt-1 truncate ${tone}`}>{label}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Success toast */}
       {successMsg && (
-        <div className="px-window px-anim-stamp fixed right-4 top-4 z-50 flex items-center gap-2 px-3 py-2">
-          <PixelIcon name="check" size={14} className="text-green" />
-          <span className="font-body text-sm text-body">{successMsg}</span>
+        <div className="fixed right-4 top-20 z-50 flex max-w-sm items-start gap-2 rounded-lg border border-signal/40 bg-surface px-4 py-3 shadow-3 animate-mac-pop">
+          <Check className="mt-0.5 h-4 w-4 shrink-0 text-ok" />
+          <span className="text-sm text-ink">{successMsg}</span>
         </div>
       )}
 
-      <DotPager pages={PAGES} className="flex-1 min-h-0 mt-2">
-        {/* ---------- MAP PANEL ---------- */}
-        <div className="flex h-full min-h-0 flex-col px-2 pb-14 pt-2 sm:px-3 lg:pb-3 lg:pr-12">
-          <div className="mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
-            <h2 className="flex items-center gap-2 font-pixel text-[11px] text-body">
-              <PixelIcon name="map" size={14} className="text-gold" />
-              POTHOLE DISTRIBUTION
-              {scopeBounds && (
-                <span className="font-body text-xs font-normal text-dim">
-                  — bounded to {user.admin_scope} level
-                </span>
-              )}
-            </h2>
-            <div className="flex items-center gap-2">
-              <PixelChip>
-                <PixelIcon name="pin" size={10} />
-                {publicPotholes.length} potholes
-              </PixelChip>
-              <PixelChip>
-                <PixelIcon name="grid" size={10} />
-                {clusters.length} clusters
-              </PixelChip>
-            </div>
-          </div>
-          <div className="min-h-0 flex-1 overflow-y-auto px-scroll">
-            {loadingMap ? (
-              <div className="px-well h-[420px] w-full" />
-            ) : (
-              <DynamicMap
-                clusters={clusters}
-                potholes={publicPotholes}
-                center={
-                  scopeBounds
-                    ? [(scopeBounds.north + scopeBounds.south) / 2, (scopeBounds.east + scopeBounds.west) / 2]
-                    : [20, 78]
-                }
-                zoom={scopeBounds ? 9 : 5}
-                bounds={scopeBounds}
-              />
-            )}
-          </div>
-        </div>
+      <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
+        <Reveal>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink3">
+            Jurisdiction console
+          </p>
+          <h1 className="mt-3 font-display text-[clamp(1.9rem,3.4vw,2.75rem)] font-extrabold tracking-[-0.025em] text-ink">
+            {scope ? `${scope} operations` : "Operations"}
+          </h1>
+        </Reveal>
 
-        {/* ---------- REPORTS PANEL ---------- */}
-        <div className="flex h-full min-h-0 flex-col px-2 pb-14 pt-2 sm:px-3 lg:pb-3 lg:pr-12">
-          <div className="mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
-            <h2 className="flex items-center gap-2 font-pixel text-[11px] text-body">
-              <PixelIcon name="file" size={14} className="text-gold" />
-              ALL REPORTS
-            </h2>
-            <div className="flex items-center gap-2">
-              <span className="relative inline-flex items-center">
-                <PixelIcon name="filter" size={12} className="pointer-events-none absolute left-2 text-dim" />
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-well appearance-none bg-[var(--px-well)] py-1.5 pl-7 pr-3 font-pixel text-[9px] uppercase text-body outline-none"
-                  aria-label="Filter reports by status"
-                >
-                  <option value="all">All</option>
-                  <option value="pending">Pending</option>
-                  <option value="verified">Verified</option>
-                  <option value="rejected">Rejected</option>
-                  <option value="fixed">Fixed</option>
-                </select>
-              </span>
-              <PixelButton type="button" onClick={fetchAll} title="Refresh reports">
-                <PixelIcon name="clock" size={12} />
-                Refresh
-              </PixelButton>
-            </div>
-          </div>
-
-          <div className="min-h-0 flex-1 overflow-y-auto px-scroll pr-1">
-            {loading ? (
-              <div className="px-well flex items-center justify-center gap-2 p-6">
-                <PixelIcon name="clock" size={14} className="px-anim-bob text-dim" />
-                <span className="font-pixel text-[10px] text-dim">LOADING</span>
-              </div>
-            ) : filteredReports.length === 0 ? (
-              <div className="px-well flex flex-col items-center gap-2 p-10 text-center">
-                <PixelIcon name="warn" size={28} className="text-dim" />
-                <p className="font-body text-sm text-dim">No reports found</p>
-              </div>
-            ) : (
-              <div className="grid gap-2">
-                {pagedReports.map((report) => (
-                  <div
-                    key={report.id}
-                    className={`px-window p-3 ${
-                      reportFeedback?.id === report.id
-                        ? reportFeedback.kind === "verify"
-                          ? "px-anim-stamp"
-                          : "px-anim-shake"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                          <PixelChip>
-                            <PixelLamp status={reportLamp[report.status] ?? "done"} />
-                            <span className={reportTone[report.status] ?? "text-dim"}>{report.status}</span>
-                          </PixelChip>
-                          {report.block_id && (
-                            <PixelChip className="font-mono tnum text-dim">{report.block_id}</PixelChip>
-                          )}
-                        </div>
-                        <p className="font-body text-sm text-body">
-                          <PixelIcon name="user" size={12} className="mr-1 inline-block align-middle text-dim" />
-                          {report.reporter_name} • {report.reporter_phone || "No phone"}
-                        </p>
-                        {report.address_notes && (
-                          <p className="line-clamp-2 font-body text-xs text-dim">{report.address_notes}</p>
-                        )}
-                        <p className="font-mono text-xs tnum text-dim">
-                          <PixelIcon name="pin" size={12} className="mr-1 inline-block align-middle" />
-                          {Number(report.latitude).toFixed(5)}, {Number(report.longitude).toFixed(5)}
-                        </p>
-                        <p className="font-body text-xs text-dim">
-                          {new Date(report.created_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
-                        </p>
-                      </div>
-                      {report.status === "pending" && (
-                        <div className="flex shrink-0 items-center gap-2">
-                          <PixelButton
-                            type="button"
-                            variant="green"
-                            disabled={reportUpdating === report.id}
-                            onClick={() => handleReportStatus(report.id, "verified")}
-                          >
-                            {reportUpdating === report.id ? (
-                              "…"
-                            ) : (
-                              <>
-                                <PixelIcon name="check" size={12} />
-                                Verify
-                              </>
-                            )}
-                          </PixelButton>
-                          <PixelButton
-                            type="button"
-                            variant="red"
-                            disabled={reportUpdating === report.id}
-                            onClick={() => handleReportStatus(report.id, "rejected")}
-                          >
-                            <PixelIcon name="close" size={12} />
-                            Reject
-                          </PixelButton>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <PixelPager
-            page={reportPageSafe}
-            pageCount={reportPageCount}
-            onChange={setReportPage}
-            className="mt-2"
-          />
-        </div>
-
-        {/* ---------- TENDERS PANEL ---------- */}
-        <div className="flex h-full min-h-0 flex-col px-2 pb-14 pt-2 sm:px-3 lg:pb-3 lg:pr-12">
-          <div className="mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
-            <div>
-              <h2 className="flex items-center gap-2 font-pixel text-[11px] text-body">
-                <PixelIcon name="coin" size={14} className="text-gold" />
-                TENDERS
-              </h2>
-              <p className="font-body text-xs text-dim">
-                Accept tenders or unsend to remove them from the tendering website
-              </p>
-            </div>
-            <PixelButton type="button" onClick={fetchAll} title="Refresh tenders">
-              <PixelIcon name="clock" size={12} />
-              Refresh
-            </PixelButton>
-          </div>
-
-          <div className="min-h-0 flex-1 overflow-y-auto px-scroll pr-1">
-            {loading ? (
-              <div className="px-well flex items-center justify-center gap-2 p-6">
-                <PixelIcon name="clock" size={14} className="px-anim-bob text-dim" />
-                <span className="font-pixel text-[10px] text-dim">LOADING</span>
-              </div>
-            ) : tenders.length === 0 ? (
-              <div className="px-well flex flex-col items-center gap-2 p-10 text-center">
-                <PixelIcon name="file" size={28} className="text-dim" />
-                <p className="font-body text-sm text-dim">No tenders yet</p>
-                <p className="font-body text-xs text-dim">Tenders are auto-generated when pothole threshold is met</p>
-              </div>
-            ) : (
-              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                {pagedTenders.map((tender) => (
-                  <div key={tender.id} className="px-window flex flex-col gap-3 p-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="ledger truncate text-gold">{tender.block_id}</p>
-                        <p className="font-pixel text-sm tnum text-body">
-                          ₹{Number(tender.estimated_cost).toLocaleString("en-IN")}
-                        </p>
-                      </div>
-                      <PixelChip>
-                        <PixelLamp status={tenderLamp[tender.status] ?? "done"} />
-                        <span className={tenderTone[tender.status] ?? "text-dim"}>
-                          {tenderLabel[tender.status] ?? tender.status}
-                        </span>
-                      </PixelChip>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="px-well p-2">
-                        <p className="ledger text-dim">Potholes</p>
-                        <p className="font-pixel text-[10px] tnum text-body">{tender.pothole_count}</p>
-                      </div>
-                      <div className="px-well p-2">
-                        <p className="ledger text-dim">Generated</p>
-                        <p className="font-body text-xs text-body">
-                          {new Date(tender.generated_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-
-                    {tender.status === "open" && (
-                      <div className="mt-auto flex gap-2 border-t-2 border-[var(--px-line)] pt-2">
-                        <PixelButton
-                          type="button"
-                          variant="green"
-                          className="flex-1"
-                          disabled={tenderLoading === tender.id}
-                          onClick={() => handleTenderAction(tender.id, "assigned")}
-                        >
-                          {tenderLoading === tender.id ? (
-                            "…"
-                          ) : (
-                            <>
-                              <PixelIcon name="check" size={12} />
-                              Accept
-                            </>
-                          )}
-                        </PixelButton>
-                        <PixelButton
-                          type="button"
-                          variant="red"
-                          className="flex-1"
-                          disabled={tenderLoading === tender.id}
-                          onClick={() => handleTenderWithdraw(tender.id)}
-                        >
-                          {tenderLoading === tender.id ? (
-                            "…"
-                          ) : withdrawConfirmId === tender.id ? (
-                            <>
-                              <PixelIcon name="warn" size={12} />
-                              Confirm Unsend
-                            </>
-                          ) : (
-                            <>
-                              <PixelIcon name="send" size={12} className="rotate-180" />
-                              Unsend
-                            </>
-                          )}
-                        </PixelButton>
-                      </div>
-                    )}
-
-                    {tender.status === "assigned" && (
-                      <div className="mt-auto flex items-center gap-2 border-t-2 border-[var(--px-line)] pt-2">
-                        <PixelLamp status="assigned" />
-                        <span className="font-body text-xs text-blue">Accepted — pending completion</span>
-                      </div>
-                    )}
-
-                    {tender.status === "rejected" && (
-                      <div className="mt-auto flex items-center gap-2 border-t-2 border-[var(--px-line)] pt-2">
-                        <PixelLamp status="done" />
-                        <span className="font-body text-xs text-red">Withdrawn — removed from tendering website</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <PixelPager
-            page={tenderPageSafe}
-            pageCount={tenderPageCount}
-            onChange={setTenderPage}
-            className="mt-2"
-          />
-        </div>
-
-        {/* ---------- SYNC PANEL ---------- */}
-        <div className="flex h-full min-h-0 flex-col px-2 pb-14 pt-2 sm:px-3 lg:pb-3 lg:pr-12">
-          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-scroll pr-1">
-            {!isStateAdmin ? (
-              <PixelWindow title="Tender Sync" icon="send" className="p-4">
-                <div className="flex items-start gap-3">
-                  <PixelIcon name="warn" size={20} className="mt-0.5 shrink-0 text-gold" />
-                  <div>
-                    <p className="font-pixel text-[10px] text-gold">STATE ADMIN ACCESS ONLY</p>
-                    <p className="mt-1 font-body text-xs text-dim">
-                      Tender website integration, API keys and the 15–30 day sync schedule are managed
-                      exclusively by state-level administrators. Your jurisdiction (mandal/district) does
-                      not include this configuration.
-                    </p>
-                  </div>
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {statCards.map(({ label, value, tone }, index) => (
+            <Reveal key={label} delay={index * 40}>
+              <Surface level={1} className="h-full p-4">
+                <p className="font-mono text-3xl font-semibold tracking-tight text-ink">
+                  <Counter value={value} />
+                </p>
+                <div className="mt-2">
+                  <Pill tone={tone}>{label}</Pill>
                 </div>
-              </PixelWindow>
-            ) : (
-              <>
-                <div className="flex flex-wrap items-center justify-between gap-2">
+              </Surface>
+            </Reveal>
+          ))}
+        </div>
+
+        <div className="mt-10 grid gap-8 lg:grid-cols-[210px_minmax(0,1fr)]">
+          <SectionRail active={activeSection} />
+
+          <div className="min-w-0 space-y-14">
+            {/* MAP */}
+            <section id="map" className="scroll-mt-28">
+              <SectionHeader
+                icon={MapIcon}
+                title="Pothole distribution"
+                description={
+                  scopeBounds
+                    ? `Bounded to the ${user.admin_scope ?? "account"} level for your jurisdiction.`
+                    : "No jurisdiction bounds could be resolved for this account."
+                }
+              >
+                <Pill tone="neutral" mono>
+                  <MapPin className="h-3 w-3" />
+                  {publicPotholes.length} potholes
+                </Pill>
+                <Pill tone="neutral" mono>
+                  <Hash className="h-3 w-3" />
+                  {clusters.length} clusters
+                </Pill>
+              </SectionHeader>
+
+              <Surface level={2} padded={false} className="mt-5 overflow-hidden">
+                {loadingMap ? (
+                  <div className="flex h-[460px] items-center justify-center bg-sunken">
+                    <span className="flex items-center gap-2 font-mono text-sm text-ink2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Loading map…
+                    </span>
+                  </div>
+                ) : (
+                  <DynamicMap
+                    clusters={clusters}
+                    potholes={publicPotholes}
+                    center={
+                      scopeBounds
+                        ? [(scopeBounds.north + scopeBounds.south) / 2, (scopeBounds.east + scopeBounds.west) / 2]
+                        : [20, 78]
+                    }
+                    zoom={scopeBounds ? 9 : 5}
+                    bounds={scopeBounds}
+                  />
+                )}
+              </Surface>
+            </section>
+
+            {/* REPORTS */}
+            <section id="reports" className="scroll-mt-28">
+              <SectionHeader
+                icon={Receipt}
+                title="All reports"
+                description="Verify or reject incoming reports. Every decision is scoped to your jurisdiction."
+              >
+                <div className="relative">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    aria-label="Filter reports by status"
+                    className="h-10 appearance-none rounded-lg border border-hairline bg-sunken pl-3 pr-9 text-sm font-semibold text-ink outline-none transition-colors focus:border-signal"
+                    style={{
+                      backgroundImage:
+                        "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239198a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "16px 16px",
+                      backgroundPosition: "right 0.6rem center",
+                    }}
+                  >
+                    <option value="all">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="verified">Verified</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="fixed">Fixed</option>
+                  </select>
+                </div>
+                <MagneticButton variant="secondary" onClick={fetchAll}>
+                  <RefreshCw className="h-4 w-4" />
+                  Refresh
+                </MagneticButton>
+              </SectionHeader>
+
+              <div className="mt-5">
+                {loading ? (
+                  <Surface level={1} className="flex items-center justify-center gap-2 py-10">
+                    <Loader2 className="h-5 w-5 animate-spin text-ink3" />
+                    <span className="font-mono text-sm text-ink2">Loading reports…</span>
+                  </Surface>
+                ) : filteredReports.length === 0 ? (
+                  <Surface level={1} className="flex flex-col items-center gap-2 py-14 text-center">
+                    <Receipt className="h-7 w-7 text-ink3" />
+                    <p className="text-sm text-ink2">No reports found</p>
+                    <p className="text-xs text-ink3">Reports will appear here once submitted from the field.</p>
+                  </Surface>
+                ) : (
+                  <div className="grid gap-3">
+                    {pagedReports.map((report) => (
+                      <Surface
+                        key={report.id}
+                        level={1}
+                        className={
+                          reportFeedback?.id === report.id
+                            ? reportFeedback.kind === "verify"
+                              ? "animate-mac-pop"
+                              : "animate-mac-shake"
+                            : undefined
+                        }
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <div className="min-w-0 flex-1 space-y-2">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <Pill tone={reportTone[report.status] ?? "neutral"} pulse={report.status === "pending"}>
+                                {report.status}
+                              </Pill>
+                              {report.block_id && (
+                                <Pill tone="neutral" mono>
+                                  {report.block_id}
+                                </Pill>
+                              )}
+                            </div>
+                            <p className="flex items-center gap-1.5 text-sm text-ink">
+                              <UserRound className="h-3.5 w-3.5 text-ink3" />
+                              {report.reporter_name}
+                              <span className="text-ink3">• {report.reporter_phone || "No phone"}</span>
+                            </p>
+                            {report.address_notes && (
+                              <p className="line-clamp-2 text-sm text-ink2">{report.address_notes}</p>
+                            )}
+                            <p className="flex items-center gap-1.5 font-mono text-xs text-ink3">
+                              <MapPin className="h-3.5 w-3.5" />
+                              {Number(report.latitude).toFixed(5)}, {Number(report.longitude).toFixed(5)}
+                            </p>
+                            <p className="flex items-center gap-1.5 font-mono text-xs text-ink3">
+                              <CalendarDays className="h-3.5 w-3.5" />
+                              {new Date(report.created_at).toLocaleDateString(undefined, {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </p>
+                          </div>
+                          {report.status === "pending" && (
+                            <div className="flex shrink-0 items-center gap-2">
+                              <MagneticButton
+                                variant="ok"
+                                disabled={reportUpdating === report.id}
+                                onClick={() => handleReportStatus(report.id, "verified")}
+                              >
+                                {reportUpdating === report.id ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <Check className="h-4 w-4" />
+                                )}
+                                Verify
+                              </MagneticButton>
+                              <MagneticButton
+                                variant="danger"
+                                disabled={reportUpdating === report.id}
+                                onClick={() => handleReportStatus(report.id, "rejected")}
+                              >
+                                <X className="h-4 w-4" />
+                                Reject
+                              </MagneticButton>
+                            </div>
+                          )}
+                        </div>
+                      </Surface>
+                    ))}
+                  </div>
+                )}
+                <div className="mt-4">
+                  <PageControl page={reportPageSafe} pageCount={reportPageCount} onChange={setReportPage} />
+                </div>
+              </div>
+            </section>
+
+            {/* TENDERS */}
+            <section id="tenders" className="scroll-mt-28">
+              <SectionHeader
+                icon={Wallet}
+                title="Tenders"
+                description="Accept a tender, or unsend it to withdraw it from the tendering website."
+              >
+                <MagneticButton variant="secondary" onClick={fetchAll}>
+                  <RefreshCw className="h-4 w-4" />
+                  Refresh
+                </MagneticButton>
+              </SectionHeader>
+
+              <div className="mt-5">
+                {loading ? (
+                  <Surface level={1} className="flex items-center justify-center gap-2 py-10">
+                    <Loader2 className="h-5 w-5 animate-spin text-ink3" />
+                    <span className="font-mono text-sm text-ink2">Loading tenders…</span>
+                  </Surface>
+                ) : tenders.length === 0 ? (
+                  <Surface level={1} className="flex flex-col items-center gap-2 py-14 text-center">
+                    <Wallet className="h-7 w-7 text-ink3" />
+                    <p className="text-sm text-ink2">No tenders yet</p>
+                    <p className="text-xs text-ink3">
+                      Tenders are generated automatically once the pothole threshold is met.
+                    </p>
+                  </Surface>
+                ) : (
+                  <div className="grid gap-3 lg:grid-cols-2">
+                    {pagedTenders.map((tender) => (
+                      <Surface key={tender.id} level={1} className="flex h-full flex-col">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate font-mono text-xs text-ink3">{tender.block_id}</p>
+                            <p className="mt-1 font-mono text-xl font-semibold tracking-tight text-ink">
+                              ₹{Number(tender.estimated_cost).toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                          <Pill tone={tenderTone[tender.status] ?? "neutral"} pulse={tender.status === "open"}>
+                            {tenderLabel[tender.status] ?? tender.status}
+                          </Pill>
+                        </div>
+
+                        <div className="mt-4 grid grid-cols-2 gap-3">
+                          <div className="rounded-lg border border-hairline bg-sunken p-3">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                              Potholes
+                            </p>
+                            <p className="mt-1 font-mono text-lg text-ink">{tender.pothole_count}</p>
+                          </div>
+                          <div className="rounded-lg border border-hairline bg-sunken p-3">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                              Generated
+                            </p>
+                            <p className="mt-1 font-mono text-sm text-ink">
+                              {new Date(tender.generated_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+
+                        {tender.status === "open" && (
+                          <div className="mt-4 flex gap-2 border-t border-hairline pt-4">
+                            <MagneticButton
+                              variant="ok"
+                              block
+                              disabled={tenderLoading === tender.id}
+                              onClick={() => handleTenderAction(tender.id, "assigned")}
+                            >
+                              {tenderLoading === tender.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Check className="h-4 w-4" />
+                              )}
+                              Accept
+                            </MagneticButton>
+                            <MagneticButton
+                              variant="danger"
+                              block
+                              disabled={tenderLoading === tender.id}
+                              onClick={() => handleTenderWithdraw(tender.id)}
+                            >
+                              {withdrawConfirmId === tender.id ? (
+                                <>
+                                  <AlertTriangle className="h-4 w-4" />
+                                  Confirm unsend
+                                </>
+                              ) : (
+                                <>
+                                  <Send className="h-4 w-4 rotate-180" />
+                                  Unsend
+                                </>
+                              )}
+                            </MagneticButton>
+                          </div>
+                        )}
+
+                        {tender.status === "assigned" && (
+                          <div className="mt-4 flex items-center gap-2 border-t border-hairline pt-4">
+                            <Pill tone="info">Accepted</Pill>
+                            <span className="text-xs text-ink2">Pending completion</span>
+                          </div>
+                        )}
+
+                        {tender.status === "rejected" && (
+                          <div className="mt-4 flex items-center gap-2 border-t border-hairline pt-4">
+                            <Pill tone="bad">Withdrawn</Pill>
+                            <span className="text-xs text-ink2">Removed from the tendering website</span>
+                          </div>
+                        )}
+                      </Surface>
+                    ))}
+                  </div>
+                )}
+                <div className="mt-4">
+                  <PageControl page={tenderPageSafe} pageCount={tenderPageCount} onChange={setTenderPage} />
+                </div>
+              </div>
+            </section>
+
+            {/* SYNC */}
+            <section id="sync" className="scroll-mt-28">
+              {!isStateAdmin ? (
+                <Surface level={1} className="flex items-start gap-4">
+                  <ShieldAlert className="mt-0.5 h-6 w-6 shrink-0 text-warn" />
                   <div>
-                    <h2 className="flex items-center gap-2 font-pixel text-[11px] text-body">
-                      <PixelIcon name="send" size={14} className="text-gold" />
-                      TENDER WEBSITE INTEGRATION &amp; PERIODIC SYNC
-                    </h2>
-                    <p className="font-body text-xs text-dim">
-                      Automatically export verified potholes, high-res photos, and GPS coordinates to the
-                      contractor tender website via API key every 15 to 30 days.
+                    <h2 className="font-display text-lg font-bold text-ink">State admin access only</h2>
+                    <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ink2">
+                      Tender website integration, API keys, and the 15–30 day sync schedule are managed
+                      exclusively by state-level administrators. Your jurisdiction does not include this
+                      configuration.
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <PixelButton type="button" onClick={fetchSyncConfig} disabled={syncLoading}>
-                      <PixelIcon name="clock" size={12} />
+                </Surface>
+              ) : (
+                <>
+                  <SectionHeader
+                    icon={Send}
+                    title="Tender website integration & periodic sync"
+                    description="Export verified potholes, photos, and GPS to the contractor portal via API key every 15 to 30 days."
+                  >
+                    <MagneticButton variant="secondary" onClick={fetchSyncConfig} disabled={syncLoading}>
+                      <RefreshCw className="h-4 w-4" />
                       Refresh
-                    </PixelButton>
+                    </MagneticButton>
                     <a
                       href="http://localhost:3001"
                       target="_blank"
                       rel="noreferrer"
-                      className="px-btn px-btn-gold inline-flex items-center gap-1"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-transparent bg-signal px-4 py-2.5 text-sm font-semibold leading-none text-onsignal transition-colors hover:bg-signal2"
                     >
-                      <PixelIcon name="chevR" size={12} />
-                      Open Tender Website
+                      Open tender website
                     </a>
-                  </div>
-                </div>
+                  </SectionHeader>
 
-                {syncFeedback && (
-                  <div
-                    className={`px-window flex items-center justify-between gap-2 p-3 ${
-                      syncFeedback.type === "success" ? "px-anim-stamp" : "px-anim-shake"
-                    }`}
-                  >
-                    <span
-                      className={`flex items-center gap-2 font-body text-sm ${
-                        syncFeedback.type === "success" ? "text-green" : "text-red"
+                  {syncFeedback && (
+                    <div
+                      className={`mt-4 flex items-center justify-between gap-3 rounded-lg border px-4 py-3 ${
+                        syncFeedback.type === "success"
+                          ? "border-ok/40 bg-ok/10 animate-mac-pop"
+                          : "border-bad/40 bg-bad/10 animate-mac-shake"
                       }`}
                     >
-                      <PixelIcon name={syncFeedback.type === "success" ? "check" : "warn"} size={14} />
-                      {syncFeedback.text}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setSyncFeedback(null)}
-                      className="text-dim hover:text-body"
-                      aria-label="Dismiss"
-                    >
-                      <PixelIcon name="close" size={14} />
-                    </button>
-                  </div>
-                )}
-
-                {/* Status summary */}
-                <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-                  <div className="px-window p-2.5">
-                    <p className="ledger text-dim">Integration Status</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <PixelLamp status={isEnabled ? "open" : "done"} />
-                      <span className="font-body text-sm text-body">
-                        {isEnabled ? "Active & Scheduled" : "Sync Disabled"}
+                      <span className="flex items-center gap-2 text-sm text-ink">
+                        {syncFeedback.type === "success" ? (
+                          <Check className="h-4 w-4 text-ok" />
+                        ) : (
+                          <AlertTriangle className="h-4 w-4 text-bad" />
+                        )}
+                        {syncFeedback.text}
                       </span>
+                      <button
+                        type="button"
+                        onClick={() => setSyncFeedback(null)}
+                        aria-label="Dismiss"
+                        className="text-ink3 transition-colors hover:text-ink"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
                     </div>
-                  </div>
-                  <div className="px-window p-2.5">
-                    <p className="ledger text-dim">Sync Cycle</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <PixelIcon name="clock" size={14} className="text-blue" />
-                      <span className="font-body text-sm text-body">Every {intervalDays} Days</span>
-                    </div>
-                  </div>
-                  <div className="px-window p-2.5">
-                    <p className="ledger text-dim">Next Scheduled Dispatch</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <PixelIcon name="clock" size={14} className="text-orange" />
-                      <span className="font-body text-sm text-body">
+                  )}
+
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <Surface level={1} className="p-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                        Integration status
+                      </p>
+                      <div className="mt-2">
+                        <Pill tone={isEnabled ? "ok" : "neutral"} pulse={isEnabled}>
+                          {isEnabled ? "Active & scheduled" : "Sync disabled"}
+                        </Pill>
+                      </div>
+                    </Surface>
+                    <Surface level={1} className="p-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                        Sync cycle
+                      </p>
+                      <p className="mt-2 flex items-center gap-2 font-mono text-sm text-ink">
+                        <Clock className="h-4 w-4 text-info" />
+                        Every {intervalDays} days
+                      </p>
+                    </Surface>
+                    <Surface level={1} className="p-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                        Next dispatch
+                      </p>
+                      <p className="mt-2 flex items-center gap-2 font-mono text-sm text-ink">
+                        <CalendarDays className="h-4 w-4 text-warn" />
                         {syncConfig?.next_sync_at
                           ? new Date(syncConfig.next_sync_at).toLocaleDateString(undefined, {
                               month: "short",
@@ -905,29 +988,20 @@ export default function AdminDashboard() {
                               year: "numeric",
                             })
                           : "Pending setup"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="px-window p-2.5">
-                    <p className="ledger text-dim">Last Sync Result</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <PixelChip>
-                        <PixelLamp
-                          status={
+                      </p>
+                    </Surface>
+                    <Surface level={1} className="p-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">
+                        Last sync result
+                      </p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <Pill
+                          tone={
                             syncConfig?.last_sync_status === "success"
-                              ? "open"
+                              ? "ok"
                               : syncConfig?.last_sync_status === "failed"
-                              ? "done"
-                              : "review"
-                          }
-                        />
-                        <span
-                          className={
-                            syncConfig?.last_sync_status === "success"
-                              ? "text-green"
-                              : syncConfig?.last_sync_status === "failed"
-                              ? "text-red"
-                              : "text-dim"
+                              ? "bad"
+                              : "neutral"
                           }
                         >
                           {syncConfig?.last_sync_status === "success"
@@ -935,243 +1009,265 @@ export default function AdminDashboard() {
                             : syncConfig?.last_sync_status === "failed"
                             ? "Failed"
                             : "Idle"}
-                        </span>
-                      </PixelChip>
-                      {syncConfig?.last_sync_at && (
-                        <span className="font-body text-xs text-dim">
-                          {new Date(syncConfig.last_sync_at).toLocaleDateString()}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-                  {/* Configuration form */}
-                  <PixelWindow title="Configuration & Schedule" icon="grid" className="p-3 lg:col-span-2">
-                    <div className="mb-2 flex items-center justify-between gap-2 border-b-2 border-[var(--px-line)] pb-2">
-                      <p className="font-body text-xs text-dim">
-                        Configure destination tender API endpoint, security credentials, and frequency.
-                      </p>
-                      <PixelChip>Admin Managed</PixelChip>
-                    </div>
-
-                    <form onSubmit={handleSaveSyncConfig} className="space-y-3">
-                      <div>
-                        <label htmlFor="targetUrl" className="ledger mb-1 block text-dim">
-                          Tender Website Ingestion Endpoint URL
-                        </label>
-                        <input
-                          id="targetUrl"
-                          type="url"
-                          value={targetUrl}
-                          onChange={(e) => setTargetUrl(e.target.value)}
-                          placeholder="http://localhost:3001/api/sync"
-                          required
-                          className="px-well w-full bg-[var(--px-well)] px-2 py-2 font-mono text-xs text-body outline-none"
-                        />
-                        <p className="mt-1 font-body text-[11px] text-dim">
-                          The tender portal route that accepts HTTP POST with JSON pothole &amp; tender payload.
-                        </p>
+                        </Pill>
+                        {syncConfig?.last_sync_at && (
+                          <span className="font-mono text-xs text-ink3">
+                            {new Date(syncConfig.last_sync_at).toLocaleDateString()}
+                          </span>
+                        )}
                       </div>
+                    </Surface>
+                  </div>
 
-                      <div>
-                        <div className="mb-1 flex items-center justify-between gap-2">
-                          <label htmlFor="apiKey" className="ledger text-dim">
-                            API Key (Authentication Secret)
-                          </label>
+                  <div className="mt-5 grid gap-4 lg:grid-cols-3">
+                    <Surface level={2} className="lg:col-span-2">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <h3 className="font-display text-base font-bold text-ink">
+                          Configuration & schedule
+                        </h3>
+                        <Pill tone="accent">Admin managed</Pill>
+                      </div>
+                      <p className="mt-1 text-sm text-ink2">
+                        Configure the destination endpoint, credentials, and frequency.
+                      </p>
+                      <div className="mt-4 rule" />
+
+                      <form onSubmit={handleSaveSyncConfig} className="mt-5 space-y-5">
+                        <Field
+                          label="Ingestion endpoint URL"
+                          htmlFor="targetUrl"
+                          hint="The tender portal route that accepts an HTTP POST with the JSON payload."
+                          required
+                        >
+                          <Input
+                            id="targetUrl"
+                            type="url"
+                            value={targetUrl}
+                            onChange={(e) => setTargetUrl(e.target.value)}
+                            placeholder="http://localhost:3001/api/sync"
+                            className="font-mono text-xs"
+                            required
+                          />
+                        </Field>
+
+                        <Field label="API key" htmlFor="apiKey" required>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              id="apiKey"
+                              type={showApiKey ? "text" : "password"}
+                              value={apiKey}
+                              onChange={(e) => setApiKey(e.target.value)}
+                              placeholder="Secret shared with the tender website"
+                              className="font-mono text-xs"
+                              required
+                            />
+                            <MagneticButton
+                              type="button"
+                              variant="secondary"
+                              onClick={() => setShowApiKey((v) => !v)}
+                            >
+                              {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              {showApiKey ? "Hide" : "Show"}
+                            </MagneticButton>
+                          </div>
+                        </Field>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                          <KeyRound className="h-4 w-4 text-ink3" />
                           <button
                             type="button"
                             onClick={handleGenerateApiKey}
-                            className="ledger inline-flex items-center gap-1 text-gold underline"
+                            className="inline-flex items-center gap-1 text-sm font-semibold text-signal underline-offset-4 hover:underline"
                           >
-                            <PixelIcon name="plus" size={10} />
-                            Generate New Key
+                            <Plus className="h-3.5 w-3.5" />
+                            Generate a new key
                           </button>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <input
-                            id="apiKey"
-                            type={showApiKey ? "text" : "password"}
-                            value={apiKey}
-                            onChange={(e) => setApiKey(e.target.value)}
-                            placeholder="Enter secret API key shared with tender website"
-                            required
-                            className="px-well min-w-0 flex-1 bg-[var(--px-well)] px-2 py-2 font-mono text-xs text-body outline-none"
-                          />
-                          <PixelButton type="button" onClick={() => setShowApiKey((v) => !v)}>
-                            <PixelIcon name="eye" size={12} />
-                            {showApiKey ? "Hide" : "Show"}
-                          </PixelButton>
-                        </div>
-                        <p className="mt-1 font-body text-[11px] text-dim">
-                          Sent in the{" "}
-                          <code className="px-well bg-[var(--px-well)] px-1">X-API-Key</code> request header.
-                          The tender website verifies this key before accepting any pothole batch.
-                        </p>
-                      </div>
-
-                      <div>
-                        <label className="ledger mb-2 block text-dim">
-                          Automatic Sync Frequency (Between 15 and 30 Days)
-                        </label>
-                        <div className="mb-2 flex flex-wrap items-center gap-2">
-                          {[15, 20, 25, 30].map((days) => (
-                            <PixelButton
-                              key={days}
-                              type="button"
-                              variant={intervalDays === days ? "gold" : "default"}
-                              onClick={() => setIntervalDays(days)}
-                            >
-                              {days} Days
-                            </PixelButton>
-                          ))}
-                        </div>
-
-                        <div className="px-well flex items-center gap-3 bg-[var(--px-well)] p-2">
-                          <input
-                            type="range"
-                            min="15"
-                            max="30"
-                            step="1"
-                            value={intervalDays}
-                            onChange={(e) => setIntervalDays(Number(e.target.value))}
-                            className="flex-1 accent-gold"
-                          />
-                          <span className="min-w-[60px] text-right font-pixel text-[10px] tnum text-body">
-                            {intervalDays} Days
+                          <span className="text-xs text-ink3">
+                            Sent as <code className="font-mono">X-API-Key</code>; the tender website verifies it
+                            before accepting any batch.
                           </span>
                         </div>
-                      </div>
 
-                      <label className="flex cursor-pointer select-none items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={isEnabled}
-                          onChange={(e) => setIsEnabled(e.target.checked)}
-                          className="h-4 w-4 accent-gold"
-                        />
-                        <span className="font-body text-sm text-body">
-                          Enable Automated Background Scheduling
-                        </span>
-                      </label>
+                        <Field label="Automatic sync frequency" htmlFor="interval">
+                          <div className="flex flex-wrap items-center gap-2">
+                            {[15, 20, 25, 30].map((days) => (
+                              <MagneticButton
+                                key={days}
+                                type="button"
+                                variant={intervalDays === days ? "primary" : "secondary"}
+                                onClick={() => setIntervalDays(days)}
+                              >
+                                {days} days
+                              </MagneticButton>
+                            ))}
+                          </div>
+                          <div className="mt-3 flex items-center gap-3 rounded-lg border border-hairline bg-sunken p-3">
+                            <input
+                              id="interval"
+                              type="range"
+                              min="15"
+                              max="30"
+                              step="1"
+                              value={intervalDays}
+                              onChange={(e) => setIntervalDays(Number(e.target.value))}
+                              className="flex-1 accent-signal"
+                            />
+                            <span className="min-w-[68px] text-right font-mono text-sm tnum text-ink">
+                              {intervalDays} days
+                            </span>
+                          </div>
+                        </Field>
 
-                      <div className="flex items-center justify-between gap-2 border-t-2 border-[var(--px-line)] pt-3">
-                        <PixelButton type="submit" variant="gold" disabled={syncSaving}>
-                          {syncSaving ? (
-                            "Saving…"
-                          ) : (
-                            <>
-                              <PixelIcon name="check" size={12} />
-                              Save Configuration
-                            </>
-                          )}
-                        </PixelButton>
-                        <p className="font-body text-xs text-dim">Changes apply immediately to scheduler.</p>
-                      </div>
-                    </form>
-                  </PixelWindow>
+                        <label className="flex cursor-pointer select-none items-center gap-2.5">
+                          <input
+                            type="checkbox"
+                            checked={isEnabled}
+                            onChange={(e) => setIsEnabled(e.target.checked)}
+                            className="h-4 w-4 accent-signal"
+                          />
+                          <span className="text-sm text-ink">Enable automated background scheduling</span>
+                        </label>
 
-                  {/* Actions & dispatch */}
-                  <div className="space-y-3">
-                    <PixelWindow title="Manual Trigger" icon="send" className="p-3">
-                      <p className="font-body text-xs text-dim">
-                        Need to dispatch immediately without waiting for the 15–30 day timer? Trigger an
-                        instant sync to push all current verified potholes and tenders to the tender website now.
-                      </p>
-                      <div className={`mt-3 ${syncPulse ? "px-anim-stamp" : ""}`}>
-                        <PixelButton
-                          type="button"
-                          variant="gold"
-                          className="w-full"
-                          onClick={handleTriggerSync}
-                          disabled={syncTriggering}
-                        >
-                          <PixelIcon name="send" size={12} />
-                          {syncTriggering ? "Transmitting Payload…" : "Sync Now to Tender Website"}
-                        </PixelButton>
-                      </div>
-                    </PixelWindow>
+                        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-hairline pt-5">
+                          <MagneticButton type="submit" variant="primary" disabled={syncSaving}>
+                            {syncSaving ? (
+                              <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                Saving
+                              </>
+                            ) : (
+                              <>
+                                <Check className="h-4 w-4" />
+                                Save configuration
+                              </>
+                            )}
+                          </MagneticButton>
+                          <p className="text-xs text-ink3">Changes apply to the scheduler immediately.</p>
+                        </div>
+                      </form>
+                    </Surface>
 
-                    <PixelWindow title="What Gets Sent" icon="file" className="p-3">
-                      <ul className="list-inside list-disc space-y-1 font-body text-xs text-dim">
-                        <li><strong className="text-body">Verified Potholes:</strong> GPS latitude &amp; longitude coordinates.</li>
-                        <li><strong className="text-body">Visual Evidence:</strong> Presigned photo download URLs.</li>
-                        <li><strong className="text-body">Tender Packages:</strong> Pothole cluster counts &amp; estimated budgets (₹).</li>
-                        <li><strong className="text-body">Location:</strong> Mandals, blocks, and road notes.</li>
-                      </ul>
-                    </PixelWindow>
-                  </div>
-                </div>
+                    <div className="space-y-4">
+                      <Surface level={2}>
+                        <h3 className="font-display text-base font-bold text-ink">Manual trigger</h3>
+                        <p className="mt-1 text-sm text-ink2">
+                          Dispatch immediately instead of waiting for the 15–30 day timer.
+                        </p>
+                        <div className={`mt-4 ${syncPulse ? "animate-mac-pop" : ""}`}>
+                          <MagneticButton
+                            variant="primary"
+                            block
+                            onClick={handleTriggerSync}
+                            disabled={syncTriggering}
+                          >
+                            {syncTriggering ? (
+                              <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                Transmitting
+                              </>
+                            ) : (
+                              <>
+                                <Send className="h-4 w-4" />
+                                Sync now
+                              </>
+                            )}
+                          </MagneticButton>
+                        </div>
+                      </Surface>
 
-                {/* Sync audit logs */}
-                <PixelWindow title="Sync Audit Logs" icon="list" className="p-3">
-                  <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                    <p className="font-body text-xs text-dim">
-                      History of periodic and manual transmissions to the tender website
-                    </p>
-                    <PixelChip>{syncLogs.length} Records</PixelChip>
-                  </div>
-
-                  {syncLogs.length === 0 ? (
-                    <div className="px-well flex flex-col items-center gap-1 p-6 text-center">
-                      <PixelIcon name="clock" size={22} className="text-dim" />
-                      <p className="font-body text-xs text-dim">No sync transmissions logged yet.</p>
-                      <p className="font-body text-[11px] text-dim">
-                        Click &ldquo;Sync Now&rdquo; above to run the initial transmission.
-                      </p>
+                      <Surface level={1}>
+                        <h3 className="font-display text-base font-bold text-ink">What gets sent</h3>
+                        <ul className="mt-3 space-y-2 text-sm text-ink2">
+                          <li>
+                            <span className="font-semibold text-ink">Verified potholes:</span> latitude &amp;
+                            longitude.
+                          </li>
+                          <li>
+                            <span className="font-semibold text-ink">Visual evidence:</span> presigned photo URLs.
+                          </li>
+                          <li>
+                            <span className="font-semibold text-ink">Tender packages:</span> cluster counts &amp;
+                            budgets (₹).
+                          </li>
+                          <li>
+                            <span className="font-semibold text-ink">Location:</span> mandals, blocks, road notes.
+                          </li>
+                        </ul>
+                      </Surface>
                     </div>
-                  ) : (
-                    <div className="px-scroll max-h-64 overflow-auto">
-                      <table className="w-full border-collapse text-left text-xs">
-                        <thead>
-                          <tr className="border-b-2 border-[var(--px-line)] text-dim">
-                            <th className="ledger px-2 py-2">Timestamp</th>
-                            <th className="ledger px-2 py-2">Trigger Source</th>
-                            <th className="ledger px-2 py-2">Potholes Sent</th>
-                            <th className="ledger px-2 py-2">Tenders Sent</th>
-                            <th className="ledger px-2 py-2">Status</th>
-                            <th className="ledger px-2 py-2">HTTP Code</th>
-                            <th className="ledger px-2 py-2">Details</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {syncLogs.map((log) => (
-                            <tr key={log.id} className="border-b border-[var(--px-line)]">
-                              <td className="px-2 py-2 font-mono tnum text-body">
-                                {new Date(log.synced_at).toLocaleString()}
-                              </td>
-                              <td className="px-2 py-2">
-                                <PixelChip className="font-mono">{log.triggered_by}</PixelChip>
-                              </td>
-                              <td className="px-2 py-2 font-pixel text-[10px] tnum text-body">{log.potholes_count}</td>
-                              <td className="px-2 py-2 font-pixel text-[10px] tnum text-body">{log.tenders_count}</td>
-                              <td className="px-2 py-2">
-                                <PixelChip>
-                                  <PixelLamp status={log.status === "success" ? "open" : "done"} />
-                                  <span className={log.status === "success" ? "text-green" : "text-red"}>
-                                    {log.status === "success" ? "Success" : "Failed"}
-                                  </span>
-                                </PixelChip>
-                              </td>
-                              <td className="px-2 py-2 font-mono text-dim">
-                                {log.response_status ? log.response_status : "—"}
-                              </td>
-                              <td className="max-w-xs truncate px-2 py-2 text-dim">
-                                {log.error_message || "Payload delivered successfully"}
-                              </td>
+                  </div>
+
+                  <Surface level={2} padded={false} className="mt-5 overflow-hidden">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-5 py-3">
+                      <h3 className="font-display text-base font-bold text-ink">Sync audit logs</h3>
+                      <Pill tone="neutral" mono>
+                        {syncLogs.length} records
+                      </Pill>
+                    </div>
+                    {syncLogs.length === 0 ? (
+                      <div className="flex flex-col items-center gap-1 py-10 text-center">
+                        <Clock className="h-6 w-6 text-ink3" />
+                        <p className="text-sm text-ink2">No sync transmissions logged yet.</p>
+                        <p className="text-xs text-ink3">Run “Sync now” to record the first transmission.</p>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="w-full min-w-[860px] border-collapse text-left text-xs">
+                          <thead>
+                            <tr className="border-b border-hairline">
+                              <th className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">Timestamp</th>
+                              <th className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">Trigger</th>
+                              <th className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">Potholes</th>
+                              <th className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">Tenders</th>
+                              <th className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">Status</th>
+                              <th className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">HTTP</th>
+                              <th className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-ink3">Details</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </PixelWindow>
-              </>
-            )}
+                          </thead>
+                          <tbody>
+                            {syncLogs.map((log) => (
+                              <tr key={log.id} className="border-b border-hairline last:border-0">
+                                <td className="px-4 py-3 font-mono tnum text-ink">
+                                  {new Date(log.synced_at).toLocaleString()}
+                                </td>
+                                <td className="px-4 py-3">
+                                  <Pill tone="neutral" mono>
+                                    {log.triggered_by}
+                                  </Pill>
+                                </td>
+                                <td className="px-4 py-3 font-mono tnum text-ink">{log.potholes_count}</td>
+                                <td className="px-4 py-3 font-mono tnum text-ink">{log.tenders_count}</td>
+                                <td className="px-4 py-3">
+                                  <Pill tone={log.status === "success" ? "ok" : "bad"}>
+                                    {log.status === "success" ? "Success" : "Failed"}
+                                  </Pill>
+                                </td>
+                                <td className="px-4 py-3 font-mono text-ink3">
+                                  {log.response_status ? log.response_status : "—"}
+                                </td>
+                                <td className="max-w-xs truncate px-4 py-3 text-ink2">
+                                  {log.error_message || "Payload delivered successfully"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </Surface>
+                </>
+              )}
+            </section>
           </div>
         </div>
-      </DotPager>
-    </div>
+      </div>
+
+      <footer className="mt-8 border-t border-hairline">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-xs text-ink3 sm:px-6">
+          <span>Pothole Reporter — admin console.</span>
+          <span className="font-mono">{user.name}</span>
+        </div>
+      </footer>
+    </main>
   );
 }

@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { MapBoundingBox, MapCluster, PublicPothole } from "@/types";
 import "leaflet/dist/leaflet.css";
+import { statusDivIcon, type PinStatus } from "@/components/macadam/MapSkin";
 
 const iconUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
 const iconRetinaUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png";
@@ -13,7 +14,6 @@ const shadowUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({ iconUrl, iconRetinaUrl, shadowUrl });
 
-// Guard against unmounted pane position errors (_leaflet_pos)
 if (typeof window !== "undefined" && L && L.DomUtil) {
   const origGetPos = L.DomUtil.getPosition;
   L.DomUtil.getPosition = function (el: any) {
@@ -26,11 +26,25 @@ if (typeof window !== "undefined" && L && L.DomUtil) {
   };
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  verified: "#22c55e",
-  pending: "#f59e0b",
-  rejected: "#ef4444",
-  fixed: "#6366f1",
+const STATUS_PIN: Record<string, PinStatus> = {
+  verified: "open",
+  pending: "under_review",
+  rejected: "rejected",
+  fixed: "assigned",
+};
+
+const STATUS_VAR: Record<string, string> = {
+  verified: "var(--ok)",
+  pending: "var(--warn)",
+  rejected: "var(--bad)",
+  fixed: "var(--info)",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  verified: "Accepted",
+  pending: "Reported",
+  rejected: "Rejected",
+  fixed: "Fixed",
 };
 
 interface MapViewProps {
@@ -79,19 +93,19 @@ function ClusterMarkers({ clusters }: { clusters: MapCluster[] }) {
           key={cluster.block_id}
           position={[cluster.avg_latitude, cluster.avg_longitude]}
           icon={L.divIcon({
-            className: "",
-            html: `<div style="background:#e8b93c;color:#1a1408;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;border:2px solid #6b5320;box-shadow:0 2px 6px rgba(0,0,0,.55), 0 8px 20px -8px rgba(0,0,0,.6);font-variant-numeric:tabular-nums;">${cluster.count}</div>`,
-            iconSize: [36, 36],
-            iconAnchor: [18, 18],
+            className: "macadam-cluster-wrap",
+            html: `<span class="macadam-cluster">${cluster.count}</span>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
           })}
         >
           <Popup>
-            <div className="text-sm">
-              <strong>Block: {cluster.block_id}</strong>
-              <br />
-              Potholes: {cluster.count}
-              <br />
-              Est. Cost: ₹{(cluster.count * 150).toLocaleString()}
+            <div style={{ display: "grid", gap: 3 }}>
+              <strong style={{ fontFamily: "var(--font-mono), monospace" }}>{cluster.block_id}</strong>
+              <span style={{ color: "var(--text-2)" }}>Potholes: {cluster.count}</span>
+              <span style={{ color: "var(--text-2)" }}>
+                Est. cost: ₹{(cluster.count * 150).toLocaleString("en-IN")}
+              </span>
             </div>
           </Popup>
         </Marker>
@@ -104,24 +118,25 @@ function PotholeMarkers({ potholes }: { potholes: PublicPothole[] }) {
   return (
     <>
       {potholes.map((p) => {
-        const color = STATUS_COLORS[p.status] || "#94a3b8";
+        const colorVar = STATUS_VAR[p.status] || "var(--text-3)";
+        const label = STATUS_LABELS[p.status] || p.status;
         return (
           <Marker
             key={p.id}
             position={[p.latitude, p.longitude]}
-            icon={L.divIcon({
-              className: "",
-              html: `<div style="width:12px;height:12px;background:${color};border:2px solid #d9a441;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>`,
-              iconSize: [12, 12],
-              iconAnchor: [6, 6],
-            })}
+            icon={statusDivIcon(STATUS_PIN[p.status] || "reported")}
           >
             <Popup>
-              <div className="text-sm">
-                <strong style={{ color }}>{p.status}</strong>
-                <br />
-                <span className="text-gray-500 text-xs">{new Date(p.created_at).toLocaleDateString()}</span>
-                {p.block_id && <><br /><span className="font-mono text-xs text-gray-400">{p.block_id}</span></>}
+              <div style={{ display: "grid", gap: 3 }}>
+                <strong style={{ color: colorVar }}>{label}</strong>
+                <span style={{ color: "var(--text-3)" }}>
+                  {new Date(p.created_at).toLocaleDateString()}
+                </span>
+                {p.block_id && (
+                  <span style={{ fontFamily: "var(--font-mono), monospace", color: "var(--text-2)" }}>
+                    {p.block_id}
+                  </span>
+                )}
               </div>
             </Popup>
           </Marker>
@@ -139,7 +154,7 @@ export default function MapView({
   bounds,
 }: MapViewProps) {
   return (
-    <div className="h-[500px] w-full rounded-lg overflow-hidden border border-[var(--color-border)]">
+    <div className="macadam-map h-[460px] w-full sm:h-[520px]">
       <MapContainer
         center={center}
         zoom={zoom}
