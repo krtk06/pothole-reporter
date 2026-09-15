@@ -632,6 +632,13 @@
   font-size: 13px !important;
 }
 
+/* Dark worlds: render standard OSM tiles on a night ground without swapping
+   tile providers. Markers and popups live outside the tile pane, so their
+   colour is untouched. */
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.92) saturate(0.72);
+}
+
 .seal-pin-wrap {
   background: transparent;
   border: none;
