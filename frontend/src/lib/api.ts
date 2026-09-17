@@ -1,6 +1,6 @@
 import type { AdministrativeArea, AdministrativeAreaType, PublicPothole } from "@/types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://32.199.22.201:4000/api/v1";
 
 export class ApiError extends Error {
   constructor(message: string, public readonly status: number) {
