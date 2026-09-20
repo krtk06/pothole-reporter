@@ -3,55 +3,56 @@
 @tailwind utilities;
 
 /* ============================================================================
-   MACADAM — premium-minimal design system
-   World: BOARD / Public Works  (light-first, dark fully designed)
-   Ground = interactive mesh gradient + ambient sand aggregate + grain.
+   MODERN MINIMAL — premium civic-tech design system (redesign.md)
+   Light: warm white civic. Dark: layered charcoal night. One orange accent.
+   Ground = near-flat tint + grain. Decoration lives in photography.
+   Token names are stable: Tailwind maps page/surface/ink/signal/ok/warn/bad.
    ============================================================================ */
 
 @layer base {
   :root {
-    /* ---- LIGHT — "Bone Paper" ------------------------------------------ */
-    --bg: #f2f1ed;
-    --bg-elev: #eae8e1;
-    --surface: #fbfaf7;
-    --surface-2: #f3f1ea;
-    --line: #dedcd4;
-    --line-strong: #c7c4b9;
-    --text: #14151a;
-    --text-2: #55575e;
-    --text-3: #85878e;
-    --accent: #2b4ed6;
-    --accent-strong: #1f3bb0;
-    --accent-soft: rgba(43, 78, 214, 0.1);
+    /* ---- LIGHT — warm white civic -------------------------------------- */
+    --bg: #f7f7f4;
+    --bg-elev: #eeeee9;
+    --surface: #ffffff;
+    --surface-2: #f0efe8;
+    --line: #e4e3d9;
+    --line-strong: #cfcec0;
+    --text: #121517;
+    --text-2: #707578;
+    --text-3: #9aa0a3;
+    --accent: #f36b2c;
+    --accent-strong: #d5551f;
+    --accent-soft: rgba(243, 107, 44, 0.12);
     --on-accent: #ffffff;
-    --accent-2: #c8791a;
-    --ok: #1f8a4c;
+    --accent-2: #ffb020;
+    --ok: #22c55e;
     --warn: #b4791a;
-    --bad: #c0392f;
+    --bad: #ef4444;
     --info: #2b6ed6;
 
-    /* ground material */
-    --mesh-1: 43 78 214;
-    --mesh-2: 200 121 26;
-    --mesh-3: 120 124 138;
-    --mesh-opacity: 0.2;
+    /* ground material — near-flat tint, decoration lives in photography */
+    --mesh-1: 243 107 44;
+    --mesh-2: 112 117 120;
+    --mesh-3: 34 197 94;
+    --mesh-opacity: 0.08;
     --mesh-blend: multiply;
-    --sand-rgb: 60 60 66;
-    --sand-opacity: 0.1;
-    --grain-opacity: 0.035;
+    --sand-rgb: 112 117 120;
+    --sand-opacity: 0.06;
+    --grain-opacity: 0.03;
     --spot-rgb: 255 255 255;
     --spot-opacity: 0;
 
-    /* depth */
-    --shadow-1: 0 1px 2px rgba(20, 20, 24, 0.05), 0 1px 1px rgba(20, 20, 24, 0.04);
-    --shadow-2: 0 10px 30px -12px rgba(20, 20, 24, 0.18), 0 2px 6px -2px rgba(20, 20, 24, 0.08);
-    --shadow-3: 0 28px 60px -24px rgba(20, 20, 24, 0.26), 0 8px 20px -12px rgba(20, 20, 24, 0.14);
+    /* depth — minimal */
+    --shadow-1: 0 1px 2px rgba(18, 21, 23, 0.05);
+    --shadow-2: 0 8px 24px -12px rgba(18, 21, 23, 0.14), 0 2px 6px -2px rgba(18, 21, 23, 0.08);
+    --shadow-3: 0 24px 48px -26px rgba(18, 21, 23, 0.22), 0 8px 16px -12px rgba(18, 21, 23, 0.12);
 
     /* shape + motion */
     --r-1: 4px;
-    --r-2: 8px;
-    --r-3: 14px;
-    --r-4: 20px;
+    --r-2: 10px;
+    --r-3: 16px;
+    --r-4: 24px;
     --dur-1: 120ms;
     --dur-2: 200ms;
     --dur-3: 320ms;
@@ -59,8 +60,8 @@
     --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
     --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
 
-    /* type — Archivo is both the UI and the display face; Geist Mono is data */
-    --font-sans: var(--font-display);
+    /* type — Space Grotesk is the display face, Inter is body, JetBrains Mono is data */
+    --font-sans: var(--font-inter);
     --font-mono: var(--font-geist-mono);
 
     /* shadcn / tailwind token bridge */
@@ -115,36 +116,36 @@
   }
 
   .dark {
-    /* ---- DARK — "Deep Slate" ------------------------------------------- */
-    --bg: #0d0f14;
-    --bg-elev: #12151b;
-    --surface: #161a21;
-    --surface-2: #1c2129;
-    --line: #262c36;
-    --line-strong: #363e4a;
-    --text: #eceef2;
-    --text-2: #a3a9b4;
-    --text-3: #6e7480;
-    --accent: #7b94ff;
-    --accent-strong: #9aadff;
-    --accent-soft: rgba(123, 148, 255, 0.16);
-    --on-accent: #0d0f14;
-    --accent-2: #e0a44a;
+    /* ---- DARK — layered charcoal night --------------------------------- */
+    --bg: #0c1112;
+    --bg-elev: #111718;
+    --surface: #151c1d;
+    --surface-2: #1e2526;
+    --line: #232b2c;
+    --line-strong: #2e3839;
+    --text: #f3f4f1;
+    --text-2: #969e9f;
+    --text-3: #6e7475;
+    --accent: #ff7540;
+    --accent-strong: #ff8a5c;
+    --accent-soft: rgba(255, 117, 64, 0.14);
+    --on-accent: #1a0d05;
+    --accent-2: #ffb020;
     --ok: #4ade80;
-    --warn: #e0a44a;
+    --warn: #f5b942;
     --bad: #f0534d;
     --info: #6fa0ff;
 
-    --mesh-1: 123 148 255;
-    --mesh-2: 224 164 74;
-    --mesh-3: 110 116 128;
-    --mesh-opacity: 0.32;
+    --mesh-1: 255 117 64;
+    --mesh-2: 70 120 120;
+    --mesh-3: 110 116 118;
+    --mesh-opacity: 0.14;
     --mesh-blend: screen;
-    --sand-rgb: 210 210 216;
-    --sand-opacity: 0.13;
-    --grain-opacity: 0.05;
+    --sand-rgb: 200 200 195;
+    --sand-opacity: 0.06;
+    --grain-opacity: 0.04;
     --spot-rgb: 255 255 255;
-    --spot-opacity: 0.65;
+    --spot-opacity: 0.4;
 
     --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
     --shadow-2: 0 12px 34px -14px rgba(0, 0, 0, 0.7), 0 3px 8px -3px rgba(0, 0, 0, 0.5);
@@ -194,6 +195,8 @@
   body {
     background: var(--bg);
     color: var(--text);
+    font-weight: 400;
+    line-height: 1.5;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -204,6 +207,14 @@
     line-height: 1.12;
     letter-spacing: -0.02em;
     text-wrap: balance;
+  }
+
+  h1, h2, h3 {
+    font-weight: 700;
+  }
+
+  h4, h5, h6 {
+    font-weight: 600;
   }
 
   ::selection {
