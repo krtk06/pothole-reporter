@@ -24,7 +24,7 @@ const config: Config = {
         popover: { DEFAULT: "var(--popover)", foreground: "var(--popover-foreground)" },
         card: { DEFAULT: "var(--card)", foreground: "var(--card-foreground)" },
 
-        /* MACADAM semantic tokens */
+        /* MODERN MINIMAL semantic tokens (redesign.md): names stable, values in globals.css */
         page: "var(--bg)",
         raise: "var(--bg-elev)",
         surface: "var(--surface)",

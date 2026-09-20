@@ -34,7 +34,7 @@ const config: Config = {
           ring: "var(--ring)",
         },
 
-        /* MACADAM semantic tokens */
+        /* MODERN MINIMAL semantic tokens (redesign.md): names stable, values in globals.css */
         page: "var(--bg)",
         raise: "var(--bg-elev)",
         surface: "var(--surface)",

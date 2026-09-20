@@ -1,14 +1,22 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import Ground from "@/components/macadam/Ground";
 import { themeInitScript } from "@/components/macadam/theme";
 
-const archivo = Archivo({
+const display = Space_Grotesk({
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
   variable: "--font-display",
+  display: "swap",
+});
+
+const body = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -30,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${GeistMono.variable}`}
+      className={`${display.variable} ${body.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
       <body className="font-sans antialiased">
