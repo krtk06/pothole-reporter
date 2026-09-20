@@ -153,7 +153,7 @@ export default function LoginPage() {
               <Surface level={2}>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="font-display text-xl font-bold text-ink">Continue as guest</h2>
+                    <h2 className="font-display text-xl font-semibold text-ink">Continue as guest</h2>
                     <p className="mt-1 text-sm text-ink2">
                       Select your location to view live pothole data.
                     </p>
@@ -200,7 +200,7 @@ export default function LoginPage() {
               <Surface level={2} id="admin" className="scroll-mt-24">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="font-display text-xl font-bold text-ink">Admin access</h2>
+                    <h2 className="font-display text-xl font-semibold text-ink">Admin access</h2>
                     <p className="mt-1 text-sm text-ink2">
                       Seeded staff accounts only — no public registration.
                     </p>

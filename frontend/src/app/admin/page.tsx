@@ -189,7 +189,7 @@ function SectionHeader({
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
-        <h2 className="flex items-center gap-2 font-display text-xl font-bold text-ink">
+        <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-ink">
           <Icon className="h-5 w-5 text-signal" />
           {title}
         </h2>
@@ -899,7 +899,7 @@ export default function AdminDashboard() {
                 <Surface level={1} className="flex items-start gap-4">
                   <ShieldAlert className="mt-0.5 h-6 w-6 shrink-0 text-warn" />
                   <div>
-                    <h2 className="font-display text-lg font-bold text-ink">State admin access only</h2>
+                    <h2 className="font-display text-lg font-semibold text-ink">State admin access only</h2>
                     <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ink2">
                       Tender website integration, API keys, and the 15–30 day sync schedule are managed
                       exclusively by state-level administrators. Your jurisdiction does not include this
@@ -1022,7 +1022,7 @@ export default function AdminDashboard() {
                   <div className="mt-5 grid gap-4 lg:grid-cols-3">
                     <Surface level={2} className="lg:col-span-2">
                       <div className="flex flex-wrap items-center justify-between gap-3">
-                        <h3 className="font-display text-base font-bold text-ink">
+                        <h3 className="font-display text-base font-semibold text-ink">
                           Configuration & schedule
                         </h3>
                         <Pill tone="accent">Admin managed</Pill>
@@ -1149,7 +1149,7 @@ export default function AdminDashboard() {
 
                     <div className="space-y-4">
                       <Surface level={2}>
-                        <h3 className="font-display text-base font-bold text-ink">Manual trigger</h3>
+                        <h3 className="font-display text-base font-semibold text-ink">Manual trigger</h3>
                         <p className="mt-1 text-sm text-ink2">
                           Dispatch immediately instead of waiting for the 15–30 day timer.
                         </p>
@@ -1176,7 +1176,7 @@ export default function AdminDashboard() {
                       </Surface>
 
                       <Surface level={1}>
-                        <h3 className="font-display text-base font-bold text-ink">What gets sent</h3>
+                        <h3 className="font-display text-base font-semibold text-ink">What gets sent</h3>
                         <ul className="mt-3 space-y-2 text-sm text-ink2">
                           <li>
                             <span className="font-semibold text-ink">Verified potholes:</span> latitude &amp;
@@ -1199,7 +1199,7 @@ export default function AdminDashboard() {
 
                   <Surface level={2} padded={false} className="mt-5 overflow-hidden">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-5 py-3">
-                      <h3 className="font-display text-base font-bold text-ink">Sync audit logs</h3>
+                      <h3 className="font-display text-base font-semibold text-ink">Sync audit logs</h3>
                       <Pill tone="neutral" mono>
                         {syncLogs.length} records
                       </Pill>

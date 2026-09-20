@@ -215,20 +215,22 @@ export default function Dashboard() {
             <p className="mt-3 font-mono text-sm text-ink3">{locationLabel}</p>
           </Reveal>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="mt-8 grid max-w-3xl grid-cols-2 gap-y-6 sm:grid-cols-4">
             {statItems.map((item, index) => (
               <Reveal key={item.label} delay={index * 60}>
-                <Surface level={1} className="h-full">
-                  <p className="font-mono text-4xl font-semibold tracking-tight text-ink">
+                <div
+                  className={
+                    index > 0 ? "sm:border-l sm:border-hairline sm:pl-6" : ""
+                  }
+                >
+                  <dd className="font-mono text-[28px] font-bold leading-none tracking-tight text-ink sm:text-4xl">
                     <Counter value={item.value} />
-                  </p>
-                  <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-ink3">
-                    {item.label}
-                  </p>
-                </Surface>
+                  </dd>
+                  <dt className="ledger mt-2">{item.label}</dt>
+                </div>
               </Reveal>
             ))}
-          </div>
+          </dl>
         </div>
       </section>
 
@@ -237,7 +239,7 @@ export default function Dashboard() {
           <Reveal>
             <Surface level={2} className="h-full">
               <div className="flex items-center justify-between gap-3">
-                <h2 className="font-display text-lg font-bold text-ink">Area filter</h2>
+                <h2 className="font-display text-lg font-semibold text-ink">Area filter</h2>
                 <Pill tone="info">Scope</Pill>
               </div>
               <div className="mt-5 rule" />
@@ -267,7 +269,7 @@ export default function Dashboard() {
             <Surface level={2} padded={false} className="h-full overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-5 py-3">
                 <div className="min-w-0">
-                  <h2 className="truncate font-display text-base font-bold text-ink">
+                  <h2 className="truncate font-display text-base font-semibold text-ink">
                     {area?.name || "Select an area"}
                   </h2>
                   <p className="truncate font-mono text-xs text-ink3">

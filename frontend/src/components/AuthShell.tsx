@@ -38,7 +38,7 @@ export default function AuthShell({ title, description, children }: AuthShellPro
       <div className="flex flex-1 items-center justify-center px-4 py-16">
         <Reveal className="w-full max-w-md">
           <Surface level={2}>
-            <h1 className="font-display text-2xl font-bold tracking-[-0.02em] text-ink">{title}</h1>
+            <h1 className="font-display text-2xl font-semibold tracking-[-0.02em] text-ink">{title}</h1>
             {description && <p className="mt-2 text-sm leading-relaxed text-ink2">{description}</p>}
             <div className="mt-6 rule" />
             <div className="mt-6">{children}</div>

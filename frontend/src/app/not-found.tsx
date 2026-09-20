@@ -17,7 +17,7 @@ export default function NotFound() {
             </Pill>
           </div>
           <p className="mt-6 font-mono text-6xl font-semibold tracking-tight text-ink">404</p>
-          <h1 className="mt-3 font-display text-2xl font-bold tracking-[-0.02em] text-ink">
+          <h1 className="mt-3 font-display text-2xl font-semibold tracking-[-0.02em] text-ink">
             This road doesn&rsquo;t exist
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-ink2">
