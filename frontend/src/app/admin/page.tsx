@@ -517,13 +517,13 @@ export default function AdminDashboard() {
     assignedTenders: tenders.filter((t) => t.status === "assigned").length,
   };
 
-  const statCards: { label: string; value: number; tone: PillTone }[] = [
-    { label: "Total reports", value: stats.total, tone: "info" },
-    { label: "Verified", value: stats.verified, tone: "ok" },
-    { label: "Pending", value: stats.pending, tone: "warn" },
-    { label: "Fixed", value: stats.fixed, tone: "info" },
-    { label: "Open tenders", value: stats.openTenders, tone: "accent" },
-    { label: "Accepted", value: stats.assignedTenders, tone: "ok" },
+  const statCards: { label: string; value: number }[] = [
+    { label: "Total reports", value: stats.total },
+    { label: "Verified", value: stats.verified },
+    { label: "Pending", value: stats.pending },
+    { label: "Fixed", value: stats.fixed },
+    { label: "Open tenders", value: stats.openTenders },
+    { label: "Accepted", value: stats.assignedTenders },
   ];
 
   if (!mounted || !user) return null;
@@ -582,20 +582,18 @@ export default function AdminDashboard() {
           </h1>
         </Reveal>
 
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {statCards.map(({ label, value, tone }, index) => (
+        <dl className="mt-6 grid max-w-4xl grid-cols-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
+          {statCards.map(({ label, value }, index) => (
             <Reveal key={label} delay={index * 40}>
-              <Surface level={1} className="h-full p-4">
-                <p className="font-mono text-3xl font-semibold tracking-tight text-ink">
+              <div className={index > 0 ? "sm:border-l sm:border-hairline sm:pl-5" : ""}>
+                <dd className="font-mono text-3xl font-bold leading-none tracking-tight text-ink">
                   <Counter value={value} />
-                </p>
-                <div className="mt-2">
-                  <Pill tone={tone}>{label}</Pill>
-                </div>
-              </Surface>
+                </dd>
+                <dt className="ledger mt-2">{label}</dt>
+              </div>
             </Reveal>
           ))}
-        </div>
+        </dl>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[210px_minmax(0,1fr)]">
           <SectionRail active={activeSection} />
