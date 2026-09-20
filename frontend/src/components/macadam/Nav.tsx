@@ -1,15 +1,36 @@
-import type { HTMLAttributes, ReactNode } from "react";
+"use client";
+
+import { useEffect, useState, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export interface NavBarProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode;
 }
 
-/** Sticky, opaque app bar. Opaque on purpose: no glass, just a hairline. */
+/**
+ * Sticky app bar. Transparent over the hero; once scrolled it settles into a
+ * solid surface with a hairline and a slight blur. Structure unchanged.
+ */
 export function NavBar({ className, children, ...rest }: NavBarProps) {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <header
-      className={cn("sticky top-0 z-40 border-b border-hairline bg-page", className)}
+      data-scrolled={scrolled}
+      className={cn(
+        "sticky top-0 z-40 transition-[background-color,border-color] duration-300",
+        scrolled
+          ? "border-b border-hairline bg-page/95 backdrop-blur-sm"
+          : "border-b border-transparent bg-transparent",
+        className
+      )}
       {...rest}
     >
       {children}
