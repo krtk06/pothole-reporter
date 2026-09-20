@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import {
   ArrowRight,
@@ -35,7 +36,6 @@ import {
   Pill,
   type PillTone,
   Reveal,
-  SandHero,
   Select,
   Surface,
   Textarea,
@@ -251,10 +251,10 @@ export default function TenderPortalHome() {
   };
 
   const readings = [
-    { label: "Open tenders", value: openTendersCount, tone: "ok" as PillTone, icon: Wallet, isCurrency: false },
-    { label: "Total potholes", value: totalPotholes, tone: "warn" as PillTone, icon: MapPin, isCurrency: false },
-    { label: "Estimated budget", value: totalBudget, tone: "accent" as PillTone, icon: Wallet, isCurrency: true },
-    { label: "Contractor bids", value: bids.length, tone: "info" as PillTone, icon: Users, isCurrency: false },
+    { label: "Open tenders", value: openTendersCount, icon: Wallet, isCurrency: false },
+    { label: "Total potholes", value: totalPotholes, icon: MapPin, isCurrency: false },
+    { label: "Estimated budget", value: totalBudget, icon: Wallet, isCurrency: true },
+    { label: "Contractor bids", value: bids.length, icon: Users, isCurrency: false },
   ];
 
   return (
@@ -322,17 +322,17 @@ export default function TenderPortalHome() {
       </NavBar>
 
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-hairline">
-        <div className="pointer-events-none absolute inset-0">
-          <SandHero className="h-full w-full" />
-        </div>
-        <div className="relative mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
+      <section className="border-b border-hairline">
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
           <Ignition step={110}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink3">
+            <Pill tone="ok">Public Works e-Procurement</Pill>
+            <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink2">
               Andhra Pradesh • Roads &amp; Buildings
             </p>
-            <h1 className="mt-4 max-w-3xl font-display text-[clamp(2.4rem,5.4vw,4.25rem)] font-extrabold leading-[0.98] tracking-[-0.03em] text-ink">
-              Road repair tenders, open for bidding.
+            <h1 className="mt-4 font-display text-[clamp(2.75rem,6vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.03em] text-ink">
+              Road repair tenders,
+              <br />
+              <span className="text-signal">open for bidding.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink2">
               Verified pothole packages synchronised from the field every 15 to 30 days — with photo
@@ -353,39 +353,59 @@ export default function TenderPortalHome() {
               </MagneticButton>
             </div>
           </Ignition>
+
+          <Reveal delay={120}>
+            <figure className="relative overflow-hidden shadow-2 img-organic">
+              <Image
+                src={theme === "dark" ? "/hero/hero-dusk.png" : "/hero/hero-day.png"}
+                alt="Pothole on an urban road at sunset with the city skyline behind it"
+                width={1417}
+                height={1110}
+                priority
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                className="h-auto w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+              />
+              <figcaption className="absolute bottom-5 right-6 text-right font-display text-lg font-semibold italic leading-snug text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)]">
+                Same purpose.
+                <br />
+                A brighter tomorrow.
+                <span className="mt-1 block h-1 w-24 rounded-full bg-signal ml-auto" aria-hidden />
+              </figcaption>
+            </figure>
+          </Reveal>
         </div>
       </section>
 
-      {/* Readings */}
+      {/* Metrics */}
       <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="grid max-w-4xl grid-cols-2 gap-y-6 sm:grid-cols-4">
           {readings.map((reading, index) => (
             <Reveal key={reading.label} delay={index * 60}>
-              <Surface level={1} className="h-full">
-                <div className="flex items-start justify-between gap-3">
-                  <p className="font-mono text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              <div className={index > 0 ? "sm:border-l sm:border-hairline sm:pl-6" : ""}>
+                <div className="flex items-center gap-2">
+                  <reading.icon className="h-4 w-4 shrink-0 text-ink3" />
+                  <dd className="font-mono text-[28px] font-bold leading-none tracking-tight text-ink sm:text-4xl">
                     {reading.isCurrency ? (
-                      <>₹<Counter value={reading.value} /></>
+                      <>
+                        ₹<Counter value={reading.value} />
+                      </>
                     ) : (
                       <Counter value={reading.value} />
                     )}
-                  </p>
-                  <reading.icon className="h-4 w-4 shrink-0 text-ink3" />
+                  </dd>
                 </div>
-                <div className="mt-3">
-                  <Pill tone={reading.tone}>{reading.label}</Pill>
-                </div>
-              </Surface>
+                <dt className="ledger mt-2">{reading.label}</dt>
+              </div>
             </Reveal>
           ))}
-        </div>
+        </dl>
       </section>
 
       {/* Board */}
       <section id="board" className="mx-auto w-full max-w-7xl scroll-mt-24 px-4 pb-16 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="flex items-center gap-2 font-display text-xl font-bold text-ink">
+            <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-ink">
               <Wallet className="h-5 w-5 text-signal" />
               Tender board
             </h2>
