@@ -1072,14 +1072,10 @@ export default function AdminDashboard() {
 
                         <div className="flex flex-wrap items-center gap-2">
                           <KeyRound className="h-4 w-4 text-ink3" />
-                          <button
-                            type="button"
-                            onClick={handleGenerateApiKey}
-                            className="inline-flex items-center gap-1 text-sm font-semibold text-signal underline-offset-4 hover:underline"
-                          >
+                          <MagneticButton type="button" variant="quiet" onClick={handleGenerateApiKey} className="!px-3 !py-2 text-xs">
                             <Plus className="h-3.5 w-3.5" />
                             Generate a new key
-                          </button>
+                          </MagneticButton>
                           <span className="text-xs text-ink3">
                             Sent as <code className="font-mono">X-API-Key</code>; the tender website verifies it
                             before accepting any batch.
