@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Loader2, ShieldCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2, Cog, Loader2, MapPin, TrafficCone } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import AndhraLocationSelector, { AndhraLocationSelection } from "@/components/AndhraLocationSelector";
 import {
+  Counter,
   Field,
   Ignition,
   Input,
@@ -19,12 +21,76 @@ import {
   NavSpacer,
   Pill,
   Reveal,
-  SandHero,
   Surface,
   ThemeToggle,
 } from "@/components/macadam";
 
 const LoginMap = dynamic(() => import("@/components/LoginMap"), { ssr: false });
+
+interface HeroMetrics {
+  reports: number;
+  fixed: number;
+  inProgress: number;
+}
+
+/**
+ * Live network totals for the hero metrics bar. Hidden until the fetch
+ * resolves, on error, or when the network holds zero reports — the hero
+ * never shows invented figures.
+ */
+function HeroMetricsBar() {
+  const [metrics, setMetrics] = useState<HeroMetrics | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .getPublicPotholes()
+      .then((data: any) => {
+        if (cancelled) return;
+        const potholes = data.potholes ?? data.reports ?? [];
+        let pending = 0;
+        let fixed = 0;
+        for (const p of potholes) {
+          if (p.status === "fixed") fixed += 1;
+          else if (p.status === "pending" || p.status === "verified") pending += 1;
+        }
+        if (pending + fixed > 0) setMetrics({ reports: pending + fixed, fixed, inProgress: pending });
+      })
+      .catch(() => {
+        /* hidden — see docstring */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!metrics) return null;
+
+  const cells = [
+    { icon: TrafficCone, value: metrics.reports, label: "Reports" },
+    { icon: CheckCircle2, value: metrics.fixed, label: "Fixed" },
+    { icon: Cog, value: metrics.inProgress, label: "In Progress" },
+  ];
+
+  return (
+    <dl className="mt-10 grid max-w-xl grid-cols-3">
+      {cells.map((cell, index) => (
+        <div
+          key={cell.label}
+          className={`flex items-center gap-3 ${index > 0 ? "border-l border-hairline pl-4 sm:pl-6" : ""}`}
+        >
+          <cell.icon className="h-5 w-5 shrink-0 text-signal" strokeWidth={2.25} />
+          <div className="min-w-0">
+            <dd className="font-mono text-[22px] font-bold leading-none tracking-tight text-ink sm:text-[28px]">
+              <Counter value={cell.value} />
+            </dd>
+            <dt className="ledger mt-1.5">{cell.label}</dt>
+          </div>
+        </div>
+      ))}
+    </dl>
+  );
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -106,21 +172,19 @@ export default function LoginPage() {
         </NavInner>
       </NavBar>
 
-      <section className="relative overflow-hidden border-b border-hairline">
-        <div className="pointer-events-none absolute inset-0">
-          <SandHero className="h-full w-full" />
-        </div>
-        <div className="relative mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 sm:py-28">
+      <section className="border-b border-hairline">
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
           <Ignition step={110}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink3">
-              Govt of Andhra Pradesh • Roads &amp; Buildings
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink2">
+              Safer roads, stronger communities
             </p>
-            <h1 className="mt-4 max-w-3xl font-display text-[clamp(2.4rem,5.4vw,4.25rem)] font-extrabold leading-[0.98] tracking-[-0.03em] text-ink">
-              Report a pothole. Watch it become a funded repair.
+            <h1 className="mt-4 font-display text-[clamp(2.75rem,6vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.03em] text-ink">
+              Smoother Roads
+              <br />
+              <span className="text-signal">Brighter Tomorrows</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink2">
-              Pick your district, mandal, and village to see live road conditions on the map —
-              no account, no record created.
+              Report potholes. Track progress. Help build cleaner, safer roads for everyone.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <MagneticButton
@@ -129,20 +193,41 @@ export default function LoginPage() {
                   document.getElementById("gate")?.scrollIntoView({ behavior: "smooth", block: "start" })
                 }
               >
-                Select your area
+                Report a Pothole
                 <ArrowRight className="h-4 w-4" />
               </MagneticButton>
               <MagneticButton
                 variant="secondary"
                 onClick={() =>
-                  document.getElementById("admin")?.scrollIntoView({ behavior: "smooth", block: "start" })
+                  document.getElementById("preview")?.scrollIntoView({ behavior: "smooth", block: "start" })
                 }
               >
-                <ShieldCheck className="h-4 w-4" />
-                Admin sign in
+                <MapPin className="h-4 w-4" />
+                Explore Map
               </MagneticButton>
             </div>
+            <HeroMetricsBar />
           </Ignition>
+
+          <Reveal delay={120}>
+            <figure className="relative overflow-hidden shadow-2 img-organic">
+              <Image
+                src={theme === "dark" ? "/hero/hero-dusk.png" : "/hero/hero-day.png"}
+                alt="Pothole on an urban road at sunset with the city skyline behind it"
+                width={1417}
+                height={1110}
+                priority
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                className="h-auto w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+              />
+              <figcaption className="absolute bottom-5 right-6 text-right font-display text-lg font-semibold italic leading-snug text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)]">
+                Better roads ahead.
+                <br />
+                Together.
+                <span className="mt-1 block h-1 w-24 rounded-full bg-signal ml-auto" aria-hidden />
+              </figcaption>
+            </figure>
+          </Reveal>
         </div>
       </section>
 
@@ -266,7 +351,7 @@ export default function LoginPage() {
           </div>
 
           <Reveal delay={120} className="min-h-[320px]">
-            <Surface level={1} padded={false} className="h-full min-h-[360px] overflow-hidden lg:min-h-[560px]">
+            <Surface level={1} padded={false} id="preview" className="h-full min-h-[360px] scroll-mt-24 overflow-hidden lg:min-h-[560px]">
               <div className="flex items-center justify-between gap-3 border-b border-hairline px-5 py-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink3">
                   Live area preview
