@@ -479,7 +479,7 @@ export default function TenderPortalHome() {
           {activeView === "map" ? (
             <Surface level={2} padded={false} className="overflow-hidden">
               <div className="flex items-center justify-between gap-3 border-b border-hairline px-5 py-3">
-                <h3 className="font-display text-base font-bold text-ink">
+                <h3 className="font-display text-base font-semibold text-ink">
                   Andhra Pradesh pothole distribution
                 </h3>
                 <Pill tone="neutral" mono>
@@ -501,7 +501,7 @@ export default function TenderPortalHome() {
           ) : filteredTenders.length === 0 ? (
             <Surface level={1} className="flex flex-col items-center gap-3 py-16 text-center">
               <Wallet className="h-7 w-7 text-ink3" />
-              <p className="font-display text-base font-bold text-ink">
+              <p className="font-display text-base font-semibold text-ink">
                 {tenders.length === 0 ? "No tenders available" : "No tenders match your criteria"}
               </p>
               <p className="max-w-md text-sm text-ink2">
@@ -560,13 +560,13 @@ export default function TenderPortalHome() {
                         </div>
                       )}
 
-                      <div className="flex flex-1 flex-col gap-4 p-5">
+                      <div className="flex flex-1 flex-col gap-4 p-6">
                         <div className="flex items-start gap-3">
-                          <span className="font-mono text-lg font-semibold leading-none text-signal">
+                          <span className="font-mono text-lg font-bold leading-none text-signal">
                             {String(rank + 1).padStart(2, "0")}
                           </span>
                           <div className="min-w-0 flex-1">
-                            <h3 className="line-clamp-2 font-display text-sm font-bold leading-snug text-ink">
+                            <h3 className="line-clamp-2 font-display text-base font-semibold leading-snug text-ink">
                               {tender.title}
                             </h3>
                             <p className="mt-1 truncate font-mono text-xs text-ink3">
@@ -667,7 +667,7 @@ export default function TenderPortalHome() {
                     {STATUS_LABEL[selectedTender.status] ?? selectedTender.status.replace("_", " ")}
                   </Pill>
                 </div>
-                <h2 className="line-clamp-2 font-display text-lg font-bold leading-snug text-ink">
+                <h2 className="line-clamp-2 font-display text-lg font-semibold leading-snug text-ink">
                   {selectedTender.title}
                 </h2>
                 <p className="flex items-center gap-1.5 font-mono text-xs text-ink3">
@@ -826,7 +826,7 @@ export default function TenderPortalHome() {
               {modalTab === "bid" && (
                 <form onSubmit={handleBidSubmit} className="mx-auto max-w-3xl space-y-5">
                   <div>
-                    <h3 className="font-display text-base font-bold text-ink">
+                    <h3 className="font-display text-base font-semibold text-ink">
                       Submit contractor proposal
                     </h3>
                     <p className="mt-1 text-sm text-ink2">
@@ -955,7 +955,7 @@ export default function TenderPortalHome() {
                           className="flex flex-col gap-3 rounded-lg border border-hairline bg-sunken p-4 sm:flex-row sm:items-center sm:justify-between"
                         >
                           <div className="min-w-0 space-y-1">
-                            <p className="font-display text-sm font-bold text-ink">{b.company_name}</p>
+                            <p className="font-display text-sm font-semibold text-ink">{b.company_name}</p>
                             <p className="text-xs text-ink2">
                               Contractor: <span className="text-ink">{b.contractor_name}</span> • License:{" "}
                               <span className="font-mono tnum">{b.license_number}</span>
@@ -1043,7 +1043,7 @@ export default function TenderPortalHome() {
                 onClick={(e) => e.stopPropagation()}
               >
             <div className="flex items-center justify-between gap-3 border-b border-hairline bg-sunken px-5 py-3">
-              <h3 className="font-display text-base font-bold text-ink">
+              <h3 className="font-display text-base font-semibold text-ink">
                 API &amp; sync specifications
               </h3>
               <MagneticButton
