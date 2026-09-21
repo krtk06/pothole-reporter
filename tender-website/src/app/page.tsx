@@ -359,8 +359,8 @@ export default function TenderPortalHome() {
               <Image
                 src={theme === "dark" ? "/hero/hero-dusk.png" : "/hero/hero-day.png"}
                 alt="Tender documents and road roller on a road construction site with the city skyline behind"
-                width={707}
-                height={1111}
+                width={1672}
+                height={941}
                 priority
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 className="aspect-[4/3] w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
