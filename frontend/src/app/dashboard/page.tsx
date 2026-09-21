@@ -110,12 +110,11 @@ export default function Dashboard() {
     setArea(selectedArea);
   }, [selectedArea]);
 
-  const scopedBounds = useMemo(() => areaBounds(area), [area]);
+  const scopedBounds = useMemo(() => areaBounds(area) || ANDHRA_STATE.bbox, [area]);
   const locationLabel = area?.displayName || "Select District, Mandal, City/Village";
 
   const fetchPotholes = async () => {
     if (!scopedBounds) {
-      setPotholes([]);
       return;
     }
 
@@ -142,7 +141,6 @@ export default function Dashboard() {
 
     if (!next.village) {
       setArea(null);
-      setPotholes([]);
       return;
     }
 
