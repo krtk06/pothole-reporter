@@ -105,8 +105,10 @@ export default function TenderMap({
       >
         <MapRecenter center={center} zoom={resolvedZoom} />
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          subdomains="abcd"
+          maxZoom={19}
         />
         {validPotholes.map((p) => (
           <Marker key={p.id} position={[p.latitude, p.longitude]} icon={pinIcon(p.status)}>

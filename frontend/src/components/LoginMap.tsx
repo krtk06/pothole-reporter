@@ -41,7 +41,7 @@ export default function LoginMap() {
 
       mapInstance = L.map(container, { zoomControl: false, attributionControl: false }).setView(initialPos, initialZoom);
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(mapInstance);
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", { maxZoom: 19, subdomains: "abcd" }).addTo(mapInstance);
 
       const userIcon = L.divIcon({
         className: "macadam-pin-wrap",
