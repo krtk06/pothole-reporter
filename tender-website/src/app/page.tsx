@@ -358,17 +358,17 @@ export default function TenderPortalHome() {
             <figure className="relative overflow-hidden shadow-2 img-organic">
               <Image
                 src={theme === "dark" ? "/hero/hero-dusk.png" : "/hero/hero-day.png"}
-                alt="Pothole on an urban road at sunset with the city skyline behind it"
-                width={1417}
-                height={1110}
+                alt="Tender documents and road roller on a road construction site with the city skyline behind"
+                width={707}
+                height={1111}
                 priority
                 sizes="(max-width: 1024px) 100vw, 55vw"
-                className="h-auto w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+                className="aspect-[4/3] w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
               />
               <figcaption className="absolute bottom-5 right-6 text-right font-display text-lg font-semibold italic leading-snug text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)]">
-                Same purpose.
+                Transparent tenders.
                 <br />
-                A brighter tomorrow.
+                Stronger communities.
                 <span className="mt-1 block h-1 w-24 rounded-full bg-signal ml-auto" aria-hidden />
               </figcaption>
             </figure>
