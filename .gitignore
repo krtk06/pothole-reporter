@@ -68,6 +68,13 @@ tsconfig.tsbuildinfo
 *.md
 !README.md
 
+# SECURITY: never commit generated admin credentials. This file lists live
+# admin accounts and their plaintext password. The non-secret roster lives in
+# admin-roster.csv / admin-roster.json, which are safe to commit.
+ADMIN_CREDENTIALS.md
+ADMIN_CREDENTIALS*.md
+**/ADMIN_CREDENTIALS*.md
+
 # Windows ADS junk files
 *:Zone.Identifier
 

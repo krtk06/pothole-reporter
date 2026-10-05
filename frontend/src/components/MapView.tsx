@@ -6,6 +6,7 @@ import L from "leaflet";
 import type { MapBoundingBox, MapCluster, PublicPothole } from "@/types";
 import "leaflet/dist/leaflet.css";
 import { statusDivIcon, type PinStatus } from "@/components/macadam/MapSkin";
+import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from "@/lib/mapTiles";
 
 const iconUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
 const iconRetinaUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png";
@@ -165,10 +166,7 @@ export default function MapView({
         zoomAnimation={false}
         maxBoundsViscosity={bounds ? 0.9 : undefined}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <TileLayer attribution={MAP_TILE_ATTRIBUTION} url={MAP_TILE_URL} />
         {bounds && <BoundsController bounds={bounds} />}
         {clusters.length > 0 && <ClusterMarkers clusters={clusters} />}
         {potholes.length > 0 && <PotholeMarkers potholes={potholes} />}

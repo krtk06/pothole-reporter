@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 
 export interface Pothole {
   id: string;
@@ -63,6 +64,21 @@ export interface TenderStoreData {
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "tenders.json");
+
+// Persistence target. Vercel's filesystem is read-only outside /tmp, so a
+// TENDER_STORE_BUCKET must be configured there; the local filesystem remains
+// the fallback so `next dev` on a workstation needs no AWS credentials.
+const S3_BUCKET = process.env.TENDER_STORE_BUCKET || "";
+const S3_KEY = process.env.TENDER_STORE_KEY || "tender-portal/tenders.json";
+const S3_ENABLED = S3_BUCKET.length > 0;
+
+let s3Client: S3Client | null = null;
+function getS3(): S3Client {
+  if (!s3Client) {
+    s3Client = new S3Client({ region: process.env.AWS_REGION || "us-east-1" });
+  }
+  return s3Client;
+}
 
 // No dummy/seed data: the portal starts empty and only shows real tenders
 // received via POST /api/sync from the Pothole Reporter backend
@@ -137,50 +153,89 @@ function purgeDummyRecords(store: TenderStoreData): boolean {
   return store.tenders.length !== beforeTenders || store.bids.length !== beforeBids;
 }
 
-function ensureDataFile(): TenderStoreData {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
+function normaliseStore(parsed: any): TenderStoreData {
+  return {
+    lastSyncAt: parsed?.lastSyncAt ?? null,
+    syncLogs: Array.isArray(parsed?.syncLogs) ? parsed.syncLogs : [],
+    bids: Array.isArray(parsed?.bids) ? parsed.bids : [],
+    tenders: Array.isArray(parsed?.tenders) ? parsed.tenders : [],
+  };
+}
 
+function emptyStore(): TenderStoreData {
+  return { ...EMPTY_STORE, syncLogs: [], bids: [], tenders: [] };
+}
+
+async function loadFromS3(): Promise<TenderStoreData> {
+  try {
+    const res = await getS3().send(
+      new GetObjectCommand({ Bucket: S3_BUCKET, Key: S3_KEY })
+    );
+    const raw = await res.Body?.transformToString();
+    if (!raw) return emptyStore();
+    return normaliseStore(JSON.parse(raw));
+  } catch (err: any) {
+    // A missing object is the normal cold-start case, not an error.
+    if (err?.name === "NoSuchKey" || err?.$metadata?.httpStatusCode === 404) {
+      return emptyStore();
+    }
+    console.error("[tenderStore] S3 read failed", err);
+    return emptyStore();
+  }
+}
+
+function loadFromDisk(): TenderStoreData {
   if (!fs.existsSync(DATA_FILE)) {
-    // Start empty — no dummy tenders. Real data arrives via POST /api/sync.
-    const fresh: TenderStoreData = { ...EMPTY_STORE, syncLogs: [], bids: [], tenders: [] };
-    fs.writeFileSync(DATA_FILE, JSON.stringify(fresh, null, 2), "utf-8");
+    const fresh = emptyStore();
+    try {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+      fs.writeFileSync(DATA_FILE, JSON.stringify(fresh, null, 2), "utf-8");
+    } catch {
+      /* best-effort */
+    }
     return fresh;
   }
-
   try {
-    const raw = fs.readFileSync(DATA_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
-    const store: TenderStoreData = {
-      lastSyncAt: parsed.lastSyncAt ?? null,
-      syncLogs: Array.isArray(parsed.syncLogs) ? parsed.syncLogs : [],
-      bids: Array.isArray(parsed.bids) ? parsed.bids : [],
-      tenders: Array.isArray(parsed.tenders) ? parsed.tenders : [],
-    };
-    // Heal legacy files: strip dummy/test fixtures once, then persist.
-    if (purgeDummyRecords(store)) {
-      try {
-        saveData(store);
-      } catch {
-        /* best-effort */
-      }
-    }
-    return store;
+    return normaliseStore(JSON.parse(fs.readFileSync(DATA_FILE, "utf-8")));
   } catch {
-    return { ...EMPTY_STORE, syncLogs: [], bids: [], tenders: [] };
+    return emptyStore();
   }
 }
 
-function saveData(data: TenderStoreData): void {
+async function loadStore(): Promise<TenderStoreData> {
+  const store = S3_ENABLED ? await loadFromS3() : loadFromDisk();
+  // Heal legacy records: strip dummy/test fixtures once, then persist.
+  if (purgeDummyRecords(store)) {
+    try {
+      await saveStore(store);
+    } catch {
+      /* best-effort */
+    }
+  }
+  return store;
+}
+
+async function saveStore(data: TenderStoreData): Promise<void> {
+  const body = JSON.stringify(data, null, 2);
+  if (S3_ENABLED) {
+    await getS3().send(
+      new PutObjectCommand({
+        Bucket: S3_BUCKET,
+        Key: S3_KEY,
+        Body: body,
+        ContentType: "application/json",
+      })
+    );
+    return;
+  }
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+  fs.writeFileSync(DATA_FILE, body, "utf-8");
 }
 
-export function getTenderData(): TenderStoreData {
-  return ensureDataFile();
+export async function getTenderData(): Promise<TenderStoreData> {
+  return loadStore();
 }
 
 /**
@@ -188,8 +243,8 @@ export function getTenderData(): TenderStoreData {
  * Used by GET /api/tenders so the offline fallback stays fresh. Real syncs
  * via POST /api/sync still write full log entries and lastSyncAt.
  */
-export function cacheLiveTenders(liveTenders: TenderItem[]): { cached: number } {
-  const store = ensureDataFile();
+export async function cacheLiveTenders(liveTenders: TenderItem[]): Promise<{ cached: number }> {
+  const store = await loadStore();
   const clean = (Array.isArray(liveTenders) ? liveTenders : []).filter(
     (t) => t && !isDummyTender(t)
   );
@@ -198,7 +253,7 @@ export function cacheLiveTenders(liveTenders: TenderItem[]): { cached: number } 
   store.bids = (store.bids || []).filter(
     (b) => !DUMMY_TENDER_IDS.has(b.id) && liveIds.has(b.tender_id)
   );
-  saveData(store);
+  await saveStore(store);
   return { cached: clean.length };
 }
 
@@ -214,12 +269,15 @@ export function parseBlockDistrictMandal(blockId?: string | null): { district: s
   return { district: blockId, mandal: "Central" };
 }
 
-export function ingestSyncPayload(payload: any, source: string = "pothole-reporter"): {
+export async function ingestSyncPayload(
+  payload: any,
+  source: string = "pothole-reporter"
+): Promise<{
   success: boolean;
   received_potholes: number;
   received_tenders: number;
-} {
-  const store = ensureDataFile();
+}> {
+  const store = await loadStore();
   const incomingPotholes: Pothole[] = payload.potholes || [];
   const incomingTenders = payload.tenders || [];
 
@@ -324,7 +382,7 @@ export function ingestSyncPayload(payload: any, source: string = "pothole-report
   store.syncLogs.unshift(logEntry);
   store.lastSyncAt = logEntry.received_at;
 
-  saveData(store);
+  await saveStore(store);
 
   return {
     success: true,
@@ -338,16 +396,16 @@ export function ingestSyncPayload(payload: any, source: string = "pothole-report
  * admin "unsend" flow: accepts a tender id or a block_id; at least one must
  * be provided.
  */
-export function withdrawTender(params: {
+export async function withdrawTender(params: {
   tender_id?: string;
   block_id?: string;
   triggered_by?: string;
-}): { success: boolean; removed: number; message?: string } {
+}): Promise<{ success: boolean; removed: number; message?: string }> {
   if (!params.tender_id && !params.block_id) {
     return { success: false, removed: 0, message: "Provide 'tender_id' or 'block_id'." };
   }
 
-  const store = ensureDataFile();
+  const store = await loadStore();
 
   const matches = store.tenders.filter(
     t => (params.tender_id && t.id === params.tender_id) ||
@@ -377,13 +435,15 @@ export function withdrawTender(params: {
   store.syncLogs.unshift(logEntry);
   store.lastSyncAt = logEntry.received_at;
 
-  saveData(store);
+  await saveStore(store);
 
   return { success: true, removed: matches.length };
 }
 
-export function submitContractorBid(bid: Omit<ContractorBid, "id" | "submitted_at">): ContractorBid {
-  const store = ensureDataFile();
+export async function submitContractorBid(
+  bid: Omit<ContractorBid, "id" | "submitted_at">
+): Promise<ContractorBid> {
+  const store = await loadStore();
   const newBid: ContractorBid = {
     ...bid,
     id: `bid-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -398,6 +458,6 @@ export function submitContractorBid(bid: Omit<ContractorBid, "id" | "submitted_a
     tender.status = "under_review";
   }
 
-  saveData(store);
+  await saveStore(store);
   return newBid;
 }

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import type { Map as LeafletMap } from "leaflet";
 import type { MapBoundingBox, PublicPothole } from "@/types";
 import { statusDivIcon, type PinStatus } from "@/components/macadam/MapSkin";
+import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from "@/lib/mapTiles";
 
 interface PublicMiniMapProps {
   potholes: PublicPothole[];
@@ -89,7 +90,6 @@ export default function PublicMiniMap({
 
       const map = L.map(container, {
         zoomControl: true,
-        attributionControl: false,
         scrollWheelZoom: false,
         zoomAnimation: false,
         minZoom: 7,
@@ -98,8 +98,9 @@ export default function PublicMiniMap({
 
       mapRef.current = map;
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      L.tileLayer(MAP_TILE_URL, {
         maxZoom: 18,
+        attribution: MAP_TILE_ATTRIBUTION,
       }).addTo(map);
 
       if (bounds) {

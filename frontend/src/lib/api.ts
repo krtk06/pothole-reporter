@@ -18,6 +18,9 @@ class ApiClient {
   private async fetch(endpoint: string, options: RequestInit = {}) {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      // Identifies this client to the API. The backend keys register/login
+      // behaviour off the `mobile` value, so web must be explicit.
+      "X-Client-Platform": "web",
       ...(options.headers as Record<string, string>),
     };
 

@@ -8,7 +8,7 @@ import { isAuthorized, UNAUTHORIZED_RESPONSE_BODY } from "@/lib/apiAuth";
 // unreachable. Expired cached presigned URLs are nulled so the UI never
 // shows broken images.
 export async function GET() {
-  const store = getTenderData();
+  const store = await getTenderData();
 
   let tenders = store.tenders;
   let live: { backend_reachable: boolean; source: string; fetched_at: string | null; error?: string } = {
@@ -28,9 +28,10 @@ export async function GET() {
         fetched_at: liveRes.fetchedAt,
       };
       lastSyncAt = liveRes.fetchedAt || new Date().toISOString();
-      // Keep the offline cache fresh without spamming sync logs
+      // Keep the offline cache fresh without spamming sync logs.
+      // Awaited: on serverless an unawaited write can be discarded on return.
       try {
-        cacheLiveTenders(liveRes.tenders);
+        await cacheLiveTenders(liveRes.tenders);
       } catch {
         /* best-effort */
       }
@@ -100,7 +101,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const result = withdrawTender({
+    const result = await withdrawTender({
       tender_id: body.tender_id,
       block_id: body.block_id,
       triggered_by: body.triggered_by,

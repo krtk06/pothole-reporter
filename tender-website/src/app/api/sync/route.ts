@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = ingestSyncPayload(payload, payload.source || "pothole-reporter");
+    const result = await ingestSyncPayload(payload, payload.source || "pothole-reporter");
 
     return NextResponse.json({
       ...result,
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const store = getTenderData();
+  const store = await getTenderData();
   const totalPotholes = store.tenders.reduce((sum, t) => sum + (t.potholes?.length || 0), 0);
 
   return NextResponse.json({

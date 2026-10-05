@@ -4,7 +4,7 @@ import { getTenderData, submitContractorBid } from "@/lib/tenderStore";
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const tenderId = searchParams.get("tender_id");
-  const store = getTenderData();
+  const store = await getTenderData();
 
   if (tenderId) {
     const bids = store.bids.filter((b) => b.tender_id === tenderId);
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newBid = submitContractorBid({
+    const newBid = await submitContractorBid({
       tender_id: body.tender_id,
       contractor_name: body.contractor_name,
       company_name: body.company_name,

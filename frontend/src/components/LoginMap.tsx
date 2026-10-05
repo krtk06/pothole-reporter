@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Map as LeafletMap } from "leaflet";
+import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from "@/lib/mapTiles";
 
 export default function LoginMap() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,9 +40,9 @@ export default function LoginMap() {
 
       if (cancelled) return;
 
-      mapInstance = L.map(container, { zoomControl: false, attributionControl: false }).setView(initialPos, initialZoom);
+      mapInstance = L.map(container, { zoomControl: false }).setView(initialPos, initialZoom);
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(mapInstance);
+      L.tileLayer(MAP_TILE_URL, { maxZoom: 19, attribution: MAP_TILE_ATTRIBUTION }).addTo(mapInstance);
 
       const userIcon = L.divIcon({
         className: "macadam-pin-wrap",
