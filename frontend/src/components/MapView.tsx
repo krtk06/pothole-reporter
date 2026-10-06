@@ -71,6 +71,45 @@ function BoundsController({ bounds }: { bounds: MapBoundingBox }) {
   return null;
 }
 
+/**
+ * Frames the viewport on whatever was actually returned, used when the
+ * caller supplies no explicit bounds.
+ *
+ * The admin console is the case this exists for: cluster scoping is done
+ * correctly server-side, but the seeded district names post-date the
+ * bundled location data (Eluru and Kakinada are still listed as mandals
+ * under West/East Godavari). Resolving the viewport by name then lands on
+ * the wrong box and the pins render off-screen. Fitting to the payload
+ * sidesteps the naming mismatch entirely.
+ */
+function DataBoundsController({
+  clusters,
+  potholes,
+}: {
+  clusters: MapCluster[];
+  potholes: PublicPothole[];
+}) {
+  const map = useMap();
+  const points: [number, number][] = [
+    ...clusters.map(
+      (c) => [c.avg_latitude, c.avg_longitude] as [number, number]
+    ),
+    ...potholes.map((p) => [p.latitude, p.longitude] as [number, number]),
+  ];
+  const key = points.map((p) => p.join(",")).join("|");
+
+  useEffect(() => {
+    if (points.length === 0) return;
+    const leafletBounds = L.latLngBounds(points);
+    try {
+      map.fitBounds(leafletBounds, { padding: [40, 40], animate: false, maxZoom: 15 });
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, map]);
+
+  return null;
+}
+
 function ClusterMarkers({ clusters }: { clusters: MapCluster[] }) {
   const map = useMap();
 
@@ -167,7 +206,11 @@ export default function MapView({
         maxBoundsViscosity={bounds ? 0.9 : undefined}
       >
         <TileLayer attribution={MAP_TILE_ATTRIBUTION} url={MAP_TILE_URL} />
-        {bounds && <BoundsController bounds={bounds} />}
+        {bounds ? (
+          <BoundsController bounds={bounds} />
+        ) : (
+          <DataBoundsController clusters={clusters} potholes={potholes} />
+        )}
         {clusters.length > 0 && <ClusterMarkers clusters={clusters} />}
         {potholes.length > 0 && <PotholeMarkers potholes={potholes} />}
       </MapContainer>

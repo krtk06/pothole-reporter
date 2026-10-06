@@ -1,4 +1,5 @@
 import type { AdministrativeArea, AdministrativeAreaType, PublicPothole } from "@/types";
+import { resolveViewport, viewportCentre } from "@/lib/locationBounds";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
@@ -219,43 +220,58 @@ class ApiClient {
     if (params.q) query.set("q", params.q);
     if (params.districtCode) query.set("districtCode", params.districtCode);
     if (params.subdistrictCode) query.set("subdistrictCode", params.subdistrictCode);
-    return this.fetch(`/map/areas/options?${query.toString()}`);
+    const res: any = await this.fetch(`/map/areas/options?${query.toString()}`);
+    // The API returns `options`; older builds returned `areas`. Reading only
+    // `areas` silently yielded [] and sent the selector to its local
+    // fallback directory on every load.
+    res.areas = res.options ?? res.areas ?? [];
+    return res;
   }
 
   async getCurrentAdministrativeArea(area: Pick<AdministrativeArea, "id" | "name" | "districtName" | "subdistrictName" | "districtCode" | "subdistrictCode"> | string): Promise<{ area: AdministrativeArea }> {
-    try {
-      const query = new URLSearchParams({ id: typeof area === "string" ? area : area.id });
-      if (typeof area !== "string") {
-        query.set("name", area.name);
-        if (area.districtName) query.set("districtName", area.districtName);
-        if (area.subdistrictName) query.set("subdistrictName", area.subdistrictName);
-        if (area.districtCode) query.set("districtCode", area.districtCode);
-        if (area.subdistrictCode) query.set("subdistrictCode", area.subdistrictCode);
-      }
-      return await this.fetch(`/map/areas/current?${query.toString()}`);
-    } catch {
-      if (typeof area === "object") {
-        return {
-          area: {
-            id: area.id,
-            name: area.name,
-            displayName: `${area.name}, ${area.subdistrictName || ""}, ${area.districtName || ""}, Andhra Pradesh, India`,
-            type: "village",
-            districtCode: area.districtCode,
-            districtName: area.districtName,
-            subdistrictCode: area.subdistrictCode,
-            subdistrictName: area.subdistrictName,
-            stateName: "Andhra Pradesh",
-            stateCode: "28",
-            latitude: 15.9129,
-            longitude: 79.74,
-            bbox: { north: 15.95, south: 15.87, east: 79.8, west: 79.68 },
-            boundary: null,
-          } as AdministrativeArea,
-        };
-      }
-      throw new Error("Unable to resolve selected location");
+    // Resolved locally. `GET /map/areas/current` requires the caller to
+    // already have latitude/longitude, so passing a village id returns 400 —
+    // and the previous hardcoded fallback (15.91N, 79.74E) sat ~100km from
+    // any real data, turning a failed lookup into an empty map instead of
+    // an error. `india-locations.ts` supplies bounding boxes directly.
+    const box =
+      typeof area === "string"
+        ? resolveViewport({})
+        : resolveViewport({
+            district: area.districtName,
+            mandal: area.subdistrictName,
+          });
+
+    if (!box) {
+      throw new Error("Unable to resolve a map viewport for the selected location");
     }
+
+    const centre = viewportCentre(box);
+    const name = typeof area === "string" ? area : area.name;
+    const districtName = typeof area === "string" ? undefined : area.districtName;
+    const subdistrictName = typeof area === "string" ? undefined : area.subdistrictName;
+
+    return {
+      area: {
+        id: typeof area === "string" ? area : area.id,
+        name,
+        displayName: `${name}, ${subdistrictName || ""}, ${districtName || ""}, Andhra Pradesh, India`
+          .replace(/,\s*,/g, ",")
+          .replace(/^,\s*/, "")
+          .trim(),
+        type: subdistrictName ? "village" : "district",
+        districtCode: typeof area === "string" ? undefined : area.districtCode,
+        districtName,
+        subdistrictCode: typeof area === "string" ? undefined : area.subdistrictCode,
+        subdistrictName,
+        stateName: "Andhra Pradesh",
+        stateCode: "28",
+        latitude: centre.latitude,
+        longitude: centre.longitude,
+        bbox: box,
+        boundary: null,
+      } as AdministrativeArea,
+    };
   }
 
   async getPotholesInBounds(bbox: { west: number; south: number; east: number; north: number }): Promise<{ potholes: PublicPothole[] }> {
