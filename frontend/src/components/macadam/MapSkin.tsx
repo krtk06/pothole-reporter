@@ -36,6 +36,42 @@ export function statusDivIcon(status: PinStatus, options: StatusIconOptions = {}
   });
 }
 
+/**
+ * Density bands for block-cluster markers.
+ *
+ * Deliberately not traffic-light green/yellow/red — that reads as a
+ * generic status light and clashes with the MACADAM palette. The scale
+ * runs quiet indigo → amber → ember so it stays inside the existing
+ * token set and still separates low from high at a glance.
+ *
+ * Thresholds follow the handover's suggested bands (green <5,
+ * yellow 5–15, red >15) mapped onto those three tones.
+ */
+export type DensityBand = "low" | "moderate" | "high";
+
+const DENSITY_CLASS: Record<DensityBand, string> = {
+  low: "macadam-cluster--low",
+  moderate: "macadam-cluster--moderate",
+  high: "macadam-cluster--high",
+};
+
+export function densityBand(count: number): DensityBand {
+  if (count >= 15) return "high";
+  if (count >= 5) return "moderate";
+  return "low";
+}
+
+/** Block cluster marker, tinted by how many potholes the block holds. */
+export function densityDivIcon(count: number) {
+  const band = densityBand(count);
+  return L.divIcon({
+    className: "macadam-cluster-wrap",
+    html: `<span class="macadam-cluster ${DENSITY_CLASS[band]}">${count}</span>`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+  });
+}
+
 /** A neutral survey marker for non-status points (e.g. area centroids). */
 export function neutralDivIcon(label?: string) {
   return L.divIcon({

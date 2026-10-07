@@ -5,7 +5,11 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { MapBoundingBox, MapCluster, PublicPothole } from "@/types";
 import "leaflet/dist/leaflet.css";
-import { statusDivIcon, type PinStatus } from "@/components/macadam/MapSkin";
+import {
+  densityDivIcon,
+  statusDivIcon,
+  type PinStatus,
+} from "@/components/macadam/MapSkin";
 import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from "@/lib/mapTiles";
 
 const iconUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
@@ -132,12 +136,7 @@ function ClusterMarkers({ clusters }: { clusters: MapCluster[] }) {
         <Marker
           key={cluster.block_id}
           position={[cluster.avg_latitude, cluster.avg_longitude]}
-          icon={L.divIcon({
-            className: "macadam-cluster-wrap",
-            html: `<span class="macadam-cluster">${cluster.count}</span>`,
-            iconSize: [40, 40],
-            iconAnchor: [20, 20],
-          })}
+          icon={densityDivIcon(cluster.count)}
         >
           <Popup>
             <div style={{ display: "grid", gap: 3 }}>

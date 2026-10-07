@@ -31,6 +31,14 @@
     --bad: #ef4444;
     --info: #2b6ed6;
 
+    /* cluster density bands — indigo → amber → ember */
+    --density-low: #4f5aa6;
+    --density-low-fg: #ffffff;
+    --density-moderate: #d99a2b;
+    --density-moderate-fg: #2a1a03;
+    --density-high: #d1491f;
+    --density-high-fg: #ffffff;
+
     /* ground material — near-flat tint, decoration lives in photography */
     --mesh-1: 243 107 44;
     --mesh-2: 112 117 120;
@@ -135,6 +143,14 @@
     --warn: #f5b942;
     --bad: #f0534d;
     --info: #6fa0ff;
+
+    /* cluster density bands — brighter in dark so they hold against the map */
+    --density-low: #7b85d6;
+    --density-low-fg: #10121f;
+    --density-moderate: #f5b942;
+    --density-moderate-fg: #241703;
+    --density-high: #ff7540;
+    --density-high-fg: #1a0d05;
 
     --mesh-1: 255 117 64;
     --mesh-2: 70 120 120;
@@ -788,6 +804,23 @@
   font-size: 13px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+
+/* Density bands — quiet indigo through amber to ember, replacing the
+   traffic-light convention so the map stays inside the MACADAM palette. */
+.macadam-cluster--low {
+  background: var(--density-low);
+  color: var(--density-low-fg);
+}
+
+.macadam-cluster--moderate {
+  background: var(--density-moderate);
+  color: var(--density-moderate-fg);
+}
+
+.macadam-cluster--high {
+  background: var(--density-high);
+  color: var(--density-high-fg);
 }
 
 /* ============================================================================
