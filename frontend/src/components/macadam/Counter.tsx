@@ -14,6 +14,14 @@ export interface CounterProps {
 }
 
 /**
+ * How long to wait for the element to become visible before revealing the
+ * value anyway. Long enough that an on-screen counter still animates on
+ * intersection first, short enough that an off-screen one is never left
+ * reading zero.
+ */
+const REVEAL_FALLBACK_MS = 900;
+
+/**
  * Counts up to its value on first reveal, and animates again on every later
  * value change (so a refresh, or data that arrives after mount, updates the
  * reading instead of freezing at zero). Tabular by default.
@@ -72,21 +80,35 @@ export function Counter({
       animateTo(valueRef.current);
       return;
     }
+
+    const reveal = () => {
+      if (revealedRef.current) return;
+      revealedRef.current = true;
+      io.disconnect();
+      clearTimeout(fallbackId);
+      animateTo(valueRef.current);
+    };
+
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting && !revealedRef.current) {
-            revealedRef.current = true;
-            io.disconnect();
-            animateTo(valueRef.current);
-          }
+          if (entry.isIntersecting) reveal();
         }
       },
       { threshold: 0.35 }
     );
     io.observe(el);
+
+    // Reveal anyway if the element never reaches 35% visibility. A
+    // counter parked just below the fold would otherwise sit on 0
+    // until the visitor scrolls, which reads as "no data" rather than
+    // "not yet scrolled to". The observer still wins when it fires
+    // first, so the intended reveal-on-scroll timing is preserved.
+    const fallbackId = setTimeout(reveal, REVEAL_FALLBACK_MS);
+
     return () => {
       io.disconnect();
+      clearTimeout(fallbackId);
       cancelAnimationFrame(rafRef.current);
     };
   }, [animateTo]);
