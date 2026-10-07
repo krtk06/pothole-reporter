@@ -217,6 +217,10 @@ class ApiClient {
     subdistrictCode?: string;
   }): Promise<{ areas: AdministrativeArea[] }> {
     const query = new URLSearchParams({ level: params.level });
+    // The endpoint rejects a request without `state` ("State is required"),
+    // so every call previously 400'd and the selector only ever used its
+    // bundled fallback directory.
+    query.set("state", "Andhra Pradesh");
     if (params.q) query.set("q", params.q);
     if (params.districtCode) query.set("districtCode", params.districtCode);
     if (params.subdistrictCode) query.set("subdistrictCode", params.subdistrictCode);
