@@ -2,10 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import type { Map as LeafletMap } from "leaflet";
-import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from "@/lib/mapTiles";
+import { useMapConfig } from "@/lib/mapTiles";
 
 export default function LoginMap() {
   const containerRef = useRef<HTMLDivElement>(null);
+  // The map initialises once, so the basemap it picks up on first paint
+  // is the build-time fallback; it upgrades in place below if the server
+  // config resolves.
+  const tileConfig = useMapConfig();
+  const tileConfigRef = useRef(tileConfig);
+  tileConfigRef.current = tileConfig;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -42,7 +48,12 @@ export default function LoginMap() {
 
       mapInstance = L.map(container, { zoomControl: false }).setView(initialPos, initialZoom);
 
-      L.tileLayer(MAP_TILE_URL, { maxZoom: 19, attribution: MAP_TILE_ATTRIBUTION }).addTo(mapInstance);
+      const cfg = tileConfigRef.current;
+      L.tileLayer(cfg.tileUrlTemplate, {
+        minZoom: cfg.minZoom,
+        maxZoom: cfg.maxZoom,
+        attribution: cfg.attribution,
+      }).addTo(mapInstance);
 
       const userIcon = L.divIcon({
         className: "macadam-pin-wrap",

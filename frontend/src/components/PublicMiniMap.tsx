@@ -2,9 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import type { Map as LeafletMap } from "leaflet";
+import L from "leaflet";
 import type { MapBoundingBox, PublicPothole } from "@/types";
 import { statusDivIcon, type PinStatus } from "@/components/macadam/MapSkin";
-import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from "@/lib/mapTiles";
+import { useMapConfig } from "@/lib/mapTiles";
 
 interface PublicMiniMapProps {
   potholes: PublicPothole[];
@@ -54,6 +55,8 @@ export default function PublicMiniMap({
 }: PublicMiniMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const tileConfig = useMapConfig();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -98,10 +101,14 @@ export default function PublicMiniMap({
 
       mapRef.current = map;
 
-      L.tileLayer(MAP_TILE_URL, {
-        maxZoom: 18,
-        attribution: MAP_TILE_ATTRIBUTION,
+      // Kept in a ref so the map does not have to be rebuilt when the
+      // server config arrives; a separate effect upgrades the layer.
+      const tiles = L.tileLayer(tileConfig.tileUrlTemplate, {
+        minZoom: Math.min(7, tileConfig.minZoom),
+        maxZoom: Math.max(18, tileConfig.maxZoom),
+        attribution: tileConfig.attribution,
       }).addTo(map);
+      tileLayerRef.current = tiles;
 
       if (bounds) {
         const leafletBounds = L.latLngBounds(
@@ -164,12 +171,35 @@ export default function PublicMiniMap({
 
     return () => {
       cancelled = true;
+      tileLayerRef.current = null;
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
       }
     };
   }, []);
+
+  // Upgrade the basemap in place once the server config resolves, so the
+  // map is not torn down and rebuilt.
+  useEffect(() => {
+    const map = mapRef.current;
+    const layer = tileLayerRef.current;
+    if (!map || !layer) return;
+    const current = (layer as unknown as { _url?: string })._url;
+    if (current === tileConfig.tileUrlTemplate) return;
+
+    layer.setUrl(tileConfig.tileUrlTemplate);
+    layer.options.attribution = tileConfig.attribution;
+    layer.options.minZoom = Math.min(7, tileConfig.minZoom);
+    layer.options.maxZoom = Math.max(18, tileConfig.maxZoom);
+    const control = (map as any)._controlCorners?.bottomright;
+    if (control) {
+      const attributionControl = (map as any).attributionControl;
+      attributionControl?.removeAttribution?.();
+      attributionControl?.addAttribution?.(tileConfig.attribution);
+    }
+    layer.redraw();
+  }, [tileConfig]);
 
   return (
     <div style={{ height, position: "relative" }} className="macadam-map w-full overflow-hidden">

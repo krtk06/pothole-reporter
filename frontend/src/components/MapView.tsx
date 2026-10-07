@@ -10,7 +10,7 @@ import {
   statusDivIcon,
   type PinStatus,
 } from "@/components/macadam/MapSkin";
-import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from "@/lib/mapTiles";
+import { useMapConfig } from "@/lib/mapTiles";
 
 const iconUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
 const iconRetinaUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png";
@@ -192,19 +192,26 @@ export default function MapView({
   zoom = 5,
   bounds,
 }: MapViewProps) {
+  const tileConfig = useMapConfig();
+
   return (
     <div className="macadam-map h-[460px] w-full sm:h-[520px]">
       <MapContainer
         center={center}
         zoom={zoom}
-        minZoom={7}
-        maxZoom={18}
+        minZoom={Math.min(7, tileConfig.minZoom)}
+        maxZoom={Math.max(18, tileConfig.maxZoom)}
         className="h-full w-full"
         zoomControl={true}
         zoomAnimation={false}
         maxBoundsViscosity={bounds ? 0.9 : undefined}
       >
-        <TileLayer attribution={MAP_TILE_ATTRIBUTION} url={MAP_TILE_URL} />
+        <TileLayer
+          attribution={tileConfig.attribution}
+          url={tileConfig.tileUrlTemplate}
+          minZoom={tileConfig.minZoom}
+          maxZoom={tileConfig.maxZoom}
+        />
         {bounds ? (
           <BoundsController bounds={bounds} />
         ) : (
