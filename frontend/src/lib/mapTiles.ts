@@ -65,6 +65,49 @@ export interface MapConfig {
 }
 
 /**
+ * A tile smaller than this is not real basemap imagery.
+ *
+ * CartoDB now gates `light_all` and `voyager` behind an API key and
+ * answers unauthenticated requests with a ~2KB "API KEY REQUIRED"
+ * watermark *at HTTP 200*, so a status check alone passes. A real 256px
+ * raster tile is several KB. Used to reject an unusable template rather
+ * than render a map covered in watermarks.
+ */
+const MIN_PLAUSIBLE_TILE_BYTES = 3072;
+
+/** Substitutes Leaflet's placeholders for one known tile. */
+function probeTileUrl(template: string): string {
+  return template
+    .replace("{s}", "a")
+    .replace("{z}", "11")
+    .replace("{x}", "1482")
+    .replace("{y}", "929")
+    .replace("{r}", "");
+}
+
+/**
+ * Confirms the template actually serves imagery.
+ *
+ * `GET /map/config` currently advertises a CartoDB light_all template
+ * that needs a CARTO API key this project does not have, so every tile
+ * resolves to an "API KEY REQUIRED" watermark. Aborts quickly, and any
+ * failure is treated as unusable — worst case is a short wait before
+ * falling back to OpenStreetMap.
+ */
+async function templateServesTiles(template: string): Promise<boolean> {
+  try {
+    const res = await fetch(probeTileUrl(template), {
+      cache: "no-store",
+      signal: AbortSignal.timeout(2500),
+    });
+    if (!res.ok) return false;
+    return (await res.arrayBuffer()).byteLength >= MIN_PLAUSIBLE_TILE_BYTES;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Server-controlled basemap config, falling back to the build-time env
  * var and then OpenStreetMap.
  *
@@ -73,8 +116,8 @@ export interface MapConfig {
  * absolute URL would be blocked as mixed content, since the site is
  * served over HTTPS and the backend is not.
  *
- * Starts on the fallback so tiles render immediately, then upgrades if
- * the server responds — the alternative is a blank map while loading.
+ * Starts on the fallback so tiles paint immediately, then upgrades only
+ * once a probe confirms the configured template serves real tiles.
  */
 export function useMapConfig(): MapConfig {
   const [config, setConfig] = useState<MapConfig>(FALLBACK_MAP_CONFIG);
@@ -89,9 +132,9 @@ export function useMapConfig(): MapConfig {
       cache: "no-store",
     })
       .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
+      .then(async (data) => {
         if (cancelled || !isUsableTemplate(data?.tileUrlTemplate)) return;
-        setConfig({
+        const next = {
           tileUrlTemplate: data.tileUrlTemplate,
           // An empty attribution string would strip required credit, so
           // fall back rather than serve tiles uncredited.
@@ -105,7 +148,11 @@ export function useMapConfig(): MapConfig {
           maxZoom: Number.isFinite(data.maxZoom)
             ? data.maxZoom
             : FALLBACK_MAP_CONFIG.maxZoom,
-        });
+        };
+        // Only swap the basemap once a probe tile proves the template
+        // serves real imagery rather than an API-key watermark.
+        if (!(await templateServesTiles(next.tileUrlTemplate))) return;
+        if (!cancelled) setConfig(next);
       })
       .catch(() => {
         /* keep the fallback basemap */
