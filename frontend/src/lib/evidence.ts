@@ -52,9 +52,13 @@ export function evidenceSource(
   const kind = evidenceKind(imageS3Key, imageUrl);
   if (kind === "none") return { url: null, kind, origin: "none" };
 
+  // image_s3_key already carries the `uploads/` prefix, so serving
+  // /uploads/<key> verbatim yields /uploads/uploads/<file> and 404s.
+  // SERVER_HANDOFF.md flagged this; verified against the live proxy.
   const key = (imageS3Key || "").replace(/^\/+/, "");
-  if (key) {
-    return { url: `/uploads/${key}`, kind, origin: "uploads" };
+  const path = key.replace(/^uploads\//, "");
+  if (path) {
+    return { url: `/uploads/${path}`, kind, origin: "uploads" };
   }
   if (imageUrl) {
     return { url: imageUrl, kind, origin: "presigned" };
