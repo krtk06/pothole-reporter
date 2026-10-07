@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { EvidenceThumb } from "@/components/EvidenceThumb";
+import { EvidenceLightbox } from "@/components/EvidenceLightbox";
 import {
   AlertTriangle,
   CalendarDays,
@@ -217,6 +219,7 @@ export default function AdminDashboard() {
   const [reportUpdating, setReportUpdating] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState("");
   const [scopeArea, setScopeArea] = useState<AdministrativeArea | null>(null);
+  const [evidenceOpenId, setEvidenceOpenId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<string>("map");
 
   const [reportPage, setReportPage] = useState(1);
@@ -715,6 +718,12 @@ export default function AdminDashboard() {
                                   {report.block_id}
                                 </Pill>
                               )}
+                              <EvidenceThumb
+                                reportId={report.id}
+                                imageS3Key={report.image_s3_key}
+                                imageUrl={report.image_url}
+                                onOpen={setEvidenceOpenId}
+                              />
                             </div>
                             <p className="flex items-center gap-1.5 text-sm text-ink">
                               <UserRound className="h-3.5 w-3.5 text-ink3" />
@@ -1255,6 +1264,16 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {evidenceOpenId && (
+        <EvidenceLightbox
+          reportId={evidenceOpenId}
+          imageS3Key={reports.find((r) => r.id === evidenceOpenId)?.image_s3_key}
+          imageUrl={reports.find((r) => r.id === evidenceOpenId)?.image_url}
+          open={Boolean(evidenceOpenId)}
+          onClose={() => setEvidenceOpenId(null)}
+        />
+      )}
 
       <footer className="mt-8 border-t border-hairline">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-xs text-ink3 sm:px-6">
