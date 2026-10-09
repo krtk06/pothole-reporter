@@ -6,6 +6,7 @@ import { validate } from "../middleware/validate";
 import prisma from "../config/database";
 import logger from "../config/logger";
 import { generatePresignedDownloadUrl } from "../services/s3Service";
+import { checkAndGenerateTender } from "../services/tenderService";
 import { AuthenticatedRequest } from "../types";
 
 const router = Router();
@@ -160,7 +161,7 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
       UPDATE potholes
       SET status = $1::text::"ReportStatus"
       WHERE id = $2::uuid${scopeCondition.clause ? ` AND ${scopeCondition.clause}` : ""}
-      RETURNING id, status
+      RETURNING id, status, block_id
     `, status, id, ...scopeCondition.params);
 
     if (result.length === 0) {
@@ -168,8 +169,27 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
       return;
     }
 
-    logger.info({ reportId: id, newStatus: status, adminId: req.user!.userId }, "Report status updated");
-    res.json({ report: result[0] });
+    // Verifying a report is the only way a human can confirm a pothole, so this
+    // is where the tender threshold has to be re-checked: checkAndGenerateTender
+    // counts verified potholes in the report's block and creates + dispatches a
+    // tender once POTHOLE_TENDER_THRESHOLD is reached.
+    let tenderGenerated = false;
+    const { block_id: blockId } = result[0];
+
+    if (status === "verified" && blockId) {
+      try {
+        tenderGenerated = await checkAndGenerateTender(blockId);
+      } catch (tenderErr: any) {
+        // The status UPDATE is already committed. A tender-side failure must not
+        // be reported as a failed status change, or the admin UI will show an
+        // error for a change that actually happened. The scheduler retries on
+        // its own schedule.
+        logger.error({ err: tenderErr, reportId: id, blockId }, "Tender generation failed after report verification");
+      }
+    }
+
+    logger.info({ reportId: id, newStatus: status, adminId: req.user!.userId, tenderGenerated }, "Report status updated");
+    res.json({ report: result[0], tender_generated: tenderGenerated });
   } catch (err: any) {
     logger.error({ err }, "Update report error");
     return res.status(500).json({ error: "Failed to update report" });
