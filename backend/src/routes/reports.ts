@@ -3,6 +3,7 @@ import { z } from "zod";
 import { authenticate } from "../middleware/auth";
 import { validate } from "../middleware/validate";
 import { uploadLimiter } from "../middleware/rateLimiter";
+import { resolveBlockIdIfMissing } from "../services/geoService";
 import prisma from "../config/database";
 import logger from "../config/logger";
 import { AuthenticatedRequest } from "../types";
@@ -30,6 +31,12 @@ router.post(
       const { s3_key, latitude, longitude, notes, block_id } = req.body;
       const userId = req.user!.userId;
 
+      // Clients that know their jurisdiction send block_id (the web portal).
+      // The mobile client only sends raw GPS, so resolve it here — otherwise the
+      // report matches no admin scope predicate and can never reach the tender
+      // threshold.
+      const resolvedBlockId = await resolveBlockIdIfMissing(block_id, latitude, longitude);
+
       const report: any[] = await prisma.$queryRawUnsafe(`
         INSERT INTO potholes (id, reporter_id, image_s3_key, location, address_notes, block_id, status, created_at)
         VALUES (
@@ -42,12 +49,14 @@ router.post(
           'pending',
           NOW()
         )
-        RETURNING id, status
-      `, userId, s3_key, longitude, latitude, notes || null, block_id || null);
+        RETURNING id, status, block_id
+      `, userId, s3_key, longitude, latitude, notes || null, resolvedBlockId);
 
       res.status(201).json({
         report_id: report[0].id,
         status: report[0].status,
+        block_id: report[0].block_id ?? null,
+        block_resolved: !block_id && !!report[0].block_id,
       });
     } catch (err: any) {
       logger.error({ err }, "Report submission error");
