@@ -1,0 +1,703 @@
+email,name,role,state,district,mandal,admin_scope
+admin@pothole.gov.in,AP State Administrator,admin,Andhra Pradesh,,,Admin-city
+admin.alluri.sitharama.raju@pothole.gov.in,Alluri Sitharama Raju District Admin,admin,Andhra Pradesh,Alluri Sitharama Raju,,Admin_District
+admin.anakapalli@pothole.gov.in,Anakapalli District Admin,admin,Andhra Pradesh,Anakapalli,,Admin_District
+admin.ananthapuramu@pothole.gov.in,Ananthapuramu District Admin,admin,Andhra Pradesh,Ananthapuramu,,Admin_District
+admin.annamayya@pothole.gov.in,Annamayya District Admin,admin,Andhra Pradesh,Annamayya,,Admin_District
+admin.bapatla@pothole.gov.in,Bapatla District Admin,admin,Andhra Pradesh,Bapatla,,Admin_District
+admin.chittoor@pothole.gov.in,Chittoor District Admin,admin,Andhra Pradesh,Chittoor,,Admin_District
+admin.dr.br.ambedkar.konaseema@pothole.gov.in,Dr BR Ambedkar Konaseema District Admin,admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,,Admin_District
+admin.east.godavari@pothole.gov.in,East Godavari District Admin,admin,Andhra Pradesh,East Godavari,,Admin_District
+admin.eluru@pothole.gov.in,Eluru District Admin,admin,Andhra Pradesh,Eluru,,Admin_District
+admin.guntur@pothole.gov.in,Guntur District Admin,admin,Andhra Pradesh,Guntur,,Admin_District
+admin.kakinada@pothole.gov.in,Kakinada District Admin,admin,Andhra Pradesh,Kakinada,,Admin_District
+admin.krishna@pothole.gov.in,Krishna District Admin,admin,Andhra Pradesh,Krishna,,Admin_District
+admin.kurnool@pothole.gov.in,Kurnool District Admin,admin,Andhra Pradesh,Kurnool,,Admin_District
+admin.ntr@pothole.gov.in,NTR District Admin,admin,Andhra Pradesh,NTR,,Admin_District
+admin.nandyal@pothole.gov.in,Nandyal District Admin,admin,Andhra Pradesh,Nandyal,,Admin_District
+admin.palnadu@pothole.gov.in,Palnadu District Admin,admin,Andhra Pradesh,Palnadu,,Admin_District
+admin.parvathipuram.manyam@pothole.gov.in,Parvathipuram Manyam District Admin,admin,Andhra Pradesh,Parvathipuram Manyam,,Admin_District
+admin.prakasam@pothole.gov.in,Prakasam District Admin,admin,Andhra Pradesh,Prakasam,,Admin_District
+admin.sri.potti.sriramulu.nellore@pothole.gov.in,Sri Potti Sriramulu Nellore District Admin,admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,,Admin_District
+admin.sri.sathya.sai@pothole.gov.in,Sri Sathya Sai District Admin,admin,Andhra Pradesh,Sri Sathya Sai,,Admin_District
+admin.srikakulam@pothole.gov.in,Srikakulam District Admin,admin,Andhra Pradesh,Srikakulam,,Admin_District
+admin.tirupati@pothole.gov.in,Tirupati District Admin,admin,Andhra Pradesh,Tirupati,,Admin_District
+admin.visakhapatnam@pothole.gov.in,Visakhapatnam District Admin,admin,Andhra Pradesh,Visakhapatnam,,Admin_District
+admin.vizianagaram@pothole.gov.in,Vizianagaram District Admin,admin,Andhra Pradesh,Vizianagaram,,Admin_District
+admin.west.godavari@pothole.gov.in,West Godavari District Admin,admin,Andhra Pradesh,West Godavari,,Admin_District
+admin.y.s.r.kadapa@pothole.gov.in,Y S R Kadapa District Admin,admin,Andhra Pradesh,Y S R Kadapa,,Admin_District
+admin.addateegala.alluri.sitharama.raju@pothole.gov.in,Addateegala Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Addateegala,Admin-Mandal
+admin.ananthagiri.alluri.sitharama.raju@pothole.gov.in,Ananthagiri Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Ananthagiri,Admin-Mandal
+admin.araku.valley.alluri.sitharama.raju@pothole.gov.in,Araku Valley Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Araku Valley,Admin-Mandal
+admin.bhadrachalam.alluri.sitharama.raju@pothole.gov.in,Bhadrachalam Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Bhadrachalam,Admin-Mandal
+admin.chinthapalli.alluri.sitharama.raju@pothole.gov.in,Chinthapalli Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Chinthapalli,Admin-Mandal
+admin.chinturu.alluri.sitharama.raju@pothole.gov.in,Chinturu Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Chinturu,Admin-Mandal
+admin.devipatnam.alluri.sitharama.raju@pothole.gov.in,Devipatnam Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Devipatnam,Admin-Mandal
+admin.dumbriguda.alluri.sitharama.raju@pothole.gov.in,Dumbriguda Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Dumbriguda,Admin-Mandal
+admin.g.madugula.alluri.sitharama.raju@pothole.gov.in,G Madugula Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,G Madugula,Admin-Mandal
+admin.gangavaram.alluri.sitharama.raju@pothole.gov.in,Gangavaram Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Gangavaram,Admin-Mandal
+admin.gudem.kotha.veedhi.alluri.sitharama.raju@pothole.gov.in,Gudem Kotha Veedhi Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Gudem Kotha Veedhi,Admin-Mandal
+admin.hukumpeta.alluri.sitharama.raju@pothole.gov.in,Hukumpeta Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Hukumpeta,Admin-Mandal
+admin.koyyuru.alluri.sitharama.raju@pothole.gov.in,Koyyuru Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Koyyuru,Admin-Mandal
+admin.kunavaram.alluri.sitharama.raju@pothole.gov.in,Kunavaram Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Kunavaram,Admin-Mandal
+admin.maredumilli.alluri.sitharama.raju@pothole.gov.in,Maredumilli Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Maredumilli,Admin-Mandal
+admin.munchingi.puttu.alluri.sitharama.raju@pothole.gov.in,Munchingi Puttu Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Munchingi Puttu,Admin-Mandal
+admin.paderu.alluri.sitharama.raju@pothole.gov.in,Paderu Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Paderu,Admin-Mandal
+admin.peda.bayalu.alluri.sitharama.raju@pothole.gov.in,Peda Bayalu Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Peda Bayalu,Admin-Mandal
+admin.rajavommangi.alluri.sitharama.raju@pothole.gov.in,Rajavommangi Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Rajavommangi,Admin-Mandal
+admin.rampachodavaram.alluri.sitharama.raju@pothole.gov.in,Rampachodavaram Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Rampachodavaram,Admin-Mandal
+admin.vararamachandrapuram.alluri.sitharama.raju@pothole.gov.in,Vararamachandrapuram Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Vararamachandrapuram,Admin-Mandal
+admin.y.ramavaram.alluri.sitharama.raju@pothole.gov.in,Y Ramavaram Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Y Ramavaram,Admin-Mandal
+admin.yetapaka.alluri.sitharama.raju@pothole.gov.in,Yetapaka Mandal Admin (Alluri Sitharama Raju),admin,Andhra Pradesh,Alluri Sitharama Raju,Yetapaka,Admin-Mandal
+admin.anakapalli.anakapalli@pothole.gov.in,Anakapalli Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Anakapalli,Admin-Mandal
+admin.atchuthapuram.anakapalli@pothole.gov.in,Atchuthapuram Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Atchuthapuram,Admin-Mandal
+admin.butchayyapeta.anakapalli@pothole.gov.in,Butchayyapeta Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Butchayyapeta,Admin-Mandal
+admin.cheedikada.anakapalli@pothole.gov.in,Cheedikada Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Cheedikada,Admin-Mandal
+admin.chodavaram.anakapalli@pothole.gov.in,Chodavaram Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Chodavaram,Admin-Mandal
+admin.devarapalli.anakapalli@pothole.gov.in,Devarapalli Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Devarapalli,Admin-Mandal
+admin.golugonda.anakapalli@pothole.gov.in,Golugonda Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Golugonda,Admin-Mandal
+admin.k.kotapadu.anakapalli@pothole.gov.in,K Kotapadu Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,K Kotapadu,Admin-Mandal
+admin.kasimkota.anakapalli@pothole.gov.in,Kasimkota Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Kasimkota,Admin-Mandal
+admin.kotauratla.anakapalli@pothole.gov.in,Kotauratla Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Kotauratla,Admin-Mandal
+admin.madugula.anakapalli@pothole.gov.in,Madugula Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Madugula,Admin-Mandal
+admin.makavarapalem.anakapalli@pothole.gov.in,Makavarapalem Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Makavarapalem,Admin-Mandal
+admin.munagapaka.anakapalli@pothole.gov.in,Munagapaka Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Munagapaka,Admin-Mandal
+admin.nakkapalli.anakapalli@pothole.gov.in,Nakkapalli Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Nakkapalli,Admin-Mandal
+admin.narsipatnam.anakapalli@pothole.gov.in,Narsipatnam Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Narsipatnam,Admin-Mandal
+admin.nathavaram.anakapalli@pothole.gov.in,Nathavaram Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Nathavaram,Admin-Mandal
+admin.paravada.anakapalli@pothole.gov.in,Paravada Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Paravada,Admin-Mandal
+admin.payakaraopeta.anakapalli@pothole.gov.in,Payakaraopeta Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Payakaraopeta,Admin-Mandal
+admin.rambilli.anakapalli@pothole.gov.in,Rambilli Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Rambilli,Admin-Mandal
+admin.ravikamatham.anakapalli@pothole.gov.in,Ravikamatham Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Ravikamatham,Admin-Mandal
+admin.rolugunta.anakapalli@pothole.gov.in,Rolugunta Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Rolugunta,Admin-Mandal
+admin.s.rayavaram.anakapalli@pothole.gov.in,S Rayavaram Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,S Rayavaram,Admin-Mandal
+admin.sabbavaram.anakapalli@pothole.gov.in,Sabbavaram Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Sabbavaram,Admin-Mandal
+admin.yelamanchili.anakapalli@pothole.gov.in,Yelamanchili Mandal Admin (Anakapalli),admin,Andhra Pradesh,Anakapalli,Yelamanchili,Admin-Mandal
+admin.anantapur.rural.ananthapuramu@pothole.gov.in,Anantapur Rural Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Anantapur Rural,Admin-Mandal
+admin.anantapur.urban.ananthapuramu@pothole.gov.in,Anantapur Urban Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Anantapur Urban,Admin-Mandal
+admin.atmakur.ananthapuramu@pothole.gov.in,Atmakur Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Atmakur,Admin-Mandal
+admin.beluguppa.ananthapuramu@pothole.gov.in,Beluguppa Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Beluguppa,Admin-Mandal
+admin.bommanahal.ananthapuramu@pothole.gov.in,Bommanahal Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Bommanahal,Admin-Mandal
+admin.brahmasamudram.ananthapuramu@pothole.gov.in,Brahmasamudram Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Brahmasamudram,Admin-Mandal
+admin.bukkaraya.samudram.ananthapuramu@pothole.gov.in,Bukkaraya Samudram Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Bukkaraya Samudram,Admin-Mandal
+admin.d.hirehal.ananthapuramu@pothole.gov.in,D Hirehal Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,D Hirehal,Admin-Mandal
+admin.garladinne.ananthapuramu@pothole.gov.in,Garladinne Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Garladinne,Admin-Mandal
+admin.gooty.ananthapuramu@pothole.gov.in,Gooty Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Gooty,Admin-Mandal
+admin.gummagatta.ananthapuramu@pothole.gov.in,Gummagatta Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Gummagatta,Admin-Mandal
+admin.guntakal.ananthapuramu@pothole.gov.in,Guntakal Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Guntakal,Admin-Mandal
+admin.kalyanadurg.ananthapuramu@pothole.gov.in,Kalyanadurg Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Kalyanadurg,Admin-Mandal
+admin.kambadur.ananthapuramu@pothole.gov.in,Kambadur Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Kambadur,Admin-Mandal
+admin.kanekal.ananthapuramu@pothole.gov.in,Kanekal Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Kanekal,Admin-Mandal
+admin.kudair.ananthapuramu@pothole.gov.in,Kudair Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Kudair,Admin-Mandal
+admin.kundurpi.ananthapuramu@pothole.gov.in,Kundurpi Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Kundurpi,Admin-Mandal
+admin.narpala.ananthapuramu@pothole.gov.in,Narpala Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Narpala,Admin-Mandal
+admin.pamidi.ananthapuramu@pothole.gov.in,Pamidi Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Pamidi,Admin-Mandal
+admin.peddapappur.ananthapuramu@pothole.gov.in,Peddapappur Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Peddapappur,Admin-Mandal
+admin.peddavaduguru.ananthapuramu@pothole.gov.in,Peddavaduguru Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Peddavaduguru,Admin-Mandal
+admin.putlur.ananthapuramu@pothole.gov.in,Putlur Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Putlur,Admin-Mandal
+admin.rapthadu.ananthapuramu@pothole.gov.in,Rapthadu Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Rapthadu,Admin-Mandal
+admin.rayadurg.ananthapuramu@pothole.gov.in,Rayadurg Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Rayadurg,Admin-Mandal
+admin.settur.ananthapuramu@pothole.gov.in,Settur Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Settur,Admin-Mandal
+admin.singanamala.ananthapuramu@pothole.gov.in,Singanamala Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Singanamala,Admin-Mandal
+admin.tadipatri.ananthapuramu@pothole.gov.in,Tadipatri Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Tadipatri,Admin-Mandal
+admin.uravakonda.ananthapuramu@pothole.gov.in,Uravakonda Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Uravakonda,Admin-Mandal
+admin.vajrakarur.ananthapuramu@pothole.gov.in,Vajrakarur Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Vajrakarur,Admin-Mandal
+admin.vidapanakal.ananthapuramu@pothole.gov.in,Vidapanakal Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Vidapanakal,Admin-Mandal
+admin.yadiki.ananthapuramu@pothole.gov.in,Yadiki Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Yadiki,Admin-Mandal
+admin.yellanur.ananthapuramu@pothole.gov.in,Yellanur Mandal Admin (Ananthapuramu),admin,Andhra Pradesh,Ananthapuramu,Yellanur,Admin-Mandal
+admin.beerongi.kothakota.annamayya@pothole.gov.in,Beerongi Kothakota Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Beerongi Kothakota,Admin-Mandal
+admin.chinnamandem.annamayya@pothole.gov.in,Chinnamandem Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Chinnamandem,Admin-Mandal
+admin.chitvel.annamayya@pothole.gov.in,Chitvel Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Chitvel,Admin-Mandal
+admin.galiveedu.annamayya@pothole.gov.in,Galiveedu Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Galiveedu,Admin-Mandal
+admin.gurramkonda.annamayya@pothole.gov.in,Gurramkonda Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Gurramkonda,Admin-Mandal
+admin.kalakada.annamayya@pothole.gov.in,Kalakada Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Kalakada,Admin-Mandal
+admin.kalikiri.annamayya@pothole.gov.in,Kalikiri Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Kalikiri,Admin-Mandal
+admin.kambhamvaripalle.annamayya@pothole.gov.in,Kambhamvaripalle Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Kambhamvaripalle,Admin-Mandal
+admin.kodur.annamayya@pothole.gov.in,Kodur Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Kodur,Admin-Mandal
+admin.kurabalakota.annamayya@pothole.gov.in,Kurabalakota Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Kurabalakota,Admin-Mandal
+admin.lakkireddipalli.annamayya@pothole.gov.in,Lakkireddipalli Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Lakkireddipalli,Admin-Mandal
+admin.madanapalle.annamayya@pothole.gov.in,Madanapalle Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Madanapalle,Admin-Mandal
+admin.mulakalacheruvu.annamayya@pothole.gov.in,Mulakalacheruvu Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Mulakalacheruvu,Admin-Mandal
+admin.nandalur.annamayya@pothole.gov.in,Nandalur Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Nandalur,Admin-Mandal
+admin.nimmanapalle.annamayya@pothole.gov.in,Nimmanapalle Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Nimmanapalle,Admin-Mandal
+admin.obulavaripalle.annamayya@pothole.gov.in,Obulavaripalle Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Obulavaripalle,Admin-Mandal
+admin.pedda.thippasamudram.annamayya@pothole.gov.in,Pedda Thippasamudram Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Pedda Thippasamudram,Admin-Mandal
+admin.peddamandyam.annamayya@pothole.gov.in,Peddamandyam Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Peddamandyam,Admin-Mandal
+admin.penagalur.annamayya@pothole.gov.in,Penagalur Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Penagalur,Admin-Mandal
+admin.pileru.annamayya@pothole.gov.in,Pileru Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Pileru,Admin-Mandal
+admin.pullampeta.annamayya@pothole.gov.in,Pullampeta Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Pullampeta,Admin-Mandal
+admin.rajampet.annamayya@pothole.gov.in,Rajampet Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Rajampet,Admin-Mandal
+admin.ramapuram.annamayya@pothole.gov.in,Ramapuram Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Ramapuram,Admin-Mandal
+admin.ramasamudram.annamayya@pothole.gov.in,Ramasamudram Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Ramasamudram,Admin-Mandal
+admin.rayachoti.annamayya@pothole.gov.in,Rayachoti Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Rayachoti,Admin-Mandal
+admin.sambepalle.annamayya@pothole.gov.in,Sambepalle Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Sambepalle,Admin-Mandal
+admin.t.sundupalle.annamayya@pothole.gov.in,T Sundupalle Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,T Sundupalle,Admin-Mandal
+admin.thamballapalle.annamayya@pothole.gov.in,Thamballapalle Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Thamballapalle,Admin-Mandal
+admin.valmikipuram.annamayya@pothole.gov.in,Valmikipuram Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Valmikipuram,Admin-Mandal
+admin.veeraballe.annamayya@pothole.gov.in,Veeraballe Mandal Admin (Annamayya),admin,Andhra Pradesh,Annamayya,Veeraballe,Admin-Mandal
+admin.addanki.bapatla@pothole.gov.in,Addanki Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Addanki,Admin-Mandal
+admin.amarthalur.bapatla@pothole.gov.in,Amarthalur Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Amarthalur,Admin-Mandal
+admin.ballikurava.bapatla@pothole.gov.in,Ballikurava Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Ballikurava,Admin-Mandal
+admin.bapatla.bapatla@pothole.gov.in,Bapatla Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Bapatla,Admin-Mandal
+admin.bhattiprolu.bapatla@pothole.gov.in,Bhattiprolu Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Bhattiprolu,Admin-Mandal
+admin.cherukupalli.bapatla@pothole.gov.in,Cherukupalli Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Cherukupalli,Admin-Mandal
+admin.chinaganjam.bapatla@pothole.gov.in,Chinaganjam Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Chinaganjam,Admin-Mandal
+admin.chirala.bapatla@pothole.gov.in,Chirala Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Chirala,Admin-Mandal
+admin.inkollu.bapatla@pothole.gov.in,Inkollu Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Inkollu,Admin-Mandal
+admin.j.pangulur.bapatla@pothole.gov.in,J Pangulur Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,J Pangulur,Admin-Mandal
+admin.karamchedu.bapatla@pothole.gov.in,Karamchedu Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Karamchedu,Admin-Mandal
+admin.karlapalem.bapatla@pothole.gov.in,Karlapalem Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Karlapalem,Admin-Mandal
+admin.kolluru.bapatla@pothole.gov.in,Kolluru Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Kolluru,Admin-Mandal
+admin.korisapadu.bapatla@pothole.gov.in,Korisapadu Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Korisapadu,Admin-Mandal
+admin.martur.bapatla@pothole.gov.in,Martur Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Martur,Admin-Mandal
+admin.nagaram.bapatla@pothole.gov.in,Nagaram Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Nagaram,Admin-Mandal
+admin.nizampatnam.bapatla@pothole.gov.in,Nizampatnam Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Nizampatnam,Admin-Mandal
+admin.parchur.bapatla@pothole.gov.in,Parchur Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Parchur,Admin-Mandal
+admin.pittalavanipalem.bapatla@pothole.gov.in,Pittalavanipalem Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Pittalavanipalem,Admin-Mandal
+admin.repalle.bapatla@pothole.gov.in,Repalle Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Repalle,Admin-Mandal
+admin.santhamaguluru.bapatla@pothole.gov.in,Santhamaguluru Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Santhamaguluru,Admin-Mandal
+admin.tsunduru.bapatla@pothole.gov.in,Tsunduru Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Tsunduru,Admin-Mandal
+admin.vemuru.bapatla@pothole.gov.in,Vemuru Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Vemuru,Admin-Mandal
+admin.vetapalem.bapatla@pothole.gov.in,Vetapalem Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Vetapalem,Admin-Mandal
+admin.yeddana.pudi.bapatla@pothole.gov.in,Yeddana Pudi Mandal Admin (Bapatla),admin,Andhra Pradesh,Bapatla,Yeddana Pudi,Admin-Mandal
+admin.baireddipalle.chittoor@pothole.gov.in,Baireddipalle Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Baireddipalle,Admin-Mandal
+admin.bangarupalem.chittoor@pothole.gov.in,Bangarupalem Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Bangarupalem,Admin-Mandal
+admin.chittoor.rural.chittoor@pothole.gov.in,Chittoor Rural Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Chittoor Rural,Admin-Mandal
+admin.chittoor.urban.chittoor@pothole.gov.in,Chittoor Urban Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Chittoor Urban,Admin-Mandal
+admin.chowdepalle.chittoor@pothole.gov.in,Chowdepalle Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Chowdepalle,Admin-Mandal
+admin.gangadhara.nellore.chittoor@pothole.gov.in,Gangadhara Nellore Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Gangadhara Nellore,Admin-Mandal
+admin.gangavaram.chittoor@pothole.gov.in,Gangavaram Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Gangavaram,Admin-Mandal
+admin.gudipala.chittoor@pothole.gov.in,Gudipala Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Gudipala,Admin-Mandal
+admin.gudupalle.chittoor@pothole.gov.in,Gudupalle Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Gudupalle,Admin-Mandal
+admin.irala.chittoor@pothole.gov.in,Irala Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Irala,Admin-Mandal
+admin.karvetinagar.chittoor@pothole.gov.in,Karvetinagar Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Karvetinagar,Admin-Mandal
+admin.kuppam.chittoor@pothole.gov.in,Kuppam Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Kuppam,Admin-Mandal
+admin.nagari.chittoor@pothole.gov.in,Nagari Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Nagari,Admin-Mandal
+admin.nindra.chittoor@pothole.gov.in,Nindra Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Nindra,Admin-Mandal
+admin.palamaner.chittoor@pothole.gov.in,Palamaner Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Palamaner,Admin-Mandal
+admin.palasamudram.chittoor@pothole.gov.in,Palasamudram Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Palasamudram,Admin-Mandal
+admin.peddapanjani.chittoor@pothole.gov.in,Peddapanjani Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Peddapanjani,Admin-Mandal
+admin.penumur.chittoor@pothole.gov.in,Penumur Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Penumur,Admin-Mandal
+admin.pulicherla.chittoor@pothole.gov.in,Pulicherla Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Pulicherla,Admin-Mandal
+admin.punganuru.chittoor@pothole.gov.in,Punganuru Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Punganuru,Admin-Mandal
+admin.puthalapattu.chittoor@pothole.gov.in,Puthalapattu Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Puthalapattu,Admin-Mandal
+admin.ramakuppam.chittoor@pothole.gov.in,Ramakuppam Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Ramakuppam,Admin-Mandal
+admin.rompicherla.chittoor@pothole.gov.in,Rompicherla Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Rompicherla,Admin-Mandal
+admin.santhipuram.chittoor@pothole.gov.in,Santhipuram Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Santhipuram,Admin-Mandal
+admin.sodam.chittoor@pothole.gov.in,Sodam Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Sodam,Admin-Mandal
+admin.somala.chittoor@pothole.gov.in,Somala Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Somala,Admin-Mandal
+admin.srirangarajapuram.chittoor@pothole.gov.in,Srirangarajapuram Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Srirangarajapuram,Admin-Mandal
+admin.thavanampalle.chittoor@pothole.gov.in,Thavanampalle Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Thavanampalle,Admin-Mandal
+admin.vedurukuppam.chittoor@pothole.gov.in,Vedurukuppam Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Vedurukuppam,Admin-Mandal
+admin.venkatagirikota.chittoor@pothole.gov.in,Venkatagirikota Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Venkatagirikota,Admin-Mandal
+admin.vijayapuram.chittoor@pothole.gov.in,Vijayapuram Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Vijayapuram,Admin-Mandal
+admin.yadamarri.chittoor@pothole.gov.in,Yadamarri Mandal Admin (Chittoor),admin,Andhra Pradesh,Chittoor,Yadamarri,Admin-Mandal
+admin.ainavilli.dr.br.ambedkar.konaseema@pothole.gov.in,Ainavilli Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Ainavilli,Admin-Mandal
+admin.alamuru.dr.br.ambedkar.konaseema@pothole.gov.in,Alamuru Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Alamuru,Admin-Mandal
+admin.allavaram.dr.br.ambedkar.konaseema@pothole.gov.in,Allavaram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Allavaram,Admin-Mandal
+admin.amalapuram.dr.br.ambedkar.konaseema@pothole.gov.in,Amalapuram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Amalapuram,Admin-Mandal
+admin.ambajipeta.dr.br.ambedkar.konaseema@pothole.gov.in,Ambajipeta Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Ambajipeta,Admin-Mandal
+admin.atreyapuram.dr.br.ambedkar.konaseema@pothole.gov.in,Atreyapuram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Atreyapuram,Admin-Mandal
+admin.i.polavaram.dr.br.ambedkar.konaseema@pothole.gov.in,I Polavaram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,I Polavaram,Admin-Mandal
+admin.k.gangavaram.dr.br.ambedkar.konaseema@pothole.gov.in,K Gangavaram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,K Gangavaram,Admin-Mandal
+admin.kapileswarapuram.dr.br.ambedkar.konaseema@pothole.gov.in,Kapileswarapuram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Kapileswarapuram,Admin-Mandal
+admin.katrenikona.dr.br.ambedkar.konaseema@pothole.gov.in,Katrenikona Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Katrenikona,Admin-Mandal
+admin.kothapeta.dr.br.ambedkar.konaseema@pothole.gov.in,Kothapeta Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Kothapeta,Admin-Mandal
+admin.malikipuram.dr.br.ambedkar.konaseema@pothole.gov.in,Malikipuram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Malikipuram,Admin-Mandal
+admin.mamidikuduru.dr.br.ambedkar.konaseema@pothole.gov.in,Mamidikuduru Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Mamidikuduru,Admin-Mandal
+admin.mandapeta.dr.br.ambedkar.konaseema@pothole.gov.in,Mandapeta Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Mandapeta,Admin-Mandal
+admin.mummidivaram.dr.br.ambedkar.konaseema@pothole.gov.in,Mummidivaram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Mummidivaram,Admin-Mandal
+admin.p.gannavaram.dr.br.ambedkar.konaseema@pothole.gov.in,P Gannavaram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,P Gannavaram,Admin-Mandal
+admin.ramachandrapuram.dr.br.ambedkar.konaseema@pothole.gov.in,Ramachandrapuram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Ramachandrapuram,Admin-Mandal
+admin.ravulapalem.dr.br.ambedkar.konaseema@pothole.gov.in,Ravulapalem Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Ravulapalem,Admin-Mandal
+admin.rayavaram.dr.br.ambedkar.konaseema@pothole.gov.in,Rayavaram Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Rayavaram,Admin-Mandal
+admin.razole.dr.br.ambedkar.konaseema@pothole.gov.in,Razole Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Razole,Admin-Mandal
+admin.sakhinetipalli.dr.br.ambedkar.konaseema@pothole.gov.in,Sakhinetipalli Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Sakhinetipalli,Admin-Mandal
+admin.uppalaguptam.dr.br.ambedkar.konaseema@pothole.gov.in,Uppalaguptam Mandal Admin (Dr BR Ambedkar Konaseema),admin,Andhra Pradesh,Dr BR Ambedkar Konaseema,Uppalaguptam,Admin-Mandal
+admin.anaparthi.east.godavari@pothole.gov.in,Anaparthi Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Anaparthi,Admin-Mandal
+admin.biccavolu.east.godavari@pothole.gov.in,Biccavolu Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Biccavolu,Admin-Mandal
+admin.chagallu.east.godavari@pothole.gov.in,Chagallu Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Chagallu,Admin-Mandal
+admin.devarapalle.east.godavari@pothole.gov.in,Devarapalle Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Devarapalle,Admin-Mandal
+admin.gokavaram.east.godavari@pothole.gov.in,Gokavaram Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Gokavaram,Admin-Mandal
+admin.gopalapuram.east.godavari@pothole.gov.in,Gopalapuram Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Gopalapuram,Admin-Mandal
+admin.kadiam.east.godavari@pothole.gov.in,Kadiam Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Kadiam,Admin-Mandal
+admin.korukonda.east.godavari@pothole.gov.in,Korukonda Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Korukonda,Admin-Mandal
+admin.kovvur.east.godavari@pothole.gov.in,Kovvur Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Kovvur,Admin-Mandal
+admin.nallajerla.east.godavari@pothole.gov.in,Nallajerla Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Nallajerla,Admin-Mandal
+admin.nidadavole.east.godavari@pothole.gov.in,Nidadavole Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Nidadavole,Admin-Mandal
+admin.peravali.east.godavari@pothole.gov.in,Peravali Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Peravali,Admin-Mandal
+admin.rajamahendravaram.rural.east.godavari@pothole.gov.in,Rajamahendravaram Rural Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Rajamahendravaram Rural,Admin-Mandal
+admin.rajanagaram.east.godavari@pothole.gov.in,Rajanagaram Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Rajanagaram,Admin-Mandal
+admin.rangampeta.east.godavari@pothole.gov.in,Rangampeta Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Rangampeta,Admin-Mandal
+admin.seethanagaram.east.godavari@pothole.gov.in,Seethanagaram Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Seethanagaram,Admin-Mandal
+admin.tallapudi.east.godavari@pothole.gov.in,Tallapudi Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Tallapudi,Admin-Mandal
+admin.undrajavaram.east.godavari@pothole.gov.in,Undrajavaram Mandal Admin (East Godavari),admin,Andhra Pradesh,East Godavari,Undrajavaram,Admin-Mandal
+admin.agiripalli.eluru@pothole.gov.in,Agiripalli Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Agiripalli,Admin-Mandal
+admin.bheemadole.eluru@pothole.gov.in,Bheemadole Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Bheemadole,Admin-Mandal
+admin.buttayagudem.eluru@pothole.gov.in,Buttayagudem Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Buttayagudem,Admin-Mandal
+admin.chatrai.eluru@pothole.gov.in,Chatrai Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Chatrai,Admin-Mandal
+admin.chintalapudi.eluru@pothole.gov.in,Chintalapudi Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Chintalapudi,Admin-Mandal
+admin.denduluru.eluru@pothole.gov.in,Denduluru Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Denduluru,Admin-Mandal
+admin.dwarakatirumala.eluru@pothole.gov.in,Dwarakatirumala Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Dwarakatirumala,Admin-Mandal
+admin.eluru.rural.eluru@pothole.gov.in,Eluru Rural Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Eluru Rural,Admin-Mandal
+admin.eluru.urban.eluru@pothole.gov.in,Eluru Urban Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Eluru Urban,Admin-Mandal
+admin.jangareddigudem.eluru@pothole.gov.in,Jangareddigudem Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Jangareddigudem,Admin-Mandal
+admin.jeelugu.milli.eluru@pothole.gov.in,Jeelugu Milli Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Jeelugu Milli,Admin-Mandal
+admin.kaikaluru.eluru@pothole.gov.in,Kaikaluru Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Kaikaluru,Admin-Mandal
+admin.kalidindi.eluru@pothole.gov.in,Kalidindi Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Kalidindi,Admin-Mandal
+admin.kamavarapukota.eluru@pothole.gov.in,Kamavarapukota Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Kamavarapukota,Admin-Mandal
+admin.koyyalagudem.eluru@pothole.gov.in,Koyyalagudem Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Koyyalagudem,Admin-Mandal
+admin.kukunoor.eluru@pothole.gov.in,Kukunoor Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Kukunoor,Admin-Mandal
+admin.lingapalem.eluru@pothole.gov.in,Lingapalem Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Lingapalem,Admin-Mandal
+admin.mandavalli.eluru@pothole.gov.in,Mandavalli Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Mandavalli,Admin-Mandal
+admin.mudinepalle.eluru@pothole.gov.in,Mudinepalle Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Mudinepalle,Admin-Mandal
+admin.musunuru.eluru@pothole.gov.in,Musunuru Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Musunuru,Admin-Mandal
+admin.nidamarru.eluru@pothole.gov.in,Nidamarru Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Nidamarru,Admin-Mandal
+admin.nuzividu.eluru@pothole.gov.in,Nuzividu Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Nuzividu,Admin-Mandal
+admin.pedapadu.eluru@pothole.gov.in,Pedapadu Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Pedapadu,Admin-Mandal
+admin.pedavegi.eluru@pothole.gov.in,Pedavegi Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Pedavegi,Admin-Mandal
+admin.polavaram.eluru@pothole.gov.in,Polavaram Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Polavaram,Admin-Mandal
+admin.t.narasapuram.eluru@pothole.gov.in,T Narasapuram Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,T Narasapuram,Admin-Mandal
+admin.unguturu.eluru@pothole.gov.in,Unguturu Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Unguturu,Admin-Mandal
+admin.velairpadu.eluru@pothole.gov.in,Velairpadu Mandal Admin (Eluru),admin,Andhra Pradesh,Eluru,Velairpadu,Admin-Mandal
+admin.chebrolu.guntur@pothole.gov.in,Chebrolu Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Chebrolu,Admin-Mandal
+admin.duggirala.guntur@pothole.gov.in,Duggirala Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Duggirala,Admin-Mandal
+admin.guntur.east.guntur@pothole.gov.in,Guntur East Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Guntur East,Admin-Mandal
+admin.guntur.west.guntur@pothole.gov.in,Guntur West Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Guntur West,Admin-Mandal
+admin.kakumanu.guntur@pothole.gov.in,Kakumanu Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Kakumanu,Admin-Mandal
+admin.kollipara.guntur@pothole.gov.in,Kollipara Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Kollipara,Admin-Mandal
+admin.mangalagiri.guntur@pothole.gov.in,Mangalagiri Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Mangalagiri,Admin-Mandal
+admin.medikonduru.guntur@pothole.gov.in,Medikonduru Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Medikonduru,Admin-Mandal
+admin.pedakakani.guntur@pothole.gov.in,Pedakakani Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Pedakakani,Admin-Mandal
+admin.pedanandipadu.guntur@pothole.gov.in,Pedanandipadu Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Pedanandipadu,Admin-Mandal
+admin.phirangipuram.guntur@pothole.gov.in,Phirangipuram Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Phirangipuram,Admin-Mandal
+admin.ponnur.guntur@pothole.gov.in,Ponnur Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Ponnur,Admin-Mandal
+admin.prathipadu.guntur@pothole.gov.in,Prathipadu Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Prathipadu,Admin-Mandal
+admin.tadepalli.guntur@pothole.gov.in,Tadepalli Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Tadepalli,Admin-Mandal
+admin.tadikonda.guntur@pothole.gov.in,Tadikonda Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Tadikonda,Admin-Mandal
+admin.tenali.guntur@pothole.gov.in,Tenali Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Tenali,Admin-Mandal
+admin.thulluru.guntur@pothole.gov.in,Thulluru Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Thulluru,Admin-Mandal
+admin.vatticherukuru.guntur@pothole.gov.in,Vatticherukuru Mandal Admin (Guntur),admin,Andhra Pradesh,Guntur,Vatticherukuru,Admin-Mandal
+admin.gandepalli.kakinada@pothole.gov.in,Gandepalli Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Gandepalli,Admin-Mandal
+admin.gollaprolu.kakinada@pothole.gov.in,Gollaprolu Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Gollaprolu,Admin-Mandal
+admin.jaggampeta.kakinada@pothole.gov.in,Jaggampeta Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Jaggampeta,Admin-Mandal
+admin.kajuluru.kakinada@pothole.gov.in,Kajuluru Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Kajuluru,Admin-Mandal
+admin.kakinada.rural.kakinada@pothole.gov.in,Kakinada Rural Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Kakinada Rural,Admin-Mandal
+admin.kakinada.urban.kakinada@pothole.gov.in,Kakinada Urban Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Kakinada Urban,Admin-Mandal
+admin.karapa.kakinada@pothole.gov.in,Karapa Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Karapa,Admin-Mandal
+admin.kirlampudi.kakinada@pothole.gov.in,Kirlampudi Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Kirlampudi,Admin-Mandal
+admin.kotananduru.kakinada@pothole.gov.in,Kotananduru Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Kotananduru,Admin-Mandal
+admin.pedapudi.kakinada@pothole.gov.in,Pedapudi Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Pedapudi,Admin-Mandal
+admin.peddapuram.kakinada@pothole.gov.in,Peddapuram Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Peddapuram,Admin-Mandal
+admin.pithapuram.kakinada@pothole.gov.in,Pithapuram Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Pithapuram,Admin-Mandal
+admin.prathipadu.kakinada@pothole.gov.in,Prathipadu Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Prathipadu,Admin-Mandal
+admin.rowthulapudi.kakinada@pothole.gov.in,Rowthulapudi Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Rowthulapudi,Admin-Mandal
+admin.samalkota.kakinada@pothole.gov.in,Samalkota Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Samalkota,Admin-Mandal
+admin.sankhavaram.kakinada@pothole.gov.in,Sankhavaram Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Sankhavaram,Admin-Mandal
+admin.tallarevu.kakinada@pothole.gov.in,Tallarevu Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Tallarevu,Admin-Mandal
+admin.thondangi.kakinada@pothole.gov.in,Thondangi Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Thondangi,Admin-Mandal
+admin.tuni.kakinada@pothole.gov.in,Tuni Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Tuni,Admin-Mandal
+admin.u.kothapalli.kakinada@pothole.gov.in,U Kothapalli Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,U Kothapalli,Admin-Mandal
+admin.yeleswaram.kakinada@pothole.gov.in,Yeleswaram Mandal Admin (Kakinada),admin,Andhra Pradesh,Kakinada,Yeleswaram,Admin-Mandal
+admin.avanigadda.krishna@pothole.gov.in,Avanigadda Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Avanigadda,Admin-Mandal
+admin.bantumilli.krishna@pothole.gov.in,Bantumilli Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Bantumilli,Admin-Mandal
+admin.bapulapadu.krishna@pothole.gov.in,Bapulapadu Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Bapulapadu,Admin-Mandal
+admin.challapalli.krishna@pothole.gov.in,Challapalli Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Challapalli,Admin-Mandal
+admin.gannavaram.krishna@pothole.gov.in,Gannavaram Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Gannavaram,Admin-Mandal
+admin.ghantasala.krishna@pothole.gov.in,Ghantasala Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Ghantasala,Admin-Mandal
+admin.gudivada.krishna@pothole.gov.in,Gudivada Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Gudivada,Admin-Mandal
+admin.gudlavalleru.krishna@pothole.gov.in,Gudlavalleru Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Gudlavalleru,Admin-Mandal
+admin.guduru.krishna@pothole.gov.in,Guduru Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Guduru,Admin-Mandal
+admin.kankipadu.krishna@pothole.gov.in,Kankipadu Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Kankipadu,Admin-Mandal
+admin.koduru.krishna@pothole.gov.in,Koduru Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Koduru,Admin-Mandal
+admin.kruthivennu.krishna@pothole.gov.in,Kruthivennu Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Kruthivennu,Admin-Mandal
+admin.machilipatnam.north.krishna@pothole.gov.in,Machilipatnam North Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Machilipatnam North,Admin-Mandal
+admin.machilipatnam.south.krishna@pothole.gov.in,Machilipatnam South Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Machilipatnam South,Admin-Mandal
+admin.mopidevi.krishna@pothole.gov.in,Mopidevi Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Mopidevi,Admin-Mandal
+admin.movva.krishna@pothole.gov.in,Movva Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Movva,Admin-Mandal
+admin.nagayalanka.krishna@pothole.gov.in,Nagayalanka Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Nagayalanka,Admin-Mandal
+admin.nandivada.krishna@pothole.gov.in,Nandivada Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Nandivada,Admin-Mandal
+admin.pamarru.krishna@pothole.gov.in,Pamarru Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Pamarru,Admin-Mandal
+admin.pamidimukkala.krishna@pothole.gov.in,Pamidimukkala Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Pamidimukkala,Admin-Mandal
+admin.pedana.krishna@pothole.gov.in,Pedana Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Pedana,Admin-Mandal
+admin.pedaparupudi.krishna@pothole.gov.in,Pedaparupudi Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Pedaparupudi,Admin-Mandal
+admin.penamaluru.krishna@pothole.gov.in,Penamaluru Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Penamaluru,Admin-Mandal
+admin.thotlavalluru.krishna@pothole.gov.in,Thotlavalluru Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Thotlavalluru,Admin-Mandal
+admin.unguturu.krishna@pothole.gov.in,Unguturu Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Unguturu,Admin-Mandal
+admin.vuyyuru.krishna@pothole.gov.in,Vuyyuru Mandal Admin (Krishna),admin,Andhra Pradesh,Krishna,Vuyyuru,Admin-Mandal
+admin.adoni.kurnool@pothole.gov.in,Adoni Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Adoni,Admin-Mandal
+admin.alur.kurnool@pothole.gov.in,Alur Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Alur,Admin-Mandal
+admin.aspari.kurnool@pothole.gov.in,Aspari Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Aspari,Admin-Mandal
+admin.c.belagal.kurnool@pothole.gov.in,C Belagal Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,C Belagal,Admin-Mandal
+admin.chippagiri.kurnool@pothole.gov.in,Chippagiri Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Chippagiri,Admin-Mandal
+admin.devanakonda.kurnool@pothole.gov.in,Devanakonda Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Devanakonda,Admin-Mandal
+admin.gonegandla.kurnool@pothole.gov.in,Gonegandla Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Gonegandla,Admin-Mandal
+admin.gudur.kurnool@pothole.gov.in,Gudur Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Gudur,Admin-Mandal
+admin.halaharvi.kurnool@pothole.gov.in,Halaharvi Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Halaharvi,Admin-Mandal
+admin.holagunda.kurnool@pothole.gov.in,Holagunda Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Holagunda,Admin-Mandal
+admin.kallur.kurnool@pothole.gov.in,Kallur Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Kallur,Admin-Mandal
+admin.kodumur.kurnool@pothole.gov.in,Kodumur Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Kodumur,Admin-Mandal
+admin.kosigi.kurnool@pothole.gov.in,Kosigi Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Kosigi,Admin-Mandal
+admin.kowthalam.kurnool@pothole.gov.in,Kowthalam Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Kowthalam,Admin-Mandal
+admin.krishnagiri.kurnool@pothole.gov.in,Krishnagiri Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Krishnagiri,Admin-Mandal
+admin.kurnool.rural.kurnool@pothole.gov.in,Kurnool Rural Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Kurnool Rural,Admin-Mandal
+admin.maddikera.east.kurnool@pothole.gov.in,Maddikera East Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Maddikera East,Admin-Mandal
+admin.mantralayam.kurnool@pothole.gov.in,Mantralayam Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Mantralayam,Admin-Mandal
+admin.nandavaram.kurnool@pothole.gov.in,Nandavaram Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Nandavaram,Admin-Mandal
+admin.orvakal.kurnool@pothole.gov.in,Orvakal Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Orvakal,Admin-Mandal
+admin.pattikonda.kurnool@pothole.gov.in,Pattikonda Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Pattikonda,Admin-Mandal
+admin.pedda.kadubur.kurnool@pothole.gov.in,Pedda Kadubur Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Pedda Kadubur,Admin-Mandal
+admin.tuggali.kurnool@pothole.gov.in,Tuggali Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Tuggali,Admin-Mandal
+admin.veldurthy.kurnool@pothole.gov.in,Veldurthy Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Veldurthy,Admin-Mandal
+admin.yemmiganur.kurnool@pothole.gov.in,Yemmiganur Mandal Admin (Kurnool),admin,Andhra Pradesh,Kurnool,Yemmiganur,Admin-Mandal
+admin.atlapragada.konduru.ntr@pothole.gov.in,Atlapragada Konduru Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Atlapragada Konduru,Admin-Mandal
+admin.chandarlapadu.ntr@pothole.gov.in,Chandarlapadu Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Chandarlapadu,Admin-Mandal
+admin.gaddamanugu.konduru.ntr@pothole.gov.in,Gaddamanugu Konduru Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Gaddamanugu Konduru,Admin-Mandal
+admin.gampalagudem.ntr@pothole.gov.in,Gampalagudem Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Gampalagudem,Admin-Mandal
+admin.ibrahimpatnam.ntr@pothole.gov.in,Ibrahimpatnam Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Ibrahimpatnam,Admin-Mandal
+admin.jaggaiahpeta.ntr@pothole.gov.in,Jaggaiahpeta Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Jaggaiahpeta,Admin-Mandal
+admin.kanchikacherla.ntr@pothole.gov.in,Kanchikacherla Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Kanchikacherla,Admin-Mandal
+admin.mylavaram.ntr@pothole.gov.in,Mylavaram Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Mylavaram,Admin-Mandal
+admin.nandigama.ntr@pothole.gov.in,Nandigama Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Nandigama,Admin-Mandal
+admin.penuganchiprolu.ntr@pothole.gov.in,Penuganchiprolu Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Penuganchiprolu,Admin-Mandal
+admin.reddigudem.ntr@pothole.gov.in,Reddigudem Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Reddigudem,Admin-Mandal
+admin.tiruvuru.ntr@pothole.gov.in,Tiruvuru Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Tiruvuru,Admin-Mandal
+admin.vatsavai.ntr@pothole.gov.in,Vatsavai Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Vatsavai,Admin-Mandal
+admin.veerullapadu.ntr@pothole.gov.in,Veerullapadu Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Veerullapadu,Admin-Mandal
+admin.vijayawada.rural.ntr@pothole.gov.in,Vijayawada Rural Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Vijayawada Rural,Admin-Mandal
+admin.vissannapeta.ntr@pothole.gov.in,Vissannapeta Mandal Admin (NTR),admin,Andhra Pradesh,NTR,Vissannapeta,Admin-Mandal
+admin.allagadda.nandyal@pothole.gov.in,Allagadda Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Allagadda,Admin-Mandal
+admin.atmakur.nandyal@pothole.gov.in,Atmakur Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Atmakur,Admin-Mandal
+admin.banaganapalli.nandyal@pothole.gov.in,Banaganapalli Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Banaganapalli,Admin-Mandal
+admin.bandi.atmakur.nandyal@pothole.gov.in,Bandi Atmakur Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Bandi Atmakur,Admin-Mandal
+admin.bethamcherla.nandyal@pothole.gov.in,Bethamcherla Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Bethamcherla,Admin-Mandal
+admin.chagalamarri.nandyal@pothole.gov.in,Chagalamarri Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Chagalamarri,Admin-Mandal
+admin.dhone.nandyal@pothole.gov.in,Dhone Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Dhone,Admin-Mandal
+admin.dornipadu.nandyal@pothole.gov.in,Dornipadu Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Dornipadu,Admin-Mandal
+admin.gadivemula.nandyal@pothole.gov.in,Gadivemula Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Gadivemula,Admin-Mandal
+admin.gospadu.nandyal@pothole.gov.in,Gospadu Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Gospadu,Admin-Mandal
+admin.jupadu.bunglow.nandyal@pothole.gov.in,Jupadu Bunglow Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Jupadu Bunglow,Admin-Mandal
+admin.koilakuntla.nandyal@pothole.gov.in,Koilakuntla Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Koilakuntla,Admin-Mandal
+admin.kolimigundla.nandyal@pothole.gov.in,Kolimigundla Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Kolimigundla,Admin-Mandal
+admin.kothapalle.nandyal@pothole.gov.in,Kothapalle Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Kothapalle,Admin-Mandal
+admin.mahanandi.nandyal@pothole.gov.in,Mahanandi Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Mahanandi,Admin-Mandal
+admin.midthur.nandyal@pothole.gov.in,Midthur Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Midthur,Admin-Mandal
+admin.nandikotkur.nandyal@pothole.gov.in,Nandikotkur Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Nandikotkur,Admin-Mandal
+admin.nandyal.rural.nandyal@pothole.gov.in,Nandyal Rural Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Nandyal Rural,Admin-Mandal
+admin.nandyal.urban.nandyal@pothole.gov.in,Nandyal Urban Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Nandyal Urban,Admin-Mandal
+admin.owk.nandyal@pothole.gov.in,Owk Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Owk,Admin-Mandal
+admin.pagidyala.nandyal@pothole.gov.in,Pagidyala Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Pagidyala,Admin-Mandal
+admin.pamulapadu.nandyal@pothole.gov.in,Pamulapadu Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Pamulapadu,Admin-Mandal
+admin.panyam.nandyal@pothole.gov.in,Panyam Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Panyam,Admin-Mandal
+admin.peapully.nandyal@pothole.gov.in,Peapully Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Peapully,Admin-Mandal
+admin.rudravaram.nandyal@pothole.gov.in,Rudravaram Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Rudravaram,Admin-Mandal
+admin.sanjamala.nandyal@pothole.gov.in,Sanjamala Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Sanjamala,Admin-Mandal
+admin.sirvel.nandyal@pothole.gov.in,Sirvel Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Sirvel,Admin-Mandal
+admin.srisailam.nandyal@pothole.gov.in,Srisailam Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Srisailam,Admin-Mandal
+admin.uyyalawada.nandyal@pothole.gov.in,Uyyalawada Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Uyyalawada,Admin-Mandal
+admin.velugodu.nandyal@pothole.gov.in,Velugodu Mandal Admin (Nandyal),admin,Andhra Pradesh,Nandyal,Velugodu,Admin-Mandal
+admin.amaravathi.palnadu@pothole.gov.in,Amaravathi Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Amaravathi,Admin-Mandal
+admin.atchampet.palnadu@pothole.gov.in,Atchampet Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Atchampet,Admin-Mandal
+admin.bellamkonda.palnadu@pothole.gov.in,Bellamkonda Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Bellamkonda,Admin-Mandal
+admin.bollapalli.palnadu@pothole.gov.in,Bollapalli Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Bollapalli,Admin-Mandal
+admin.chilakaluripet.h.o.purushotha.patnam.palnadu@pothole.gov.in,Chilakaluripet H O Purushotha Patnam Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Chilakaluripet H O Purushotha Patnam,Admin-Mandal
+admin.dachepalli.palnadu@pothole.gov.in,Dachepalli Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Dachepalli,Admin-Mandal
+admin.durgi.palnadu@pothole.gov.in,Durgi Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Durgi,Admin-Mandal
+admin.edlapadu.palnadu@pothole.gov.in,Edlapadu Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Edlapadu,Admin-Mandal
+admin.gurajala.palnadu@pothole.gov.in,Gurajala Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Gurajala,Admin-Mandal
+admin.ipuru.palnadu@pothole.gov.in,Ipuru Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Ipuru,Admin-Mandal
+admin.karempudi.palnadu@pothole.gov.in,Karempudi Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Karempudi,Admin-Mandal
+admin.krosuru.palnadu@pothole.gov.in,Krosuru Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Krosuru,Admin-Mandal
+admin.machavaram.palnadu@pothole.gov.in,Machavaram Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Machavaram,Admin-Mandal
+admin.macherla.palnadu@pothole.gov.in,Macherla Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Macherla,Admin-Mandal
+admin.muppalla.palnadu@pothole.gov.in,Muppalla Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Muppalla,Admin-Mandal
+admin.nadendla.palnadu@pothole.gov.in,Nadendla Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Nadendla,Admin-Mandal
+admin.narasaraopet.palnadu@pothole.gov.in,Narasaraopet Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Narasaraopet,Admin-Mandal
+admin.nekarikallu.palnadu@pothole.gov.in,Nekarikallu Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Nekarikallu,Admin-Mandal
+admin.nuzendla.palnadu@pothole.gov.in,Nuzendla Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Nuzendla,Admin-Mandal
+admin.pedakurapadu.palnadu@pothole.gov.in,Pedakurapadu Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Pedakurapadu,Admin-Mandal
+admin.piduguralla.palnadu@pothole.gov.in,Piduguralla Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Piduguralla,Admin-Mandal
+admin.rajupalem.palnadu@pothole.gov.in,Rajupalem Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Rajupalem,Admin-Mandal
+admin.rentachintala.palnadu@pothole.gov.in,Rentachintala Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Rentachintala,Admin-Mandal
+admin.rompicharla.palnadu@pothole.gov.in,Rompicharla Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Rompicharla,Admin-Mandal
+admin.sattenapalli.palnadu@pothole.gov.in,Sattenapalli Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Sattenapalli,Admin-Mandal
+admin.savalyapuram.h.o.kanamarlapudi.palnadu@pothole.gov.in,Savalyapuram H O Kanamarlapudi Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Savalyapuram H O Kanamarlapudi,Admin-Mandal
+admin.veldurthy.palnadu@pothole.gov.in,Veldurthy Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Veldurthy,Admin-Mandal
+admin.vinukonda.palnadu@pothole.gov.in,Vinukonda Mandal Admin (Palnadu),admin,Andhra Pradesh,Palnadu,Vinukonda,Admin-Mandal
+admin.balijipeta.parvathipuram.manyam@pothole.gov.in,Balijipeta Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Balijipeta,Admin-Mandal
+admin.bhamini.parvathipuram.manyam@pothole.gov.in,Bhamini Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Bhamini,Admin-Mandal
+admin.garugubilli.parvathipuram.manyam@pothole.gov.in,Garugubilli Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Garugubilli,Admin-Mandal
+admin.gummalakshmipuram.parvathipuram.manyam@pothole.gov.in,Gummalakshmipuram Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Gummalakshmipuram,Admin-Mandal
+admin.jiyyammavalasa.parvathipuram.manyam@pothole.gov.in,Jiyyammavalasa Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Jiyyammavalasa,Admin-Mandal
+admin.komarada.parvathipuram.manyam@pothole.gov.in,Komarada Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Komarada,Admin-Mandal
+admin.kurupam.parvathipuram.manyam@pothole.gov.in,Kurupam Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Kurupam,Admin-Mandal
+admin.makkuva.parvathipuram.manyam@pothole.gov.in,Makkuva Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Makkuva,Admin-Mandal
+admin.pachipenta.parvathipuram.manyam@pothole.gov.in,Pachipenta Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Pachipenta,Admin-Mandal
+admin.palakonda.parvathipuram.manyam@pothole.gov.in,Palakonda Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Palakonda,Admin-Mandal
+admin.parvathipuram.parvathipuram.manyam@pothole.gov.in,Parvathipuram Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Parvathipuram,Admin-Mandal
+admin.salur.parvathipuram.manyam@pothole.gov.in,Salur Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Salur,Admin-Mandal
+admin.seethampeta.parvathipuram.manyam@pothole.gov.in,Seethampeta Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Seethampeta,Admin-Mandal
+admin.seethanagaram.parvathipuram.manyam@pothole.gov.in,Seethanagaram Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Seethanagaram,Admin-Mandal
+admin.veeraghattam.parvathipuram.manyam@pothole.gov.in,Veeraghattam Mandal Admin (Parvathipuram Manyam),admin,Andhra Pradesh,Parvathipuram Manyam,Veeraghattam,Admin-Mandal
+admin.ardhaveedu.prakasam@pothole.gov.in,Ardhaveedu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Ardhaveedu,Admin-Mandal
+admin.bestavaripeta.prakasam@pothole.gov.in,Bestavaripeta Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Bestavaripeta,Admin-Mandal
+admin.chandra.sekhara.puram.prakasam@pothole.gov.in,Chandra Sekhara Puram Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Chandra Sekhara Puram,Admin-Mandal
+admin.chimakurthy.prakasam@pothole.gov.in,Chimakurthy Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Chimakurthy,Admin-Mandal
+admin.cumbum.prakasam@pothole.gov.in,Cumbum Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Cumbum,Admin-Mandal
+admin.darsi.prakasam@pothole.gov.in,Darsi Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Darsi,Admin-Mandal
+admin.donakonda.prakasam@pothole.gov.in,Donakonda Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Donakonda,Admin-Mandal
+admin.dornala.prakasam@pothole.gov.in,Dornala Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Dornala,Admin-Mandal
+admin.giddalur.prakasam@pothole.gov.in,Giddalur Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Giddalur,Admin-Mandal
+admin.hanumanthuni.padu.prakasam@pothole.gov.in,Hanumanthuni Padu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Hanumanthuni Padu,Admin-Mandal
+admin.kanigiri.prakasam@pothole.gov.in,Kanigiri Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Kanigiri,Admin-Mandal
+admin.komarolu.prakasam@pothole.gov.in,Komarolu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Komarolu,Admin-Mandal
+admin.konakanamitla.prakasam@pothole.gov.in,Konakanamitla Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Konakanamitla,Admin-Mandal
+admin.kondapi.prakasam@pothole.gov.in,Kondapi Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Kondapi,Admin-Mandal
+admin.kotha.patnam.prakasam@pothole.gov.in,Kotha Patnam Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Kotha Patnam,Admin-Mandal
+admin.kurichedu.prakasam@pothole.gov.in,Kurichedu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Kurichedu,Admin-Mandal
+admin.maddipadu.prakasam@pothole.gov.in,Maddipadu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Maddipadu,Admin-Mandal
+admin.markapuram.prakasam@pothole.gov.in,Markapuram Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Markapuram,Admin-Mandal
+admin.marripudi.prakasam@pothole.gov.in,Marripudi Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Marripudi,Admin-Mandal
+admin.mundlamuru.prakasam@pothole.gov.in,Mundlamuru Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Mundlamuru,Admin-Mandal
+admin.naguluppala.padu.prakasam@pothole.gov.in,Naguluppala Padu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Naguluppala Padu,Admin-Mandal
+admin.ongole.rural.prakasam@pothole.gov.in,Ongole Rural Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Ongole Rural,Admin-Mandal
+admin.ongole.urban.prakasam@pothole.gov.in,Ongole Urban Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Ongole Urban,Admin-Mandal
+admin.pamur.prakasam@pothole.gov.in,Pamur Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Pamur,Admin-Mandal
+admin.pedacherlo.palle.prakasam@pothole.gov.in,Pedacherlo Palle Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Pedacherlo Palle,Admin-Mandal
+admin.peddaaraveedu.prakasam@pothole.gov.in,Peddaaraveedu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Peddaaraveedu,Admin-Mandal
+admin.podili.prakasam@pothole.gov.in,Podili Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Podili,Admin-Mandal
+admin.ponnaluru.prakasam@pothole.gov.in,Ponnaluru Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Ponnaluru,Admin-Mandal
+admin.pullalacheruvu.prakasam@pothole.gov.in,Pullalacheruvu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Pullalacheruvu,Admin-Mandal
+admin.racherla.prakasam@pothole.gov.in,Racherla Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Racherla,Admin-Mandal
+admin.santhanuthala.padu.prakasam@pothole.gov.in,Santhanuthala Padu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Santhanuthala Padu,Admin-Mandal
+admin.singarayakonda.prakasam@pothole.gov.in,Singarayakonda Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Singarayakonda,Admin-Mandal
+admin.tangutur.prakasam@pothole.gov.in,Tangutur Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Tangutur,Admin-Mandal
+admin.tarlupadu.prakasam@pothole.gov.in,Tarlupadu Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Tarlupadu,Admin-Mandal
+admin.thallur.prakasam@pothole.gov.in,Thallur Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Thallur,Admin-Mandal
+admin.tripuranthakam.prakasam@pothole.gov.in,Tripuranthakam Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Tripuranthakam,Admin-Mandal
+admin.veligandla.prakasam@pothole.gov.in,Veligandla Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Veligandla,Admin-Mandal
+admin.yerragondapalem.prakasam@pothole.gov.in,Yerragondapalem Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Yerragondapalem,Admin-Mandal
+admin.zarugumalli.prakasam@pothole.gov.in,Zarugumalli Mandal Admin (Prakasam),admin,Andhra Pradesh,Prakasam,Zarugumalli,Admin-Mandal
+admin.allur.sri.potti.sriramulu.nellore@pothole.gov.in,Allur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Allur,Admin-Mandal
+admin.ananthasagaram.sri.potti.sriramulu.nellore@pothole.gov.in,Ananthasagaram Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Ananthasagaram,Admin-Mandal
+admin.anumasamudrampeta.sri.potti.sriramulu.nellore@pothole.gov.in,Anumasamudrampeta Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Anumasamudrampeta,Admin-Mandal
+admin.atmakur.sri.potti.sriramulu.nellore@pothole.gov.in,Atmakur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Atmakur,Admin-Mandal
+admin.bogole.sri.potti.sriramulu.nellore@pothole.gov.in,Bogole Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Bogole,Admin-Mandal
+admin.buchireddipalem.sri.potti.sriramulu.nellore@pothole.gov.in,Buchireddipalem Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Buchireddipalem,Admin-Mandal
+admin.chejerla.sri.potti.sriramulu.nellore@pothole.gov.in,Chejerla Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Chejerla,Admin-Mandal
+admin.dagadarthi.sri.potti.sriramulu.nellore@pothole.gov.in,Dagadarthi Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Dagadarthi,Admin-Mandal
+admin.duttalur.sri.potti.sriramulu.nellore@pothole.gov.in,Duttalur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Duttalur,Admin-Mandal
+admin.gudluru.sri.potti.sriramulu.nellore@pothole.gov.in,Gudluru Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Gudluru,Admin-Mandal
+admin.indukurpet.sri.potti.sriramulu.nellore@pothole.gov.in,Indukurpet Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Indukurpet,Admin-Mandal
+admin.jaladanki.sri.potti.sriramulu.nellore@pothole.gov.in,Jaladanki Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Jaladanki,Admin-Mandal
+admin.kaligiri.sri.potti.sriramulu.nellore@pothole.gov.in,Kaligiri Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Kaligiri,Admin-Mandal
+admin.kaluvoya.sri.potti.sriramulu.nellore@pothole.gov.in,Kaluvoya Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Kaluvoya,Admin-Mandal
+admin.kandukuru.sri.potti.sriramulu.nellore@pothole.gov.in,Kandukuru Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Kandukuru,Admin-Mandal
+admin.kavali.sri.potti.sriramulu.nellore@pothole.gov.in,Kavali Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Kavali,Admin-Mandal
+admin.kodavalur.sri.potti.sriramulu.nellore@pothole.gov.in,Kodavalur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Kodavalur,Admin-Mandal
+admin.kondapuram.sri.potti.sriramulu.nellore@pothole.gov.in,Kondapuram Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Kondapuram,Admin-Mandal
+admin.kovur.sri.potti.sriramulu.nellore@pothole.gov.in,Kovur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Kovur,Admin-Mandal
+admin.lingasamudram.sri.potti.sriramulu.nellore@pothole.gov.in,Lingasamudram Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Lingasamudram,Admin-Mandal
+admin.manubolu.sri.potti.sriramulu.nellore@pothole.gov.in,Manubolu Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Manubolu,Admin-Mandal
+admin.marripadu.sri.potti.sriramulu.nellore@pothole.gov.in,Marripadu Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Marripadu,Admin-Mandal
+admin.muthukur.sri.potti.sriramulu.nellore@pothole.gov.in,Muthukur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Muthukur,Admin-Mandal
+admin.nellore.rural.sri.potti.sriramulu.nellore@pothole.gov.in,Nellore Rural Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Nellore Rural,Admin-Mandal
+admin.nellore.urban.sri.potti.sriramulu.nellore@pothole.gov.in,Nellore Urban Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Nellore Urban,Admin-Mandal
+admin.podalakur.sri.potti.sriramulu.nellore@pothole.gov.in,Podalakur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Podalakur,Admin-Mandal
+admin.rapur.sri.potti.sriramulu.nellore@pothole.gov.in,Rapur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Rapur,Admin-Mandal
+admin.sangam.sri.potti.sriramulu.nellore@pothole.gov.in,Sangam Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Sangam,Admin-Mandal
+admin.seetharamapuram.sri.potti.sriramulu.nellore@pothole.gov.in,Seetharamapuram Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Seetharamapuram,Admin-Mandal
+admin.sydapuram.sri.potti.sriramulu.nellore@pothole.gov.in,Sydapuram Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Sydapuram,Admin-Mandal
+admin.thotapalligudur.sri.potti.sriramulu.nellore@pothole.gov.in,Thotapalligudur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Thotapalligudur,Admin-Mandal
+admin.udayagiri.sri.potti.sriramulu.nellore@pothole.gov.in,Udayagiri Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Udayagiri,Admin-Mandal
+admin.ulavapadu.sri.potti.sriramulu.nellore@pothole.gov.in,Ulavapadu Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Ulavapadu,Admin-Mandal
+admin.varikuntapadu.sri.potti.sriramulu.nellore@pothole.gov.in,Varikuntapadu Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Varikuntapadu,Admin-Mandal
+admin.venkatachalam.sri.potti.sriramulu.nellore@pothole.gov.in,Venkatachalam Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Venkatachalam,Admin-Mandal
+admin.vidavalur.sri.potti.sriramulu.nellore@pothole.gov.in,Vidavalur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Vidavalur,Admin-Mandal
+admin.vinjamur.sri.potti.sriramulu.nellore@pothole.gov.in,Vinjamur Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Vinjamur,Admin-Mandal
+admin.voletivaripalem.sri.potti.sriramulu.nellore@pothole.gov.in,Voletivaripalem Mandal Admin (Sri Potti Sriramulu Nellore),admin,Andhra Pradesh,Sri Potti Sriramulu Nellore,Voletivaripalem,Admin-Mandal
+admin.agali.sri.sathya.sai@pothole.gov.in,Agali Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Agali,Admin-Mandal
+admin.amadagur.sri.sathya.sai@pothole.gov.in,Amadagur Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Amadagur,Admin-Mandal
+admin.amarapuram.sri.sathya.sai@pothole.gov.in,Amarapuram Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Amarapuram,Admin-Mandal
+admin.bathalapalli.sri.sathya.sai@pothole.gov.in,Bathalapalli Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Bathalapalli,Admin-Mandal
+admin.bukkapatnam.sri.sathya.sai@pothole.gov.in,Bukkapatnam Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Bukkapatnam,Admin-Mandal
+admin.chennekothapalli.sri.sathya.sai@pothole.gov.in,Chennekothapalli Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Chennekothapalli,Admin-Mandal
+admin.chilamathur.sri.sathya.sai@pothole.gov.in,Chilamathur Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Chilamathur,Admin-Mandal
+admin.dharmavaram.sri.sathya.sai@pothole.gov.in,Dharmavaram Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Dharmavaram,Admin-Mandal
+admin.gandlapenta.sri.sathya.sai@pothole.gov.in,Gandlapenta Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Gandlapenta,Admin-Mandal
+admin.gorantla.sri.sathya.sai@pothole.gov.in,Gorantla Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Gorantla,Admin-Mandal
+admin.gudibanda.sri.sathya.sai@pothole.gov.in,Gudibanda Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Gudibanda,Admin-Mandal
+admin.hindupur.sri.sathya.sai@pothole.gov.in,Hindupur Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Hindupur,Admin-Mandal
+admin.kadiri.sri.sathya.sai@pothole.gov.in,Kadiri Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Kadiri,Admin-Mandal
+admin.kanaganipalli.sri.sathya.sai@pothole.gov.in,Kanaganipalli Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Kanaganipalli,Admin-Mandal
+admin.kothacheruvu.sri.sathya.sai@pothole.gov.in,Kothacheruvu Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Kothacheruvu,Admin-Mandal
+admin.lepakshi.sri.sathya.sai@pothole.gov.in,Lepakshi Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Lepakshi,Admin-Mandal
+admin.madakasira.sri.sathya.sai@pothole.gov.in,Madakasira Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Madakasira,Admin-Mandal
+admin.mudigubba.sri.sathya.sai@pothole.gov.in,Mudigubba Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Mudigubba,Admin-Mandal
+admin.nallachervu.sri.sathya.sai@pothole.gov.in,Nallachervu Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Nallachervu,Admin-Mandal
+admin.nallamada.sri.sathya.sai@pothole.gov.in,Nallamada Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Nallamada,Admin-Mandal
+admin.nambulapulakunta.sri.sathya.sai@pothole.gov.in,Nambulapulakunta Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Nambulapulakunta,Admin-Mandal
+admin.obuladevaracheruvu.sri.sathya.sai@pothole.gov.in,Obuladevaracheruvu Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Obuladevaracheruvu,Admin-Mandal
+admin.parigi.sri.sathya.sai@pothole.gov.in,Parigi Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Parigi,Admin-Mandal
+admin.penukonda.sri.sathya.sai@pothole.gov.in,Penukonda Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Penukonda,Admin-Mandal
+admin.puttaparthy.sri.sathya.sai@pothole.gov.in,Puttaparthy Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Puttaparthy,Admin-Mandal
+admin.ramagiri.sri.sathya.sai@pothole.gov.in,Ramagiri Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Ramagiri,Admin-Mandal
+admin.roddam.sri.sathya.sai@pothole.gov.in,Roddam Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Roddam,Admin-Mandal
+admin.rolla.sri.sathya.sai@pothole.gov.in,Rolla Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Rolla,Admin-Mandal
+admin.somandepalli.sri.sathya.sai@pothole.gov.in,Somandepalli Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Somandepalli,Admin-Mandal
+admin.tadimarri.sri.sathya.sai@pothole.gov.in,Tadimarri Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Tadimarri,Admin-Mandal
+admin.talupula.sri.sathya.sai@pothole.gov.in,Talupula Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Talupula,Admin-Mandal
+admin.tanakal.sri.sathya.sai@pothole.gov.in,Tanakal Mandal Admin (Sri Sathya Sai),admin,Andhra Pradesh,Sri Sathya Sai,Tanakal,Admin-Mandal
+admin.amadalavalasa.srikakulam@pothole.gov.in,Amadalavalasa Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Amadalavalasa,Admin-Mandal
+admin.burja.srikakulam@pothole.gov.in,Burja Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Burja,Admin-Mandal
+admin.etcherla.srikakulam@pothole.gov.in,Etcherla Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Etcherla,Admin-Mandal
+admin.ganguvarisigadam.srikakulam@pothole.gov.in,Ganguvarisigadam Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Ganguvarisigadam,Admin-Mandal
+admin.gara.srikakulam@pothole.gov.in,Gara Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Gara,Admin-Mandal
+admin.hiramandalam.srikakulam@pothole.gov.in,Hiramandalam Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Hiramandalam,Admin-Mandal
+admin.ichchapuram.srikakulam@pothole.gov.in,Ichchapuram Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Ichchapuram,Admin-Mandal
+admin.jalumuru.srikakulam@pothole.gov.in,Jalumuru Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Jalumuru,Admin-Mandal
+admin.kanchili.srikakulam@pothole.gov.in,Kanchili Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Kanchili,Admin-Mandal
+admin.kaviti.srikakulam@pothole.gov.in,Kaviti Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Kaviti,Admin-Mandal
+admin.kotabommali.srikakulam@pothole.gov.in,Kotabommali Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Kotabommali,Admin-Mandal
+admin.kothuru.srikakulam@pothole.gov.in,Kothuru Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Kothuru,Admin-Mandal
+admin.laveru.srikakulam@pothole.gov.in,Laveru Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Laveru,Admin-Mandal
+admin.laxminarasupeta.srikakulam@pothole.gov.in,Laxminarasupeta Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Laxminarasupeta,Admin-Mandal
+admin.mandasa.srikakulam@pothole.gov.in,Mandasa Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Mandasa,Admin-Mandal
+admin.meliaputti.srikakulam@pothole.gov.in,Meliaputti Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Meliaputti,Admin-Mandal
+admin.nandigam.srikakulam@pothole.gov.in,Nandigam Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Nandigam,Admin-Mandal
+admin.narasannapeta.srikakulam@pothole.gov.in,Narasannapeta Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Narasannapeta,Admin-Mandal
+admin.palasa.srikakulam@pothole.gov.in,Palasa Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Palasa,Admin-Mandal
+admin.pathapatnam.srikakulam@pothole.gov.in,Pathapatnam Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Pathapatnam,Admin-Mandal
+admin.polaki.srikakulam@pothole.gov.in,Polaki Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Polaki,Admin-Mandal
+admin.ponduru.srikakulam@pothole.gov.in,Ponduru Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Ponduru,Admin-Mandal
+admin.ranastalam.srikakulam@pothole.gov.in,Ranastalam Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Ranastalam,Admin-Mandal
+admin.santhabommali.srikakulam@pothole.gov.in,Santhabommali Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Santhabommali,Admin-Mandal
+admin.saravakota.srikakulam@pothole.gov.in,Saravakota Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Saravakota,Admin-Mandal
+admin.sarubujjili.srikakulam@pothole.gov.in,Sarubujjili Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Sarubujjili,Admin-Mandal
+admin.sompeta.srikakulam@pothole.gov.in,Sompeta Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Sompeta,Admin-Mandal
+admin.srikakulam.srikakulam@pothole.gov.in,Srikakulam Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Srikakulam,Admin-Mandal
+admin.tekkali.srikakulam@pothole.gov.in,Tekkali Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Tekkali,Admin-Mandal
+admin.vajrapukotturu.srikakulam@pothole.gov.in,Vajrapukotturu Mandal Admin (Srikakulam),admin,Andhra Pradesh,Srikakulam,Vajrapukotturu,Admin-Mandal
+admin.balayapalli.tirupati@pothole.gov.in,Balayapalli Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Balayapalli,Admin-Mandal
+admin.buchinaidu.kandriga.tirupati@pothole.gov.in,Buchinaidu Kandriga Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Buchinaidu Kandriga,Admin-Mandal
+admin.chandragiri.tirupati@pothole.gov.in,Chandragiri Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Chandragiri,Admin-Mandal
+admin.chillakur.tirupati@pothole.gov.in,Chillakur Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Chillakur,Admin-Mandal
+admin.chinnagottigallu.tirupati@pothole.gov.in,Chinnagottigallu Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Chinnagottigallu,Admin-Mandal
+admin.chittamur.tirupati@pothole.gov.in,Chittamur Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Chittamur,Admin-Mandal
+admin.dakkili.tirupati@pothole.gov.in,Dakkili Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Dakkili,Admin-Mandal
+admin.doravarisatram.tirupati@pothole.gov.in,Doravarisatram Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Doravarisatram,Admin-Mandal
+admin.gudur.tirupati@pothole.gov.in,Gudur Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Gudur,Admin-Mandal
+admin.kota.tirupati@pothole.gov.in,Kota Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Kota,Admin-Mandal
+admin.kumara.venkata.bhupala.puram.tirupati@pothole.gov.in,Kumara Venkata Bhupala Puram Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Kumara Venkata Bhupala Puram,Admin-Mandal
+admin.nagalapuram.tirupati@pothole.gov.in,Nagalapuram Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Nagalapuram,Admin-Mandal
+admin.naidupet.tirupati@pothole.gov.in,Naidupet Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Naidupet,Admin-Mandal
+admin.narayanavanam.tirupati@pothole.gov.in,Narayanavanam Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Narayanavanam,Admin-Mandal
+admin.ozili.tirupati@pothole.gov.in,Ozili Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Ozili,Admin-Mandal
+admin.pakala.tirupati@pothole.gov.in,Pakala Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Pakala,Admin-Mandal
+admin.pellakur.tirupati@pothole.gov.in,Pellakur Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Pellakur,Admin-Mandal
+admin.pichatur.tirupati@pothole.gov.in,Pichatur Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Pichatur,Admin-Mandal
+admin.puttur.tirupati@pothole.gov.in,Puttur Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Puttur,Admin-Mandal
+admin.ramachandrapuram.tirupati@pothole.gov.in,Ramachandrapuram Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Ramachandrapuram,Admin-Mandal
+admin.renigunta.tirupati@pothole.gov.in,Renigunta Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Renigunta,Admin-Mandal
+admin.satyavedu.tirupati@pothole.gov.in,Satyavedu Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Satyavedu,Admin-Mandal
+admin.srikalahasti.tirupati@pothole.gov.in,Srikalahasti Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Srikalahasti,Admin-Mandal
+admin.sullurpeta.tirupati@pothole.gov.in,Sullurpeta Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Sullurpeta,Admin-Mandal
+admin.tada.tirupati@pothole.gov.in,Tada Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Tada,Admin-Mandal
+admin.thottambedu.tirupati@pothole.gov.in,Thottambedu Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Thottambedu,Admin-Mandal
+admin.tirupati.rural.tirupati@pothole.gov.in,Tirupati Rural Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Tirupati Rural,Admin-Mandal
+admin.tirupati.urban.tirupati@pothole.gov.in,Tirupati Urban Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Tirupati Urban,Admin-Mandal
+admin.vadamalapet.tirupati@pothole.gov.in,Vadamalapet Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Vadamalapet,Admin-Mandal
+admin.vakadu.tirupati@pothole.gov.in,Vakadu Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Vakadu,Admin-Mandal
+admin.varadaiahpalem.tirupati@pothole.gov.in,Varadaiahpalem Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Varadaiahpalem,Admin-Mandal
+admin.venkatagiri.tirupati@pothole.gov.in,Venkatagiri Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Venkatagiri,Admin-Mandal
+admin.yerpedu.tirupati@pothole.gov.in,Yerpedu Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Yerpedu,Admin-Mandal
+admin.yerravaripalem.tirupati@pothole.gov.in,Yerravaripalem Mandal Admin (Tirupati),admin,Andhra Pradesh,Tirupati,Yerravaripalem,Admin-Mandal
+admin.anandapuram.visakhapatnam@pothole.gov.in,Anandapuram Mandal Admin (Visakhapatnam),admin,Andhra Pradesh,Visakhapatnam,Anandapuram,Admin-Mandal
+admin.bheemunipatnam.visakhapatnam@pothole.gov.in,Bheemunipatnam Mandal Admin (Visakhapatnam),admin,Andhra Pradesh,Visakhapatnam,Bheemunipatnam,Admin-Mandal
+admin.padmanabham.visakhapatnam@pothole.gov.in,Padmanabham Mandal Admin (Visakhapatnam),admin,Andhra Pradesh,Visakhapatnam,Padmanabham,Admin-Mandal
+admin.pendurthi.visakhapatnam@pothole.gov.in,Pendurthi Mandal Admin (Visakhapatnam),admin,Andhra Pradesh,Visakhapatnam,Pendurthi,Admin-Mandal
+admin.seethammadhara.visakhapatnam@pothole.gov.in,Seethammadhara Mandal Admin (Visakhapatnam),admin,Andhra Pradesh,Visakhapatnam,Seethammadhara,Admin-Mandal
+admin.badangi.vizianagaram@pothole.gov.in,Badangi Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Badangi,Admin-Mandal
+admin.bhogapuram.vizianagaram@pothole.gov.in,Bhogapuram Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Bhogapuram,Admin-Mandal
+admin.bobbili.vizianagaram@pothole.gov.in,Bobbili Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Bobbili,Admin-Mandal
+admin.bondapalli.vizianagaram@pothole.gov.in,Bondapalli Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Bondapalli,Admin-Mandal
+admin.cheepurupalli.vizianagaram@pothole.gov.in,Cheepurupalli Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Cheepurupalli,Admin-Mandal
+admin.dattirajeru.vizianagaram@pothole.gov.in,Dattirajeru Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Dattirajeru,Admin-Mandal
+admin.denkada.vizianagaram@pothole.gov.in,Denkada Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Denkada,Admin-Mandal
+admin.gajapathinagaram.vizianagaram@pothole.gov.in,Gajapathinagaram Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Gajapathinagaram,Admin-Mandal
+admin.gantyada.vizianagaram@pothole.gov.in,Gantyada Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Gantyada,Admin-Mandal
+admin.garividi.vizianagaram@pothole.gov.in,Garividi Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Garividi,Admin-Mandal
+admin.gurla.vizianagaram@pothole.gov.in,Gurla Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Gurla,Admin-Mandal
+admin.jami.vizianagaram@pothole.gov.in,Jami Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Jami,Admin-Mandal
+admin.kothavalasa.vizianagaram@pothole.gov.in,Kothavalasa Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Kothavalasa,Admin-Mandal
+admin.lakkavarapukota.vizianagaram@pothole.gov.in,Lakkavarapukota Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Lakkavarapukota,Admin-Mandal
+admin.mentada.vizianagaram@pothole.gov.in,Mentada Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Mentada,Admin-Mandal
+admin.merakamudidam.vizianagaram@pothole.gov.in,Merakamudidam Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Merakamudidam,Admin-Mandal
+admin.nellimarla.vizianagaram@pothole.gov.in,Nellimarla Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Nellimarla,Admin-Mandal
+admin.poosapatirega.vizianagaram@pothole.gov.in,Poosapatirega Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Poosapatirega,Admin-Mandal
+admin.rajam.vizianagaram@pothole.gov.in,Rajam Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Rajam,Admin-Mandal
+admin.ramabhadrapuram.vizianagaram@pothole.gov.in,Ramabhadrapuram Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Ramabhadrapuram,Admin-Mandal
+admin.regidi.amadalavalasa.vizianagaram@pothole.gov.in,Regidi Amadalavalasa Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Regidi Amadalavalasa,Admin-Mandal
+admin.santhakaviti.vizianagaram@pothole.gov.in,Santhakaviti Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Santhakaviti,Admin-Mandal
+admin.srungavarapukota.vizianagaram@pothole.gov.in,Srungavarapukota Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Srungavarapukota,Admin-Mandal
+admin.therlam.vizianagaram@pothole.gov.in,Therlam Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Therlam,Admin-Mandal
+admin.vangara.vizianagaram@pothole.gov.in,Vangara Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Vangara,Admin-Mandal
+admin.vepada.vizianagaram@pothole.gov.in,Vepada Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Vepada,Admin-Mandal
+admin.vizianagaram.rural.vizianagaram@pothole.gov.in,Vizianagaram Rural Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Vizianagaram Rural,Admin-Mandal
+admin.vizianagaram.urban.vizianagaram@pothole.gov.in,Vizianagaram Urban Mandal Admin (Vizianagaram),admin,Andhra Pradesh,Vizianagaram,Vizianagaram Urban,Admin-Mandal
+admin.achanta.west.godavari@pothole.gov.in,Achanta Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Achanta,Admin-Mandal
+admin.akividu.west.godavari@pothole.gov.in,Akividu Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Akividu,Admin-Mandal
+admin.attili.west.godavari@pothole.gov.in,Attili Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Attili,Admin-Mandal
+admin.bhimavaram.west.godavari@pothole.gov.in,Bhimavaram Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Bhimavaram,Admin-Mandal
+admin.ganapavaram.west.godavari@pothole.gov.in,Ganapavaram Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Ganapavaram,Admin-Mandal
+admin.iragavaram.west.godavari@pothole.gov.in,Iragavaram Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Iragavaram,Admin-Mandal
+admin.kalla.west.godavari@pothole.gov.in,Kalla Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Kalla,Admin-Mandal
+admin.mogalthur.west.godavari@pothole.gov.in,Mogalthur Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Mogalthur,Admin-Mandal
+admin.narasapuram.west.godavari@pothole.gov.in,Narasapuram Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Narasapuram,Admin-Mandal
+admin.palacoderu.west.godavari@pothole.gov.in,Palacoderu Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Palacoderu,Admin-Mandal
+admin.palacole.west.godavari@pothole.gov.in,Palacole Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Palacole,Admin-Mandal
+admin.pentapadu.west.godavari@pothole.gov.in,Pentapadu Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Pentapadu,Admin-Mandal
+admin.penugonda.west.godavari@pothole.gov.in,Penugonda Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Penugonda,Admin-Mandal
+admin.penumantra.west.godavari@pothole.gov.in,Penumantra Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Penumantra,Admin-Mandal
+admin.poduru.west.godavari@pothole.gov.in,Poduru Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Poduru,Admin-Mandal
+admin.tadepalligudem.west.godavari@pothole.gov.in,Tadepalligudem Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Tadepalligudem,Admin-Mandal
+admin.tanuku.west.godavari@pothole.gov.in,Tanuku Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Tanuku,Admin-Mandal
+admin.undi.west.godavari@pothole.gov.in,Undi Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Undi,Admin-Mandal
+admin.veeravasaram.west.godavari@pothole.gov.in,Veeravasaram Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Veeravasaram,Admin-Mandal
+admin.yelamanchili.west.godavari@pothole.gov.in,Yelamanchili Mandal Admin (West Godavari),admin,Andhra Pradesh,West Godavari,Yelamanchili,Admin-Mandal
+admin.atlur.y.s.r.kadapa@pothole.gov.in,Atlur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Atlur,Admin-Mandal
+admin.b.kodur.y.s.r.kadapa@pothole.gov.in,B Kodur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,B Kodur,Admin-Mandal
+admin.badvel.y.s.r.kadapa@pothole.gov.in,Badvel Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Badvel,Admin-Mandal
+admin.brahmamgarimattam.y.s.r.kadapa@pothole.gov.in,Brahmamgarimattam Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Brahmamgarimattam,Admin-Mandal
+admin.chakrayapet.y.s.r.kadapa@pothole.gov.in,Chakrayapet Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Chakrayapet,Admin-Mandal
+admin.chapad.y.s.r.kadapa@pothole.gov.in,Chapad Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Chapad,Admin-Mandal
+admin.chennur.y.s.r.kadapa@pothole.gov.in,Chennur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Chennur,Admin-Mandal
+admin.chinthakommadinne.y.s.r.kadapa@pothole.gov.in,Chinthakommadinne Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Chinthakommadinne,Admin-Mandal
+admin.duvvur.y.s.r.kadapa@pothole.gov.in,Duvvur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Duvvur,Admin-Mandal
+admin.gopavaram.y.s.r.kadapa@pothole.gov.in,Gopavaram Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Gopavaram,Admin-Mandal
+admin.jammalamadugu.y.s.r.kadapa@pothole.gov.in,Jammalamadugu Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Jammalamadugu,Admin-Mandal
+admin.kadapa.y.s.r.kadapa@pothole.gov.in,Kadapa Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Kadapa,Admin-Mandal
+admin.kalasapadu.y.s.r.kadapa@pothole.gov.in,Kalasapadu Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Kalasapadu,Admin-Mandal
+admin.kamalapuram.y.s.r.kadapa@pothole.gov.in,Kamalapuram Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Kamalapuram,Admin-Mandal
+admin.khajipeta.y.s.r.kadapa@pothole.gov.in,Khajipeta Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Khajipeta,Admin-Mandal
+admin.kondapuram.y.s.r.kadapa@pothole.gov.in,Kondapuram Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Kondapuram,Admin-Mandal
+admin.lingala.y.s.r.kadapa@pothole.gov.in,Lingala Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Lingala,Admin-Mandal
+admin.muddanur.y.s.r.kadapa@pothole.gov.in,Muddanur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Muddanur,Admin-Mandal
+admin.mylavaram.y.s.r.kadapa@pothole.gov.in,Mylavaram Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Mylavaram,Admin-Mandal
+admin.peddamudiam.y.s.r.kadapa@pothole.gov.in,Peddamudiam Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Peddamudiam,Admin-Mandal
+admin.pendlimarry.y.s.r.kadapa@pothole.gov.in,Pendlimarry Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Pendlimarry,Admin-Mandal
+admin.porumamilla.y.s.r.kadapa@pothole.gov.in,Porumamilla Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Porumamilla,Admin-Mandal
+admin.proddutur.y.s.r.kadapa@pothole.gov.in,Proddutur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Proddutur,Admin-Mandal
+admin.pulivendula.y.s.r.kadapa@pothole.gov.in,Pulivendula Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Pulivendula,Admin-Mandal
+admin.rajupalem.y.s.r.kadapa@pothole.gov.in,Rajupalem Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Rajupalem,Admin-Mandal
+admin.s.mydukur.y.s.r.kadapa@pothole.gov.in,S Mydukur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,S Mydukur,Admin-Mandal
+admin.sidhout.y.s.r.kadapa@pothole.gov.in,Sidhout Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Sidhout,Admin-Mandal
+admin.simhadripuram.y.s.r.kadapa@pothole.gov.in,Simhadripuram Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Simhadripuram,Admin-Mandal
+admin.sri.avadhutha.kasinayana.y.s.r.kadapa@pothole.gov.in,Sri Avadhutha Kasinayana Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Sri Avadhutha Kasinayana,Admin-Mandal
+admin.thondur.y.s.r.kadapa@pothole.gov.in,Thondur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Thondur,Admin-Mandal
+admin.vallur.y.s.r.kadapa@pothole.gov.in,Vallur Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Vallur,Admin-Mandal
+admin.veerapunayunipalle.y.s.r.kadapa@pothole.gov.in,Veerapunayunipalle Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Veerapunayunipalle,Admin-Mandal
+admin.vempalli.y.s.r.kadapa@pothole.gov.in,Vempalli Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Vempalli,Admin-Mandal
+admin.vemula.y.s.r.kadapa@pothole.gov.in,Vemula Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Vemula,Admin-Mandal
+admin.vontimitta.y.s.r.kadapa@pothole.gov.in,Vontimitta Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Vontimitta,Admin-Mandal
+admin.yerraguntla.y.s.r.kadapa@pothole.gov.in,Yerraguntla Mandal Admin (Y S R Kadapa),admin,Andhra Pradesh,Y S R Kadapa,Yerraguntla,Admin-Mandal

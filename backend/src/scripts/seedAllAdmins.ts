@@ -14,7 +14,16 @@ function slugify(text: string): string {
 }
 
 async function main() {
-  const defaultPassword = process.env.ADMIN_PASSWORD || "Admin@123456";
+  // No default: seeding 702 accounts with a hardcoded password would put a
+  // publicly known credential in source control.
+  const defaultPassword = process.env.ADMIN_PASSWORD;
+  if (!defaultPassword) {
+    throw new Error(
+      "ADMIN_PASSWORD is not set. Refusing to seed 702 accounts with a default password.\n" +
+      "Generate a strong password and export it, e.g.:\n" +
+      '  ADMIN_PASSWORD="$(openssl rand -base64 24)" npm run seed:all-admins'
+    );
+  }
   console.log(`Hashing password for all admins...`);
   const passwordHash = await bcrypt.hash(defaultPassword, 10);
 

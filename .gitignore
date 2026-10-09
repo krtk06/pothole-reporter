@@ -83,3 +83,11 @@ tender-website/data/tenders.json
 
 # Impeccable working files (briefs, mocks, build state, review captures)
 .impeccable/
+
+# Delivered update packages — reference archives, not source
+updated_websites_package.zip
+*.zip
+
+# Design reference captures (large binaries, reproducible from the design docs)
+reference.png
+imageFront1*.png

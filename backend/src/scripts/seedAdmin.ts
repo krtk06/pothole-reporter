@@ -6,8 +6,18 @@ import prisma from "../config/database";
 
 async function main() {
   const email = process.env.ADMIN_EMAIL || "admin@pothole.gov.in";
-  const password = process.env.ADMIN_PASSWORD || "Admin@123456";
   const name = process.env.ADMIN_NAME || "System Administrator";
+
+  // No default: a hardcoded fallback password would end up in source control
+  // and would silently create a publicly known credential.
+  const password = process.env.ADMIN_PASSWORD;
+  if (!password) {
+    throw new Error(
+      "ADMIN_PASSWORD is not set. Refusing to seed with a default password.\n" +
+      "Generate a strong password and export it, e.g.:\n" +
+      "  ADMIN_PASSWORD=\"$(openssl rand -base64 24)\" npm run seed:admin"
+    );
+  }
 
   console.log(`Setting up admin user: ${email}...`);
 

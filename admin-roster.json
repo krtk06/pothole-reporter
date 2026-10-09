@@ -1,0 +1,6320 @@
+[
+  {
+    "email": "admin@pothole.gov.in",
+    "name": "AP State Administrator",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "",
+    "mandal": "",
+    "admin_scope": "Admin-city"
+  },
+  {
+    "email": "admin.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Alluri Sitharama Raju District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.anakapalli@pothole.gov.in",
+    "name": "Anakapalli District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.ananthapuramu@pothole.gov.in",
+    "name": "Ananthapuramu District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.annamayya@pothole.gov.in",
+    "name": "Annamayya District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.bapatla@pothole.gov.in",
+    "name": "Bapatla District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.chittoor@pothole.gov.in",
+    "name": "Chittoor District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Dr BR Ambedkar Konaseema District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.east.godavari@pothole.gov.in",
+    "name": "East Godavari District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.eluru@pothole.gov.in",
+    "name": "Eluru District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.guntur@pothole.gov.in",
+    "name": "Guntur District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.kakinada@pothole.gov.in",
+    "name": "Kakinada District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.krishna@pothole.gov.in",
+    "name": "Krishna District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.kurnool@pothole.gov.in",
+    "name": "Kurnool District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.ntr@pothole.gov.in",
+    "name": "NTR District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.nandyal@pothole.gov.in",
+    "name": "Nandyal District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.palnadu@pothole.gov.in",
+    "name": "Palnadu District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.parvathipuram.manyam@pothole.gov.in",
+    "name": "Parvathipuram Manyam District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.prakasam@pothole.gov.in",
+    "name": "Prakasam District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Sri Potti Sriramulu Nellore District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.sri.sathya.sai@pothole.gov.in",
+    "name": "Sri Sathya Sai District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.srikakulam@pothole.gov.in",
+    "name": "Srikakulam District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.tirupati@pothole.gov.in",
+    "name": "Tirupati District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.visakhapatnam@pothole.gov.in",
+    "name": "Visakhapatnam District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Visakhapatnam",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.vizianagaram@pothole.gov.in",
+    "name": "Vizianagaram District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.west.godavari@pothole.gov.in",
+    "name": "West Godavari District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.y.s.r.kadapa@pothole.gov.in",
+    "name": "Y S R Kadapa District Admin",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "",
+    "admin_scope": "Admin_District"
+  },
+  {
+    "email": "admin.addateegala.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Addateegala Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Addateegala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ananthagiri.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Ananthagiri Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Ananthagiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.araku.valley.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Araku Valley Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Araku Valley",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bhadrachalam.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Bhadrachalam Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Bhadrachalam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chinthapalli.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Chinthapalli Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Chinthapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chinturu.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Chinturu Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Chinturu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.devipatnam.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Devipatnam Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Devipatnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dumbriguda.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Dumbriguda Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Dumbriguda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.g.madugula.alluri.sitharama.raju@pothole.gov.in",
+    "name": "G Madugula Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "G Madugula",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gangavaram.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Gangavaram Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Gangavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudem.kotha.veedhi.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Gudem Kotha Veedhi Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Gudem Kotha Veedhi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.hukumpeta.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Hukumpeta Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Hukumpeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.koyyuru.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Koyyuru Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Koyyuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kunavaram.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Kunavaram Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Kunavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.maredumilli.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Maredumilli Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Maredumilli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.munchingi.puttu.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Munchingi Puttu Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Munchingi Puttu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.paderu.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Paderu Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Paderu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peda.bayalu.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Peda Bayalu Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Peda Bayalu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rajavommangi.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Rajavommangi Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Rajavommangi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rampachodavaram.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Rampachodavaram Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Rampachodavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vararamachandrapuram.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Vararamachandrapuram Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Vararamachandrapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.y.ramavaram.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Y Ramavaram Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Y Ramavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yetapaka.alluri.sitharama.raju@pothole.gov.in",
+    "name": "Yetapaka Mandal Admin (Alluri Sitharama Raju)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Alluri Sitharama Raju",
+    "mandal": "Yetapaka",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.anakapalli.anakapalli@pothole.gov.in",
+    "name": "Anakapalli Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Anakapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.atchuthapuram.anakapalli@pothole.gov.in",
+    "name": "Atchuthapuram Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Atchuthapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.butchayyapeta.anakapalli@pothole.gov.in",
+    "name": "Butchayyapeta Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Butchayyapeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.cheedikada.anakapalli@pothole.gov.in",
+    "name": "Cheedikada Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Cheedikada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chodavaram.anakapalli@pothole.gov.in",
+    "name": "Chodavaram Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Chodavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.devarapalli.anakapalli@pothole.gov.in",
+    "name": "Devarapalli Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Devarapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.golugonda.anakapalli@pothole.gov.in",
+    "name": "Golugonda Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Golugonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.k.kotapadu.anakapalli@pothole.gov.in",
+    "name": "K Kotapadu Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "K Kotapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kasimkota.anakapalli@pothole.gov.in",
+    "name": "Kasimkota Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Kasimkota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kotauratla.anakapalli@pothole.gov.in",
+    "name": "Kotauratla Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Kotauratla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.madugula.anakapalli@pothole.gov.in",
+    "name": "Madugula Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Madugula",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.makavarapalem.anakapalli@pothole.gov.in",
+    "name": "Makavarapalem Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Makavarapalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.munagapaka.anakapalli@pothole.gov.in",
+    "name": "Munagapaka Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Munagapaka",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nakkapalli.anakapalli@pothole.gov.in",
+    "name": "Nakkapalli Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Nakkapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.narsipatnam.anakapalli@pothole.gov.in",
+    "name": "Narsipatnam Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Narsipatnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nathavaram.anakapalli@pothole.gov.in",
+    "name": "Nathavaram Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Nathavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.paravada.anakapalli@pothole.gov.in",
+    "name": "Paravada Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Paravada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.payakaraopeta.anakapalli@pothole.gov.in",
+    "name": "Payakaraopeta Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Payakaraopeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rambilli.anakapalli@pothole.gov.in",
+    "name": "Rambilli Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Rambilli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ravikamatham.anakapalli@pothole.gov.in",
+    "name": "Ravikamatham Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Ravikamatham",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rolugunta.anakapalli@pothole.gov.in",
+    "name": "Rolugunta Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Rolugunta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.s.rayavaram.anakapalli@pothole.gov.in",
+    "name": "S Rayavaram Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "S Rayavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sabbavaram.anakapalli@pothole.gov.in",
+    "name": "Sabbavaram Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Sabbavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yelamanchili.anakapalli@pothole.gov.in",
+    "name": "Yelamanchili Mandal Admin (Anakapalli)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Anakapalli",
+    "mandal": "Yelamanchili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.anantapur.rural.ananthapuramu@pothole.gov.in",
+    "name": "Anantapur Rural Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Anantapur Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.anantapur.urban.ananthapuramu@pothole.gov.in",
+    "name": "Anantapur Urban Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Anantapur Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.atmakur.ananthapuramu@pothole.gov.in",
+    "name": "Atmakur Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Atmakur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.beluguppa.ananthapuramu@pothole.gov.in",
+    "name": "Beluguppa Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Beluguppa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bommanahal.ananthapuramu@pothole.gov.in",
+    "name": "Bommanahal Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Bommanahal",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.brahmasamudram.ananthapuramu@pothole.gov.in",
+    "name": "Brahmasamudram Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Brahmasamudram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bukkaraya.samudram.ananthapuramu@pothole.gov.in",
+    "name": "Bukkaraya Samudram Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Bukkaraya Samudram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.d.hirehal.ananthapuramu@pothole.gov.in",
+    "name": "D Hirehal Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "D Hirehal",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.garladinne.ananthapuramu@pothole.gov.in",
+    "name": "Garladinne Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Garladinne",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gooty.ananthapuramu@pothole.gov.in",
+    "name": "Gooty Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Gooty",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gummagatta.ananthapuramu@pothole.gov.in",
+    "name": "Gummagatta Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Gummagatta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.guntakal.ananthapuramu@pothole.gov.in",
+    "name": "Guntakal Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Guntakal",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kalyanadurg.ananthapuramu@pothole.gov.in",
+    "name": "Kalyanadurg Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Kalyanadurg",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kambadur.ananthapuramu@pothole.gov.in",
+    "name": "Kambadur Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Kambadur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kanekal.ananthapuramu@pothole.gov.in",
+    "name": "Kanekal Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Kanekal",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kudair.ananthapuramu@pothole.gov.in",
+    "name": "Kudair Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Kudair",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kundurpi.ananthapuramu@pothole.gov.in",
+    "name": "Kundurpi Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Kundurpi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.narpala.ananthapuramu@pothole.gov.in",
+    "name": "Narpala Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Narpala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pamidi.ananthapuramu@pothole.gov.in",
+    "name": "Pamidi Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Pamidi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peddapappur.ananthapuramu@pothole.gov.in",
+    "name": "Peddapappur Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Peddapappur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peddavaduguru.ananthapuramu@pothole.gov.in",
+    "name": "Peddavaduguru Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Peddavaduguru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.putlur.ananthapuramu@pothole.gov.in",
+    "name": "Putlur Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Putlur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rapthadu.ananthapuramu@pothole.gov.in",
+    "name": "Rapthadu Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Rapthadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rayadurg.ananthapuramu@pothole.gov.in",
+    "name": "Rayadurg Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Rayadurg",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.settur.ananthapuramu@pothole.gov.in",
+    "name": "Settur Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Settur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.singanamala.ananthapuramu@pothole.gov.in",
+    "name": "Singanamala Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Singanamala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tadipatri.ananthapuramu@pothole.gov.in",
+    "name": "Tadipatri Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Tadipatri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.uravakonda.ananthapuramu@pothole.gov.in",
+    "name": "Uravakonda Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Uravakonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vajrakarur.ananthapuramu@pothole.gov.in",
+    "name": "Vajrakarur Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Vajrakarur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vidapanakal.ananthapuramu@pothole.gov.in",
+    "name": "Vidapanakal Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Vidapanakal",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yadiki.ananthapuramu@pothole.gov.in",
+    "name": "Yadiki Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Yadiki",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yellanur.ananthapuramu@pothole.gov.in",
+    "name": "Yellanur Mandal Admin (Ananthapuramu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Ananthapuramu",
+    "mandal": "Yellanur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.beerongi.kothakota.annamayya@pothole.gov.in",
+    "name": "Beerongi Kothakota Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Beerongi Kothakota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chinnamandem.annamayya@pothole.gov.in",
+    "name": "Chinnamandem Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Chinnamandem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chitvel.annamayya@pothole.gov.in",
+    "name": "Chitvel Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Chitvel",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.galiveedu.annamayya@pothole.gov.in",
+    "name": "Galiveedu Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Galiveedu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gurramkonda.annamayya@pothole.gov.in",
+    "name": "Gurramkonda Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Gurramkonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kalakada.annamayya@pothole.gov.in",
+    "name": "Kalakada Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Kalakada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kalikiri.annamayya@pothole.gov.in",
+    "name": "Kalikiri Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Kalikiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kambhamvaripalle.annamayya@pothole.gov.in",
+    "name": "Kambhamvaripalle Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Kambhamvaripalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kodur.annamayya@pothole.gov.in",
+    "name": "Kodur Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Kodur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kurabalakota.annamayya@pothole.gov.in",
+    "name": "Kurabalakota Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Kurabalakota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.lakkireddipalli.annamayya@pothole.gov.in",
+    "name": "Lakkireddipalli Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Lakkireddipalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.madanapalle.annamayya@pothole.gov.in",
+    "name": "Madanapalle Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Madanapalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mulakalacheruvu.annamayya@pothole.gov.in",
+    "name": "Mulakalacheruvu Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Mulakalacheruvu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nandalur.annamayya@pothole.gov.in",
+    "name": "Nandalur Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Nandalur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nimmanapalle.annamayya@pothole.gov.in",
+    "name": "Nimmanapalle Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Nimmanapalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.obulavaripalle.annamayya@pothole.gov.in",
+    "name": "Obulavaripalle Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Obulavaripalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedda.thippasamudram.annamayya@pothole.gov.in",
+    "name": "Pedda Thippasamudram Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Pedda Thippasamudram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peddamandyam.annamayya@pothole.gov.in",
+    "name": "Peddamandyam Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Peddamandyam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.penagalur.annamayya@pothole.gov.in",
+    "name": "Penagalur Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Penagalur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pileru.annamayya@pothole.gov.in",
+    "name": "Pileru Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Pileru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pullampeta.annamayya@pothole.gov.in",
+    "name": "Pullampeta Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Pullampeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rajampet.annamayya@pothole.gov.in",
+    "name": "Rajampet Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Rajampet",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ramapuram.annamayya@pothole.gov.in",
+    "name": "Ramapuram Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Ramapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ramasamudram.annamayya@pothole.gov.in",
+    "name": "Ramasamudram Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Ramasamudram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rayachoti.annamayya@pothole.gov.in",
+    "name": "Rayachoti Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Rayachoti",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sambepalle.annamayya@pothole.gov.in",
+    "name": "Sambepalle Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Sambepalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.t.sundupalle.annamayya@pothole.gov.in",
+    "name": "T Sundupalle Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "T Sundupalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thamballapalle.annamayya@pothole.gov.in",
+    "name": "Thamballapalle Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Thamballapalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.valmikipuram.annamayya@pothole.gov.in",
+    "name": "Valmikipuram Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Valmikipuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.veeraballe.annamayya@pothole.gov.in",
+    "name": "Veeraballe Mandal Admin (Annamayya)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Annamayya",
+    "mandal": "Veeraballe",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.addanki.bapatla@pothole.gov.in",
+    "name": "Addanki Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Addanki",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.amarthalur.bapatla@pothole.gov.in",
+    "name": "Amarthalur Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Amarthalur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ballikurava.bapatla@pothole.gov.in",
+    "name": "Ballikurava Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Ballikurava",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bapatla.bapatla@pothole.gov.in",
+    "name": "Bapatla Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Bapatla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bhattiprolu.bapatla@pothole.gov.in",
+    "name": "Bhattiprolu Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Bhattiprolu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.cherukupalli.bapatla@pothole.gov.in",
+    "name": "Cherukupalli Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Cherukupalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chinaganjam.bapatla@pothole.gov.in",
+    "name": "Chinaganjam Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Chinaganjam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chirala.bapatla@pothole.gov.in",
+    "name": "Chirala Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Chirala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.inkollu.bapatla@pothole.gov.in",
+    "name": "Inkollu Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Inkollu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.j.pangulur.bapatla@pothole.gov.in",
+    "name": "J Pangulur Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "J Pangulur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.karamchedu.bapatla@pothole.gov.in",
+    "name": "Karamchedu Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Karamchedu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.karlapalem.bapatla@pothole.gov.in",
+    "name": "Karlapalem Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Karlapalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kolluru.bapatla@pothole.gov.in",
+    "name": "Kolluru Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Kolluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.korisapadu.bapatla@pothole.gov.in",
+    "name": "Korisapadu Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Korisapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.martur.bapatla@pothole.gov.in",
+    "name": "Martur Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Martur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nagaram.bapatla@pothole.gov.in",
+    "name": "Nagaram Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Nagaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nizampatnam.bapatla@pothole.gov.in",
+    "name": "Nizampatnam Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Nizampatnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.parchur.bapatla@pothole.gov.in",
+    "name": "Parchur Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Parchur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pittalavanipalem.bapatla@pothole.gov.in",
+    "name": "Pittalavanipalem Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Pittalavanipalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.repalle.bapatla@pothole.gov.in",
+    "name": "Repalle Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Repalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.santhamaguluru.bapatla@pothole.gov.in",
+    "name": "Santhamaguluru Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Santhamaguluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tsunduru.bapatla@pothole.gov.in",
+    "name": "Tsunduru Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Tsunduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vemuru.bapatla@pothole.gov.in",
+    "name": "Vemuru Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Vemuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vetapalem.bapatla@pothole.gov.in",
+    "name": "Vetapalem Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Vetapalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yeddana.pudi.bapatla@pothole.gov.in",
+    "name": "Yeddana Pudi Mandal Admin (Bapatla)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Bapatla",
+    "mandal": "Yeddana Pudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.baireddipalle.chittoor@pothole.gov.in",
+    "name": "Baireddipalle Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Baireddipalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bangarupalem.chittoor@pothole.gov.in",
+    "name": "Bangarupalem Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Bangarupalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chittoor.rural.chittoor@pothole.gov.in",
+    "name": "Chittoor Rural Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Chittoor Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chittoor.urban.chittoor@pothole.gov.in",
+    "name": "Chittoor Urban Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Chittoor Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chowdepalle.chittoor@pothole.gov.in",
+    "name": "Chowdepalle Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Chowdepalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gangadhara.nellore.chittoor@pothole.gov.in",
+    "name": "Gangadhara Nellore Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Gangadhara Nellore",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gangavaram.chittoor@pothole.gov.in",
+    "name": "Gangavaram Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Gangavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudipala.chittoor@pothole.gov.in",
+    "name": "Gudipala Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Gudipala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudupalle.chittoor@pothole.gov.in",
+    "name": "Gudupalle Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Gudupalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.irala.chittoor@pothole.gov.in",
+    "name": "Irala Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Irala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.karvetinagar.chittoor@pothole.gov.in",
+    "name": "Karvetinagar Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Karvetinagar",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kuppam.chittoor@pothole.gov.in",
+    "name": "Kuppam Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Kuppam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nagari.chittoor@pothole.gov.in",
+    "name": "Nagari Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Nagari",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nindra.chittoor@pothole.gov.in",
+    "name": "Nindra Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Nindra",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.palamaner.chittoor@pothole.gov.in",
+    "name": "Palamaner Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Palamaner",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.palasamudram.chittoor@pothole.gov.in",
+    "name": "Palasamudram Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Palasamudram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peddapanjani.chittoor@pothole.gov.in",
+    "name": "Peddapanjani Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Peddapanjani",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.penumur.chittoor@pothole.gov.in",
+    "name": "Penumur Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Penumur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pulicherla.chittoor@pothole.gov.in",
+    "name": "Pulicherla Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Pulicherla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.punganuru.chittoor@pothole.gov.in",
+    "name": "Punganuru Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Punganuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.puthalapattu.chittoor@pothole.gov.in",
+    "name": "Puthalapattu Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Puthalapattu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ramakuppam.chittoor@pothole.gov.in",
+    "name": "Ramakuppam Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Ramakuppam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rompicherla.chittoor@pothole.gov.in",
+    "name": "Rompicherla Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Rompicherla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.santhipuram.chittoor@pothole.gov.in",
+    "name": "Santhipuram Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Santhipuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sodam.chittoor@pothole.gov.in",
+    "name": "Sodam Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Sodam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.somala.chittoor@pothole.gov.in",
+    "name": "Somala Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Somala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.srirangarajapuram.chittoor@pothole.gov.in",
+    "name": "Srirangarajapuram Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Srirangarajapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thavanampalle.chittoor@pothole.gov.in",
+    "name": "Thavanampalle Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Thavanampalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vedurukuppam.chittoor@pothole.gov.in",
+    "name": "Vedurukuppam Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Vedurukuppam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.venkatagirikota.chittoor@pothole.gov.in",
+    "name": "Venkatagirikota Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Venkatagirikota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vijayapuram.chittoor@pothole.gov.in",
+    "name": "Vijayapuram Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Vijayapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yadamarri.chittoor@pothole.gov.in",
+    "name": "Yadamarri Mandal Admin (Chittoor)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "mandal": "Yadamarri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ainavilli.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Ainavilli Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Ainavilli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.alamuru.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Alamuru Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Alamuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.allavaram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Allavaram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Allavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.amalapuram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Amalapuram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Amalapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ambajipeta.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Ambajipeta Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Ambajipeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.atreyapuram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Atreyapuram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Atreyapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.i.polavaram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "I Polavaram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "I Polavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.k.gangavaram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "K Gangavaram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "K Gangavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kapileswarapuram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Kapileswarapuram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Kapileswarapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.katrenikona.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Katrenikona Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Katrenikona",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kothapeta.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Kothapeta Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Kothapeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.malikipuram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Malikipuram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Malikipuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mamidikuduru.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Mamidikuduru Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Mamidikuduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mandapeta.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Mandapeta Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Mandapeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mummidivaram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Mummidivaram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Mummidivaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.p.gannavaram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "P Gannavaram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "P Gannavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ramachandrapuram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Ramachandrapuram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Ramachandrapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ravulapalem.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Ravulapalem Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Ravulapalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rayavaram.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Rayavaram Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Rayavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.razole.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Razole Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Razole",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sakhinetipalli.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Sakhinetipalli Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Sakhinetipalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.uppalaguptam.dr.br.ambedkar.konaseema@pothole.gov.in",
+    "name": "Uppalaguptam Mandal Admin (Dr BR Ambedkar Konaseema)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Dr BR Ambedkar Konaseema",
+    "mandal": "Uppalaguptam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.anaparthi.east.godavari@pothole.gov.in",
+    "name": "Anaparthi Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Anaparthi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.biccavolu.east.godavari@pothole.gov.in",
+    "name": "Biccavolu Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Biccavolu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chagallu.east.godavari@pothole.gov.in",
+    "name": "Chagallu Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Chagallu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.devarapalle.east.godavari@pothole.gov.in",
+    "name": "Devarapalle Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Devarapalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gokavaram.east.godavari@pothole.gov.in",
+    "name": "Gokavaram Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Gokavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gopalapuram.east.godavari@pothole.gov.in",
+    "name": "Gopalapuram Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Gopalapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kadiam.east.godavari@pothole.gov.in",
+    "name": "Kadiam Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Kadiam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.korukonda.east.godavari@pothole.gov.in",
+    "name": "Korukonda Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Korukonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kovvur.east.godavari@pothole.gov.in",
+    "name": "Kovvur Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Kovvur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nallajerla.east.godavari@pothole.gov.in",
+    "name": "Nallajerla Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Nallajerla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nidadavole.east.godavari@pothole.gov.in",
+    "name": "Nidadavole Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Nidadavole",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peravali.east.godavari@pothole.gov.in",
+    "name": "Peravali Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Peravali",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rajamahendravaram.rural.east.godavari@pothole.gov.in",
+    "name": "Rajamahendravaram Rural Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Rajamahendravaram Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rajanagaram.east.godavari@pothole.gov.in",
+    "name": "Rajanagaram Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Rajanagaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rangampeta.east.godavari@pothole.gov.in",
+    "name": "Rangampeta Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Rangampeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.seethanagaram.east.godavari@pothole.gov.in",
+    "name": "Seethanagaram Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Seethanagaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tallapudi.east.godavari@pothole.gov.in",
+    "name": "Tallapudi Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Tallapudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.undrajavaram.east.godavari@pothole.gov.in",
+    "name": "Undrajavaram Mandal Admin (East Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "East Godavari",
+    "mandal": "Undrajavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.agiripalli.eluru@pothole.gov.in",
+    "name": "Agiripalli Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Agiripalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bheemadole.eluru@pothole.gov.in",
+    "name": "Bheemadole Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Bheemadole",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.buttayagudem.eluru@pothole.gov.in",
+    "name": "Buttayagudem Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Buttayagudem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chatrai.eluru@pothole.gov.in",
+    "name": "Chatrai Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Chatrai",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chintalapudi.eluru@pothole.gov.in",
+    "name": "Chintalapudi Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Chintalapudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.denduluru.eluru@pothole.gov.in",
+    "name": "Denduluru Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Denduluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dwarakatirumala.eluru@pothole.gov.in",
+    "name": "Dwarakatirumala Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Dwarakatirumala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.eluru.rural.eluru@pothole.gov.in",
+    "name": "Eluru Rural Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Eluru Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.eluru.urban.eluru@pothole.gov.in",
+    "name": "Eluru Urban Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Eluru Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jangareddigudem.eluru@pothole.gov.in",
+    "name": "Jangareddigudem Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Jangareddigudem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jeelugu.milli.eluru@pothole.gov.in",
+    "name": "Jeelugu Milli Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Jeelugu Milli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kaikaluru.eluru@pothole.gov.in",
+    "name": "Kaikaluru Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Kaikaluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kalidindi.eluru@pothole.gov.in",
+    "name": "Kalidindi Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Kalidindi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kamavarapukota.eluru@pothole.gov.in",
+    "name": "Kamavarapukota Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Kamavarapukota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.koyyalagudem.eluru@pothole.gov.in",
+    "name": "Koyyalagudem Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Koyyalagudem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kukunoor.eluru@pothole.gov.in",
+    "name": "Kukunoor Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Kukunoor",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.lingapalem.eluru@pothole.gov.in",
+    "name": "Lingapalem Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Lingapalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mandavalli.eluru@pothole.gov.in",
+    "name": "Mandavalli Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Mandavalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mudinepalle.eluru@pothole.gov.in",
+    "name": "Mudinepalle Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Mudinepalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.musunuru.eluru@pothole.gov.in",
+    "name": "Musunuru Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Musunuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nidamarru.eluru@pothole.gov.in",
+    "name": "Nidamarru Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Nidamarru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nuzividu.eluru@pothole.gov.in",
+    "name": "Nuzividu Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Nuzividu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedapadu.eluru@pothole.gov.in",
+    "name": "Pedapadu Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Pedapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedavegi.eluru@pothole.gov.in",
+    "name": "Pedavegi Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Pedavegi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.polavaram.eluru@pothole.gov.in",
+    "name": "Polavaram Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Polavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.t.narasapuram.eluru@pothole.gov.in",
+    "name": "T Narasapuram Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "T Narasapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.unguturu.eluru@pothole.gov.in",
+    "name": "Unguturu Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Unguturu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.velairpadu.eluru@pothole.gov.in",
+    "name": "Velairpadu Mandal Admin (Eluru)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Eluru",
+    "mandal": "Velairpadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chebrolu.guntur@pothole.gov.in",
+    "name": "Chebrolu Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Chebrolu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.duggirala.guntur@pothole.gov.in",
+    "name": "Duggirala Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Duggirala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.guntur.east.guntur@pothole.gov.in",
+    "name": "Guntur East Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Guntur East",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.guntur.west.guntur@pothole.gov.in",
+    "name": "Guntur West Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Guntur West",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kakumanu.guntur@pothole.gov.in",
+    "name": "Kakumanu Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Kakumanu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kollipara.guntur@pothole.gov.in",
+    "name": "Kollipara Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Kollipara",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mangalagiri.guntur@pothole.gov.in",
+    "name": "Mangalagiri Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Mangalagiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.medikonduru.guntur@pothole.gov.in",
+    "name": "Medikonduru Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Medikonduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedakakani.guntur@pothole.gov.in",
+    "name": "Pedakakani Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Pedakakani",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedanandipadu.guntur@pothole.gov.in",
+    "name": "Pedanandipadu Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Pedanandipadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.phirangipuram.guntur@pothole.gov.in",
+    "name": "Phirangipuram Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Phirangipuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ponnur.guntur@pothole.gov.in",
+    "name": "Ponnur Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Ponnur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.prathipadu.guntur@pothole.gov.in",
+    "name": "Prathipadu Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Prathipadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tadepalli.guntur@pothole.gov.in",
+    "name": "Tadepalli Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Tadepalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tadikonda.guntur@pothole.gov.in",
+    "name": "Tadikonda Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Tadikonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tenali.guntur@pothole.gov.in",
+    "name": "Tenali Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Tenali",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thulluru.guntur@pothole.gov.in",
+    "name": "Thulluru Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Thulluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vatticherukuru.guntur@pothole.gov.in",
+    "name": "Vatticherukuru Mandal Admin (Guntur)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Guntur",
+    "mandal": "Vatticherukuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gandepalli.kakinada@pothole.gov.in",
+    "name": "Gandepalli Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Gandepalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gollaprolu.kakinada@pothole.gov.in",
+    "name": "Gollaprolu Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Gollaprolu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jaggampeta.kakinada@pothole.gov.in",
+    "name": "Jaggampeta Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Jaggampeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kajuluru.kakinada@pothole.gov.in",
+    "name": "Kajuluru Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Kajuluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kakinada.rural.kakinada@pothole.gov.in",
+    "name": "Kakinada Rural Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Kakinada Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kakinada.urban.kakinada@pothole.gov.in",
+    "name": "Kakinada Urban Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Kakinada Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.karapa.kakinada@pothole.gov.in",
+    "name": "Karapa Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Karapa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kirlampudi.kakinada@pothole.gov.in",
+    "name": "Kirlampudi Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Kirlampudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kotananduru.kakinada@pothole.gov.in",
+    "name": "Kotananduru Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Kotananduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedapudi.kakinada@pothole.gov.in",
+    "name": "Pedapudi Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Pedapudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peddapuram.kakinada@pothole.gov.in",
+    "name": "Peddapuram Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Peddapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pithapuram.kakinada@pothole.gov.in",
+    "name": "Pithapuram Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Pithapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.prathipadu.kakinada@pothole.gov.in",
+    "name": "Prathipadu Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Prathipadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rowthulapudi.kakinada@pothole.gov.in",
+    "name": "Rowthulapudi Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Rowthulapudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.samalkota.kakinada@pothole.gov.in",
+    "name": "Samalkota Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Samalkota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sankhavaram.kakinada@pothole.gov.in",
+    "name": "Sankhavaram Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Sankhavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tallarevu.kakinada@pothole.gov.in",
+    "name": "Tallarevu Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Tallarevu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thondangi.kakinada@pothole.gov.in",
+    "name": "Thondangi Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Thondangi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tuni.kakinada@pothole.gov.in",
+    "name": "Tuni Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Tuni",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.u.kothapalli.kakinada@pothole.gov.in",
+    "name": "U Kothapalli Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "U Kothapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yeleswaram.kakinada@pothole.gov.in",
+    "name": "Yeleswaram Mandal Admin (Kakinada)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kakinada",
+    "mandal": "Yeleswaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.avanigadda.krishna@pothole.gov.in",
+    "name": "Avanigadda Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Avanigadda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bantumilli.krishna@pothole.gov.in",
+    "name": "Bantumilli Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Bantumilli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bapulapadu.krishna@pothole.gov.in",
+    "name": "Bapulapadu Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Bapulapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.challapalli.krishna@pothole.gov.in",
+    "name": "Challapalli Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Challapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gannavaram.krishna@pothole.gov.in",
+    "name": "Gannavaram Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Gannavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ghantasala.krishna@pothole.gov.in",
+    "name": "Ghantasala Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Ghantasala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudivada.krishna@pothole.gov.in",
+    "name": "Gudivada Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Gudivada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudlavalleru.krishna@pothole.gov.in",
+    "name": "Gudlavalleru Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Gudlavalleru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.guduru.krishna@pothole.gov.in",
+    "name": "Guduru Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Guduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kankipadu.krishna@pothole.gov.in",
+    "name": "Kankipadu Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Kankipadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.koduru.krishna@pothole.gov.in",
+    "name": "Koduru Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Koduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kruthivennu.krishna@pothole.gov.in",
+    "name": "Kruthivennu Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Kruthivennu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.machilipatnam.north.krishna@pothole.gov.in",
+    "name": "Machilipatnam North Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Machilipatnam North",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.machilipatnam.south.krishna@pothole.gov.in",
+    "name": "Machilipatnam South Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Machilipatnam South",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mopidevi.krishna@pothole.gov.in",
+    "name": "Mopidevi Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Mopidevi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.movva.krishna@pothole.gov.in",
+    "name": "Movva Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Movva",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nagayalanka.krishna@pothole.gov.in",
+    "name": "Nagayalanka Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Nagayalanka",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nandivada.krishna@pothole.gov.in",
+    "name": "Nandivada Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Nandivada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pamarru.krishna@pothole.gov.in",
+    "name": "Pamarru Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Pamarru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pamidimukkala.krishna@pothole.gov.in",
+    "name": "Pamidimukkala Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Pamidimukkala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedana.krishna@pothole.gov.in",
+    "name": "Pedana Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Pedana",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedaparupudi.krishna@pothole.gov.in",
+    "name": "Pedaparupudi Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Pedaparupudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.penamaluru.krishna@pothole.gov.in",
+    "name": "Penamaluru Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Penamaluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thotlavalluru.krishna@pothole.gov.in",
+    "name": "Thotlavalluru Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Thotlavalluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.unguturu.krishna@pothole.gov.in",
+    "name": "Unguturu Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Unguturu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vuyyuru.krishna@pothole.gov.in",
+    "name": "Vuyyuru Mandal Admin (Krishna)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Krishna",
+    "mandal": "Vuyyuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.adoni.kurnool@pothole.gov.in",
+    "name": "Adoni Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Adoni",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.alur.kurnool@pothole.gov.in",
+    "name": "Alur Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Alur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.aspari.kurnool@pothole.gov.in",
+    "name": "Aspari Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Aspari",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.c.belagal.kurnool@pothole.gov.in",
+    "name": "C Belagal Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "C Belagal",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chippagiri.kurnool@pothole.gov.in",
+    "name": "Chippagiri Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Chippagiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.devanakonda.kurnool@pothole.gov.in",
+    "name": "Devanakonda Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Devanakonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gonegandla.kurnool@pothole.gov.in",
+    "name": "Gonegandla Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Gonegandla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudur.kurnool@pothole.gov.in",
+    "name": "Gudur Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Gudur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.halaharvi.kurnool@pothole.gov.in",
+    "name": "Halaharvi Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Halaharvi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.holagunda.kurnool@pothole.gov.in",
+    "name": "Holagunda Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Holagunda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kallur.kurnool@pothole.gov.in",
+    "name": "Kallur Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Kallur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kodumur.kurnool@pothole.gov.in",
+    "name": "Kodumur Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Kodumur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kosigi.kurnool@pothole.gov.in",
+    "name": "Kosigi Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Kosigi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kowthalam.kurnool@pothole.gov.in",
+    "name": "Kowthalam Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Kowthalam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.krishnagiri.kurnool@pothole.gov.in",
+    "name": "Krishnagiri Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Krishnagiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kurnool.rural.kurnool@pothole.gov.in",
+    "name": "Kurnool Rural Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Kurnool Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.maddikera.east.kurnool@pothole.gov.in",
+    "name": "Maddikera East Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Maddikera East",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mantralayam.kurnool@pothole.gov.in",
+    "name": "Mantralayam Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Mantralayam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nandavaram.kurnool@pothole.gov.in",
+    "name": "Nandavaram Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Nandavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.orvakal.kurnool@pothole.gov.in",
+    "name": "Orvakal Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Orvakal",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pattikonda.kurnool@pothole.gov.in",
+    "name": "Pattikonda Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Pattikonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedda.kadubur.kurnool@pothole.gov.in",
+    "name": "Pedda Kadubur Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Pedda Kadubur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tuggali.kurnool@pothole.gov.in",
+    "name": "Tuggali Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Tuggali",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.veldurthy.kurnool@pothole.gov.in",
+    "name": "Veldurthy Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Veldurthy",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yemmiganur.kurnool@pothole.gov.in",
+    "name": "Yemmiganur Mandal Admin (Kurnool)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Kurnool",
+    "mandal": "Yemmiganur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.atlapragada.konduru.ntr@pothole.gov.in",
+    "name": "Atlapragada Konduru Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Atlapragada Konduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chandarlapadu.ntr@pothole.gov.in",
+    "name": "Chandarlapadu Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Chandarlapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gaddamanugu.konduru.ntr@pothole.gov.in",
+    "name": "Gaddamanugu Konduru Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Gaddamanugu Konduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gampalagudem.ntr@pothole.gov.in",
+    "name": "Gampalagudem Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Gampalagudem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ibrahimpatnam.ntr@pothole.gov.in",
+    "name": "Ibrahimpatnam Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Ibrahimpatnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jaggaiahpeta.ntr@pothole.gov.in",
+    "name": "Jaggaiahpeta Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Jaggaiahpeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kanchikacherla.ntr@pothole.gov.in",
+    "name": "Kanchikacherla Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Kanchikacherla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mylavaram.ntr@pothole.gov.in",
+    "name": "Mylavaram Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Mylavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nandigama.ntr@pothole.gov.in",
+    "name": "Nandigama Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Nandigama",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.penuganchiprolu.ntr@pothole.gov.in",
+    "name": "Penuganchiprolu Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Penuganchiprolu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.reddigudem.ntr@pothole.gov.in",
+    "name": "Reddigudem Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Reddigudem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tiruvuru.ntr@pothole.gov.in",
+    "name": "Tiruvuru Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Tiruvuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vatsavai.ntr@pothole.gov.in",
+    "name": "Vatsavai Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Vatsavai",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.veerullapadu.ntr@pothole.gov.in",
+    "name": "Veerullapadu Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Veerullapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vijayawada.rural.ntr@pothole.gov.in",
+    "name": "Vijayawada Rural Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Vijayawada Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vissannapeta.ntr@pothole.gov.in",
+    "name": "Vissannapeta Mandal Admin (NTR)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "NTR",
+    "mandal": "Vissannapeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.allagadda.nandyal@pothole.gov.in",
+    "name": "Allagadda Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Allagadda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.atmakur.nandyal@pothole.gov.in",
+    "name": "Atmakur Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Atmakur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.banaganapalli.nandyal@pothole.gov.in",
+    "name": "Banaganapalli Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Banaganapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bandi.atmakur.nandyal@pothole.gov.in",
+    "name": "Bandi Atmakur Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Bandi Atmakur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bethamcherla.nandyal@pothole.gov.in",
+    "name": "Bethamcherla Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Bethamcherla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chagalamarri.nandyal@pothole.gov.in",
+    "name": "Chagalamarri Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Chagalamarri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dhone.nandyal@pothole.gov.in",
+    "name": "Dhone Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Dhone",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dornipadu.nandyal@pothole.gov.in",
+    "name": "Dornipadu Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Dornipadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gadivemula.nandyal@pothole.gov.in",
+    "name": "Gadivemula Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Gadivemula",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gospadu.nandyal@pothole.gov.in",
+    "name": "Gospadu Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Gospadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jupadu.bunglow.nandyal@pothole.gov.in",
+    "name": "Jupadu Bunglow Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Jupadu Bunglow",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.koilakuntla.nandyal@pothole.gov.in",
+    "name": "Koilakuntla Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Koilakuntla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kolimigundla.nandyal@pothole.gov.in",
+    "name": "Kolimigundla Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Kolimigundla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kothapalle.nandyal@pothole.gov.in",
+    "name": "Kothapalle Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Kothapalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mahanandi.nandyal@pothole.gov.in",
+    "name": "Mahanandi Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Mahanandi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.midthur.nandyal@pothole.gov.in",
+    "name": "Midthur Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Midthur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nandikotkur.nandyal@pothole.gov.in",
+    "name": "Nandikotkur Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Nandikotkur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nandyal.rural.nandyal@pothole.gov.in",
+    "name": "Nandyal Rural Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Nandyal Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nandyal.urban.nandyal@pothole.gov.in",
+    "name": "Nandyal Urban Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Nandyal Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.owk.nandyal@pothole.gov.in",
+    "name": "Owk Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Owk",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pagidyala.nandyal@pothole.gov.in",
+    "name": "Pagidyala Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Pagidyala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pamulapadu.nandyal@pothole.gov.in",
+    "name": "Pamulapadu Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Pamulapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.panyam.nandyal@pothole.gov.in",
+    "name": "Panyam Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Panyam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peapully.nandyal@pothole.gov.in",
+    "name": "Peapully Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Peapully",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rudravaram.nandyal@pothole.gov.in",
+    "name": "Rudravaram Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Rudravaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sanjamala.nandyal@pothole.gov.in",
+    "name": "Sanjamala Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Sanjamala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sirvel.nandyal@pothole.gov.in",
+    "name": "Sirvel Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Sirvel",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.srisailam.nandyal@pothole.gov.in",
+    "name": "Srisailam Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Srisailam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.uyyalawada.nandyal@pothole.gov.in",
+    "name": "Uyyalawada Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Uyyalawada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.velugodu.nandyal@pothole.gov.in",
+    "name": "Velugodu Mandal Admin (Nandyal)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Nandyal",
+    "mandal": "Velugodu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.amaravathi.palnadu@pothole.gov.in",
+    "name": "Amaravathi Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Amaravathi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.atchampet.palnadu@pothole.gov.in",
+    "name": "Atchampet Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Atchampet",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bellamkonda.palnadu@pothole.gov.in",
+    "name": "Bellamkonda Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Bellamkonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bollapalli.palnadu@pothole.gov.in",
+    "name": "Bollapalli Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Bollapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chilakaluripet.h.o.purushotha.patnam.palnadu@pothole.gov.in",
+    "name": "Chilakaluripet H O Purushotha Patnam Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Chilakaluripet H O Purushotha Patnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dachepalli.palnadu@pothole.gov.in",
+    "name": "Dachepalli Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Dachepalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.durgi.palnadu@pothole.gov.in",
+    "name": "Durgi Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Durgi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.edlapadu.palnadu@pothole.gov.in",
+    "name": "Edlapadu Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Edlapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gurajala.palnadu@pothole.gov.in",
+    "name": "Gurajala Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Gurajala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ipuru.palnadu@pothole.gov.in",
+    "name": "Ipuru Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Ipuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.karempudi.palnadu@pothole.gov.in",
+    "name": "Karempudi Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Karempudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.krosuru.palnadu@pothole.gov.in",
+    "name": "Krosuru Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Krosuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.machavaram.palnadu@pothole.gov.in",
+    "name": "Machavaram Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Machavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.macherla.palnadu@pothole.gov.in",
+    "name": "Macherla Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Macherla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.muppalla.palnadu@pothole.gov.in",
+    "name": "Muppalla Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Muppalla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nadendla.palnadu@pothole.gov.in",
+    "name": "Nadendla Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Nadendla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.narasaraopet.palnadu@pothole.gov.in",
+    "name": "Narasaraopet Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Narasaraopet",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nekarikallu.palnadu@pothole.gov.in",
+    "name": "Nekarikallu Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Nekarikallu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nuzendla.palnadu@pothole.gov.in",
+    "name": "Nuzendla Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Nuzendla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedakurapadu.palnadu@pothole.gov.in",
+    "name": "Pedakurapadu Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Pedakurapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.piduguralla.palnadu@pothole.gov.in",
+    "name": "Piduguralla Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Piduguralla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rajupalem.palnadu@pothole.gov.in",
+    "name": "Rajupalem Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Rajupalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rentachintala.palnadu@pothole.gov.in",
+    "name": "Rentachintala Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Rentachintala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rompicharla.palnadu@pothole.gov.in",
+    "name": "Rompicharla Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Rompicharla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sattenapalli.palnadu@pothole.gov.in",
+    "name": "Sattenapalli Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Sattenapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.savalyapuram.h.o.kanamarlapudi.palnadu@pothole.gov.in",
+    "name": "Savalyapuram H O Kanamarlapudi Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Savalyapuram H O Kanamarlapudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.veldurthy.palnadu@pothole.gov.in",
+    "name": "Veldurthy Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Veldurthy",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vinukonda.palnadu@pothole.gov.in",
+    "name": "Vinukonda Mandal Admin (Palnadu)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Palnadu",
+    "mandal": "Vinukonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.balijipeta.parvathipuram.manyam@pothole.gov.in",
+    "name": "Balijipeta Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Balijipeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bhamini.parvathipuram.manyam@pothole.gov.in",
+    "name": "Bhamini Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Bhamini",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.garugubilli.parvathipuram.manyam@pothole.gov.in",
+    "name": "Garugubilli Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Garugubilli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gummalakshmipuram.parvathipuram.manyam@pothole.gov.in",
+    "name": "Gummalakshmipuram Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Gummalakshmipuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jiyyammavalasa.parvathipuram.manyam@pothole.gov.in",
+    "name": "Jiyyammavalasa Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Jiyyammavalasa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.komarada.parvathipuram.manyam@pothole.gov.in",
+    "name": "Komarada Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Komarada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kurupam.parvathipuram.manyam@pothole.gov.in",
+    "name": "Kurupam Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Kurupam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.makkuva.parvathipuram.manyam@pothole.gov.in",
+    "name": "Makkuva Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Makkuva",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pachipenta.parvathipuram.manyam@pothole.gov.in",
+    "name": "Pachipenta Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Pachipenta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.palakonda.parvathipuram.manyam@pothole.gov.in",
+    "name": "Palakonda Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Palakonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.parvathipuram.parvathipuram.manyam@pothole.gov.in",
+    "name": "Parvathipuram Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Parvathipuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.salur.parvathipuram.manyam@pothole.gov.in",
+    "name": "Salur Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Salur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.seethampeta.parvathipuram.manyam@pothole.gov.in",
+    "name": "Seethampeta Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Seethampeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.seethanagaram.parvathipuram.manyam@pothole.gov.in",
+    "name": "Seethanagaram Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Seethanagaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.veeraghattam.parvathipuram.manyam@pothole.gov.in",
+    "name": "Veeraghattam Mandal Admin (Parvathipuram Manyam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Parvathipuram Manyam",
+    "mandal": "Veeraghattam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ardhaveedu.prakasam@pothole.gov.in",
+    "name": "Ardhaveedu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Ardhaveedu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bestavaripeta.prakasam@pothole.gov.in",
+    "name": "Bestavaripeta Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Bestavaripeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chandra.sekhara.puram.prakasam@pothole.gov.in",
+    "name": "Chandra Sekhara Puram Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Chandra Sekhara Puram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chimakurthy.prakasam@pothole.gov.in",
+    "name": "Chimakurthy Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Chimakurthy",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.cumbum.prakasam@pothole.gov.in",
+    "name": "Cumbum Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Cumbum",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.darsi.prakasam@pothole.gov.in",
+    "name": "Darsi Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Darsi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.donakonda.prakasam@pothole.gov.in",
+    "name": "Donakonda Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Donakonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dornala.prakasam@pothole.gov.in",
+    "name": "Dornala Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Dornala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.giddalur.prakasam@pothole.gov.in",
+    "name": "Giddalur Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Giddalur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.hanumanthuni.padu.prakasam@pothole.gov.in",
+    "name": "Hanumanthuni Padu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Hanumanthuni Padu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kanigiri.prakasam@pothole.gov.in",
+    "name": "Kanigiri Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Kanigiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.komarolu.prakasam@pothole.gov.in",
+    "name": "Komarolu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Komarolu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.konakanamitla.prakasam@pothole.gov.in",
+    "name": "Konakanamitla Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Konakanamitla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kondapi.prakasam@pothole.gov.in",
+    "name": "Kondapi Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Kondapi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kotha.patnam.prakasam@pothole.gov.in",
+    "name": "Kotha Patnam Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Kotha Patnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kurichedu.prakasam@pothole.gov.in",
+    "name": "Kurichedu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Kurichedu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.maddipadu.prakasam@pothole.gov.in",
+    "name": "Maddipadu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Maddipadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.markapuram.prakasam@pothole.gov.in",
+    "name": "Markapuram Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Markapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.marripudi.prakasam@pothole.gov.in",
+    "name": "Marripudi Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Marripudi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mundlamuru.prakasam@pothole.gov.in",
+    "name": "Mundlamuru Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Mundlamuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.naguluppala.padu.prakasam@pothole.gov.in",
+    "name": "Naguluppala Padu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Naguluppala Padu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ongole.rural.prakasam@pothole.gov.in",
+    "name": "Ongole Rural Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Ongole Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ongole.urban.prakasam@pothole.gov.in",
+    "name": "Ongole Urban Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Ongole Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pamur.prakasam@pothole.gov.in",
+    "name": "Pamur Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Pamur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pedacherlo.palle.prakasam@pothole.gov.in",
+    "name": "Pedacherlo Palle Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Pedacherlo Palle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peddaaraveedu.prakasam@pothole.gov.in",
+    "name": "Peddaaraveedu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Peddaaraveedu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.podili.prakasam@pothole.gov.in",
+    "name": "Podili Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Podili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ponnaluru.prakasam@pothole.gov.in",
+    "name": "Ponnaluru Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Ponnaluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pullalacheruvu.prakasam@pothole.gov.in",
+    "name": "Pullalacheruvu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Pullalacheruvu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.racherla.prakasam@pothole.gov.in",
+    "name": "Racherla Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Racherla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.santhanuthala.padu.prakasam@pothole.gov.in",
+    "name": "Santhanuthala Padu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Santhanuthala Padu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.singarayakonda.prakasam@pothole.gov.in",
+    "name": "Singarayakonda Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Singarayakonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tangutur.prakasam@pothole.gov.in",
+    "name": "Tangutur Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Tangutur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tarlupadu.prakasam@pothole.gov.in",
+    "name": "Tarlupadu Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Tarlupadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thallur.prakasam@pothole.gov.in",
+    "name": "Thallur Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Thallur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tripuranthakam.prakasam@pothole.gov.in",
+    "name": "Tripuranthakam Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Tripuranthakam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.veligandla.prakasam@pothole.gov.in",
+    "name": "Veligandla Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Veligandla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yerragondapalem.prakasam@pothole.gov.in",
+    "name": "Yerragondapalem Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Yerragondapalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.zarugumalli.prakasam@pothole.gov.in",
+    "name": "Zarugumalli Mandal Admin (Prakasam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Prakasam",
+    "mandal": "Zarugumalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.allur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Allur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Allur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ananthasagaram.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Ananthasagaram Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Ananthasagaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.anumasamudrampeta.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Anumasamudrampeta Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Anumasamudrampeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.atmakur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Atmakur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Atmakur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bogole.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Bogole Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Bogole",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.buchireddipalem.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Buchireddipalem Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Buchireddipalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chejerla.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Chejerla Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Chejerla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dagadarthi.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Dagadarthi Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Dagadarthi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.duttalur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Duttalur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Duttalur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudluru.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Gudluru Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Gudluru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.indukurpet.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Indukurpet Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Indukurpet",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jaladanki.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Jaladanki Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Jaladanki",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kaligiri.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Kaligiri Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Kaligiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kaluvoya.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Kaluvoya Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Kaluvoya",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kandukuru.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Kandukuru Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Kandukuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kavali.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Kavali Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Kavali",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kodavalur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Kodavalur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Kodavalur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kondapuram.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Kondapuram Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Kondapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kovur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Kovur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Kovur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.lingasamudram.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Lingasamudram Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Lingasamudram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.manubolu.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Manubolu Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Manubolu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.marripadu.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Marripadu Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Marripadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.muthukur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Muthukur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Muthukur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nellore.rural.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Nellore Rural Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Nellore Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nellore.urban.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Nellore Urban Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Nellore Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.podalakur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Podalakur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Podalakur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rapur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Rapur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Rapur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sangam.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Sangam Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Sangam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.seetharamapuram.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Seetharamapuram Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Seetharamapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sydapuram.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Sydapuram Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Sydapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thotapalligudur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Thotapalligudur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Thotapalligudur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.udayagiri.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Udayagiri Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Udayagiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ulavapadu.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Ulavapadu Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Ulavapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.varikuntapadu.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Varikuntapadu Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Varikuntapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.venkatachalam.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Venkatachalam Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Venkatachalam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vidavalur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Vidavalur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Vidavalur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vinjamur.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Vinjamur Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Vinjamur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.voletivaripalem.sri.potti.sriramulu.nellore@pothole.gov.in",
+    "name": "Voletivaripalem Mandal Admin (Sri Potti Sriramulu Nellore)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Potti Sriramulu Nellore",
+    "mandal": "Voletivaripalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.agali.sri.sathya.sai@pothole.gov.in",
+    "name": "Agali Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Agali",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.amadagur.sri.sathya.sai@pothole.gov.in",
+    "name": "Amadagur Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Amadagur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.amarapuram.sri.sathya.sai@pothole.gov.in",
+    "name": "Amarapuram Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Amarapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bathalapalli.sri.sathya.sai@pothole.gov.in",
+    "name": "Bathalapalli Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Bathalapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bukkapatnam.sri.sathya.sai@pothole.gov.in",
+    "name": "Bukkapatnam Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Bukkapatnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chennekothapalli.sri.sathya.sai@pothole.gov.in",
+    "name": "Chennekothapalli Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Chennekothapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chilamathur.sri.sathya.sai@pothole.gov.in",
+    "name": "Chilamathur Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Chilamathur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dharmavaram.sri.sathya.sai@pothole.gov.in",
+    "name": "Dharmavaram Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Dharmavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gandlapenta.sri.sathya.sai@pothole.gov.in",
+    "name": "Gandlapenta Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Gandlapenta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gorantla.sri.sathya.sai@pothole.gov.in",
+    "name": "Gorantla Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Gorantla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudibanda.sri.sathya.sai@pothole.gov.in",
+    "name": "Gudibanda Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Gudibanda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.hindupur.sri.sathya.sai@pothole.gov.in",
+    "name": "Hindupur Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Hindupur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kadiri.sri.sathya.sai@pothole.gov.in",
+    "name": "Kadiri Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Kadiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kanaganipalli.sri.sathya.sai@pothole.gov.in",
+    "name": "Kanaganipalli Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Kanaganipalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kothacheruvu.sri.sathya.sai@pothole.gov.in",
+    "name": "Kothacheruvu Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Kothacheruvu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.lepakshi.sri.sathya.sai@pothole.gov.in",
+    "name": "Lepakshi Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Lepakshi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.madakasira.sri.sathya.sai@pothole.gov.in",
+    "name": "Madakasira Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Madakasira",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mudigubba.sri.sathya.sai@pothole.gov.in",
+    "name": "Mudigubba Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Mudigubba",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nallachervu.sri.sathya.sai@pothole.gov.in",
+    "name": "Nallachervu Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Nallachervu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nallamada.sri.sathya.sai@pothole.gov.in",
+    "name": "Nallamada Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Nallamada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nambulapulakunta.sri.sathya.sai@pothole.gov.in",
+    "name": "Nambulapulakunta Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Nambulapulakunta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.obuladevaracheruvu.sri.sathya.sai@pothole.gov.in",
+    "name": "Obuladevaracheruvu Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Obuladevaracheruvu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.parigi.sri.sathya.sai@pothole.gov.in",
+    "name": "Parigi Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Parigi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.penukonda.sri.sathya.sai@pothole.gov.in",
+    "name": "Penukonda Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Penukonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.puttaparthy.sri.sathya.sai@pothole.gov.in",
+    "name": "Puttaparthy Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Puttaparthy",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ramagiri.sri.sathya.sai@pothole.gov.in",
+    "name": "Ramagiri Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Ramagiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.roddam.sri.sathya.sai@pothole.gov.in",
+    "name": "Roddam Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Roddam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rolla.sri.sathya.sai@pothole.gov.in",
+    "name": "Rolla Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Rolla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.somandepalli.sri.sathya.sai@pothole.gov.in",
+    "name": "Somandepalli Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Somandepalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tadimarri.sri.sathya.sai@pothole.gov.in",
+    "name": "Tadimarri Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Tadimarri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.talupula.sri.sathya.sai@pothole.gov.in",
+    "name": "Talupula Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Talupula",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tanakal.sri.sathya.sai@pothole.gov.in",
+    "name": "Tanakal Mandal Admin (Sri Sathya Sai)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Sri Sathya Sai",
+    "mandal": "Tanakal",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.amadalavalasa.srikakulam@pothole.gov.in",
+    "name": "Amadalavalasa Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Amadalavalasa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.burja.srikakulam@pothole.gov.in",
+    "name": "Burja Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Burja",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.etcherla.srikakulam@pothole.gov.in",
+    "name": "Etcherla Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Etcherla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ganguvarisigadam.srikakulam@pothole.gov.in",
+    "name": "Ganguvarisigadam Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Ganguvarisigadam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gara.srikakulam@pothole.gov.in",
+    "name": "Gara Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Gara",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.hiramandalam.srikakulam@pothole.gov.in",
+    "name": "Hiramandalam Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Hiramandalam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ichchapuram.srikakulam@pothole.gov.in",
+    "name": "Ichchapuram Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Ichchapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jalumuru.srikakulam@pothole.gov.in",
+    "name": "Jalumuru Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Jalumuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kanchili.srikakulam@pothole.gov.in",
+    "name": "Kanchili Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Kanchili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kaviti.srikakulam@pothole.gov.in",
+    "name": "Kaviti Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Kaviti",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kotabommali.srikakulam@pothole.gov.in",
+    "name": "Kotabommali Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Kotabommali",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kothuru.srikakulam@pothole.gov.in",
+    "name": "Kothuru Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Kothuru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.laveru.srikakulam@pothole.gov.in",
+    "name": "Laveru Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Laveru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.laxminarasupeta.srikakulam@pothole.gov.in",
+    "name": "Laxminarasupeta Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Laxminarasupeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mandasa.srikakulam@pothole.gov.in",
+    "name": "Mandasa Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Mandasa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.meliaputti.srikakulam@pothole.gov.in",
+    "name": "Meliaputti Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Meliaputti",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nandigam.srikakulam@pothole.gov.in",
+    "name": "Nandigam Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Nandigam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.narasannapeta.srikakulam@pothole.gov.in",
+    "name": "Narasannapeta Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Narasannapeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.palasa.srikakulam@pothole.gov.in",
+    "name": "Palasa Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Palasa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pathapatnam.srikakulam@pothole.gov.in",
+    "name": "Pathapatnam Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Pathapatnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.polaki.srikakulam@pothole.gov.in",
+    "name": "Polaki Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Polaki",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ponduru.srikakulam@pothole.gov.in",
+    "name": "Ponduru Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Ponduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ranastalam.srikakulam@pothole.gov.in",
+    "name": "Ranastalam Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Ranastalam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.santhabommali.srikakulam@pothole.gov.in",
+    "name": "Santhabommali Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Santhabommali",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.saravakota.srikakulam@pothole.gov.in",
+    "name": "Saravakota Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Saravakota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sarubujjili.srikakulam@pothole.gov.in",
+    "name": "Sarubujjili Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Sarubujjili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sompeta.srikakulam@pothole.gov.in",
+    "name": "Sompeta Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Sompeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.srikakulam.srikakulam@pothole.gov.in",
+    "name": "Srikakulam Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Srikakulam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tekkali.srikakulam@pothole.gov.in",
+    "name": "Tekkali Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Tekkali",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vajrapukotturu.srikakulam@pothole.gov.in",
+    "name": "Vajrapukotturu Mandal Admin (Srikakulam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Srikakulam",
+    "mandal": "Vajrapukotturu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.balayapalli.tirupati@pothole.gov.in",
+    "name": "Balayapalli Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Balayapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.buchinaidu.kandriga.tirupati@pothole.gov.in",
+    "name": "Buchinaidu Kandriga Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Buchinaidu Kandriga",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chandragiri.tirupati@pothole.gov.in",
+    "name": "Chandragiri Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Chandragiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chillakur.tirupati@pothole.gov.in",
+    "name": "Chillakur Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Chillakur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chinnagottigallu.tirupati@pothole.gov.in",
+    "name": "Chinnagottigallu Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Chinnagottigallu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chittamur.tirupati@pothole.gov.in",
+    "name": "Chittamur Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Chittamur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dakkili.tirupati@pothole.gov.in",
+    "name": "Dakkili Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Dakkili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.doravarisatram.tirupati@pothole.gov.in",
+    "name": "Doravarisatram Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Doravarisatram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gudur.tirupati@pothole.gov.in",
+    "name": "Gudur Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Gudur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kota.tirupati@pothole.gov.in",
+    "name": "Kota Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Kota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kumara.venkata.bhupala.puram.tirupati@pothole.gov.in",
+    "name": "Kumara Venkata Bhupala Puram Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Kumara Venkata Bhupala Puram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nagalapuram.tirupati@pothole.gov.in",
+    "name": "Nagalapuram Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Nagalapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.naidupet.tirupati@pothole.gov.in",
+    "name": "Naidupet Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Naidupet",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.narayanavanam.tirupati@pothole.gov.in",
+    "name": "Narayanavanam Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Narayanavanam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ozili.tirupati@pothole.gov.in",
+    "name": "Ozili Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Ozili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pakala.tirupati@pothole.gov.in",
+    "name": "Pakala Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Pakala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pellakur.tirupati@pothole.gov.in",
+    "name": "Pellakur Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Pellakur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pichatur.tirupati@pothole.gov.in",
+    "name": "Pichatur Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Pichatur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.puttur.tirupati@pothole.gov.in",
+    "name": "Puttur Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Puttur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ramachandrapuram.tirupati@pothole.gov.in",
+    "name": "Ramachandrapuram Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Ramachandrapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.renigunta.tirupati@pothole.gov.in",
+    "name": "Renigunta Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Renigunta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.satyavedu.tirupati@pothole.gov.in",
+    "name": "Satyavedu Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Satyavedu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.srikalahasti.tirupati@pothole.gov.in",
+    "name": "Srikalahasti Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Srikalahasti",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sullurpeta.tirupati@pothole.gov.in",
+    "name": "Sullurpeta Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Sullurpeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tada.tirupati@pothole.gov.in",
+    "name": "Tada Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Tada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thottambedu.tirupati@pothole.gov.in",
+    "name": "Thottambedu Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Thottambedu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tirupati.rural.tirupati@pothole.gov.in",
+    "name": "Tirupati Rural Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Tirupati Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tirupati.urban.tirupati@pothole.gov.in",
+    "name": "Tirupati Urban Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Tirupati Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vadamalapet.tirupati@pothole.gov.in",
+    "name": "Vadamalapet Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Vadamalapet",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vakadu.tirupati@pothole.gov.in",
+    "name": "Vakadu Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Vakadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.varadaiahpalem.tirupati@pothole.gov.in",
+    "name": "Varadaiahpalem Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Varadaiahpalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.venkatagiri.tirupati@pothole.gov.in",
+    "name": "Venkatagiri Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Venkatagiri",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yerpedu.tirupati@pothole.gov.in",
+    "name": "Yerpedu Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Yerpedu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yerravaripalem.tirupati@pothole.gov.in",
+    "name": "Yerravaripalem Mandal Admin (Tirupati)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Tirupati",
+    "mandal": "Yerravaripalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.anandapuram.visakhapatnam@pothole.gov.in",
+    "name": "Anandapuram Mandal Admin (Visakhapatnam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Visakhapatnam",
+    "mandal": "Anandapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bheemunipatnam.visakhapatnam@pothole.gov.in",
+    "name": "Bheemunipatnam Mandal Admin (Visakhapatnam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Visakhapatnam",
+    "mandal": "Bheemunipatnam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.padmanabham.visakhapatnam@pothole.gov.in",
+    "name": "Padmanabham Mandal Admin (Visakhapatnam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Visakhapatnam",
+    "mandal": "Padmanabham",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pendurthi.visakhapatnam@pothole.gov.in",
+    "name": "Pendurthi Mandal Admin (Visakhapatnam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Visakhapatnam",
+    "mandal": "Pendurthi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.seethammadhara.visakhapatnam@pothole.gov.in",
+    "name": "Seethammadhara Mandal Admin (Visakhapatnam)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Visakhapatnam",
+    "mandal": "Seethammadhara",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.badangi.vizianagaram@pothole.gov.in",
+    "name": "Badangi Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Badangi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bhogapuram.vizianagaram@pothole.gov.in",
+    "name": "Bhogapuram Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Bhogapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bobbili.vizianagaram@pothole.gov.in",
+    "name": "Bobbili Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Bobbili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bondapalli.vizianagaram@pothole.gov.in",
+    "name": "Bondapalli Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Bondapalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.cheepurupalli.vizianagaram@pothole.gov.in",
+    "name": "Cheepurupalli Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Cheepurupalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.dattirajeru.vizianagaram@pothole.gov.in",
+    "name": "Dattirajeru Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Dattirajeru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.denkada.vizianagaram@pothole.gov.in",
+    "name": "Denkada Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Denkada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gajapathinagaram.vizianagaram@pothole.gov.in",
+    "name": "Gajapathinagaram Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Gajapathinagaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gantyada.vizianagaram@pothole.gov.in",
+    "name": "Gantyada Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Gantyada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.garividi.vizianagaram@pothole.gov.in",
+    "name": "Garividi Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Garividi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gurla.vizianagaram@pothole.gov.in",
+    "name": "Gurla Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Gurla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jami.vizianagaram@pothole.gov.in",
+    "name": "Jami Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Jami",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kothavalasa.vizianagaram@pothole.gov.in",
+    "name": "Kothavalasa Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Kothavalasa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.lakkavarapukota.vizianagaram@pothole.gov.in",
+    "name": "Lakkavarapukota Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Lakkavarapukota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mentada.vizianagaram@pothole.gov.in",
+    "name": "Mentada Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Mentada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.merakamudidam.vizianagaram@pothole.gov.in",
+    "name": "Merakamudidam Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Merakamudidam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.nellimarla.vizianagaram@pothole.gov.in",
+    "name": "Nellimarla Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Nellimarla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.poosapatirega.vizianagaram@pothole.gov.in",
+    "name": "Poosapatirega Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Poosapatirega",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rajam.vizianagaram@pothole.gov.in",
+    "name": "Rajam Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Rajam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ramabhadrapuram.vizianagaram@pothole.gov.in",
+    "name": "Ramabhadrapuram Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Ramabhadrapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.regidi.amadalavalasa.vizianagaram@pothole.gov.in",
+    "name": "Regidi Amadalavalasa Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Regidi Amadalavalasa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.santhakaviti.vizianagaram@pothole.gov.in",
+    "name": "Santhakaviti Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Santhakaviti",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.srungavarapukota.vizianagaram@pothole.gov.in",
+    "name": "Srungavarapukota Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Srungavarapukota",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.therlam.vizianagaram@pothole.gov.in",
+    "name": "Therlam Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Therlam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vangara.vizianagaram@pothole.gov.in",
+    "name": "Vangara Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Vangara",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vepada.vizianagaram@pothole.gov.in",
+    "name": "Vepada Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Vepada",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vizianagaram.rural.vizianagaram@pothole.gov.in",
+    "name": "Vizianagaram Rural Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Vizianagaram Rural",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vizianagaram.urban.vizianagaram@pothole.gov.in",
+    "name": "Vizianagaram Urban Mandal Admin (Vizianagaram)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Vizianagaram",
+    "mandal": "Vizianagaram Urban",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.achanta.west.godavari@pothole.gov.in",
+    "name": "Achanta Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Achanta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.akividu.west.godavari@pothole.gov.in",
+    "name": "Akividu Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Akividu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.attili.west.godavari@pothole.gov.in",
+    "name": "Attili Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Attili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.bhimavaram.west.godavari@pothole.gov.in",
+    "name": "Bhimavaram Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Bhimavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.ganapavaram.west.godavari@pothole.gov.in",
+    "name": "Ganapavaram Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Ganapavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.iragavaram.west.godavari@pothole.gov.in",
+    "name": "Iragavaram Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Iragavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kalla.west.godavari@pothole.gov.in",
+    "name": "Kalla Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Kalla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mogalthur.west.godavari@pothole.gov.in",
+    "name": "Mogalthur Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Mogalthur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.narasapuram.west.godavari@pothole.gov.in",
+    "name": "Narasapuram Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Narasapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.palacoderu.west.godavari@pothole.gov.in",
+    "name": "Palacoderu Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Palacoderu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.palacole.west.godavari@pothole.gov.in",
+    "name": "Palacole Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Palacole",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pentapadu.west.godavari@pothole.gov.in",
+    "name": "Pentapadu Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Pentapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.penugonda.west.godavari@pothole.gov.in",
+    "name": "Penugonda Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Penugonda",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.penumantra.west.godavari@pothole.gov.in",
+    "name": "Penumantra Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Penumantra",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.poduru.west.godavari@pothole.gov.in",
+    "name": "Poduru Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Poduru",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tadepalligudem.west.godavari@pothole.gov.in",
+    "name": "Tadepalligudem Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Tadepalligudem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.tanuku.west.godavari@pothole.gov.in",
+    "name": "Tanuku Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Tanuku",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.undi.west.godavari@pothole.gov.in",
+    "name": "Undi Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Undi",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.veeravasaram.west.godavari@pothole.gov.in",
+    "name": "Veeravasaram Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Veeravasaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yelamanchili.west.godavari@pothole.gov.in",
+    "name": "Yelamanchili Mandal Admin (West Godavari)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "West Godavari",
+    "mandal": "Yelamanchili",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.atlur.y.s.r.kadapa@pothole.gov.in",
+    "name": "Atlur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Atlur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.b.kodur.y.s.r.kadapa@pothole.gov.in",
+    "name": "B Kodur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "B Kodur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.badvel.y.s.r.kadapa@pothole.gov.in",
+    "name": "Badvel Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Badvel",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.brahmamgarimattam.y.s.r.kadapa@pothole.gov.in",
+    "name": "Brahmamgarimattam Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Brahmamgarimattam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chakrayapet.y.s.r.kadapa@pothole.gov.in",
+    "name": "Chakrayapet Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Chakrayapet",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chapad.y.s.r.kadapa@pothole.gov.in",
+    "name": "Chapad Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Chapad",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chennur.y.s.r.kadapa@pothole.gov.in",
+    "name": "Chennur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Chennur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.chinthakommadinne.y.s.r.kadapa@pothole.gov.in",
+    "name": "Chinthakommadinne Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Chinthakommadinne",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.duvvur.y.s.r.kadapa@pothole.gov.in",
+    "name": "Duvvur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Duvvur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.gopavaram.y.s.r.kadapa@pothole.gov.in",
+    "name": "Gopavaram Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Gopavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.jammalamadugu.y.s.r.kadapa@pothole.gov.in",
+    "name": "Jammalamadugu Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Jammalamadugu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kadapa.y.s.r.kadapa@pothole.gov.in",
+    "name": "Kadapa Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Kadapa",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kalasapadu.y.s.r.kadapa@pothole.gov.in",
+    "name": "Kalasapadu Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Kalasapadu",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kamalapuram.y.s.r.kadapa@pothole.gov.in",
+    "name": "Kamalapuram Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Kamalapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.khajipeta.y.s.r.kadapa@pothole.gov.in",
+    "name": "Khajipeta Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Khajipeta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.kondapuram.y.s.r.kadapa@pothole.gov.in",
+    "name": "Kondapuram Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Kondapuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.lingala.y.s.r.kadapa@pothole.gov.in",
+    "name": "Lingala Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Lingala",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.muddanur.y.s.r.kadapa@pothole.gov.in",
+    "name": "Muddanur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Muddanur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.mylavaram.y.s.r.kadapa@pothole.gov.in",
+    "name": "Mylavaram Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Mylavaram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.peddamudiam.y.s.r.kadapa@pothole.gov.in",
+    "name": "Peddamudiam Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Peddamudiam",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pendlimarry.y.s.r.kadapa@pothole.gov.in",
+    "name": "Pendlimarry Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Pendlimarry",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.porumamilla.y.s.r.kadapa@pothole.gov.in",
+    "name": "Porumamilla Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Porumamilla",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.proddutur.y.s.r.kadapa@pothole.gov.in",
+    "name": "Proddutur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Proddutur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.pulivendula.y.s.r.kadapa@pothole.gov.in",
+    "name": "Pulivendula Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Pulivendula",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.rajupalem.y.s.r.kadapa@pothole.gov.in",
+    "name": "Rajupalem Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Rajupalem",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.s.mydukur.y.s.r.kadapa@pothole.gov.in",
+    "name": "S Mydukur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "S Mydukur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sidhout.y.s.r.kadapa@pothole.gov.in",
+    "name": "Sidhout Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Sidhout",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.simhadripuram.y.s.r.kadapa@pothole.gov.in",
+    "name": "Simhadripuram Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Simhadripuram",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.sri.avadhutha.kasinayana.y.s.r.kadapa@pothole.gov.in",
+    "name": "Sri Avadhutha Kasinayana Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Sri Avadhutha Kasinayana",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.thondur.y.s.r.kadapa@pothole.gov.in",
+    "name": "Thondur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Thondur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vallur.y.s.r.kadapa@pothole.gov.in",
+    "name": "Vallur Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Vallur",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.veerapunayunipalle.y.s.r.kadapa@pothole.gov.in",
+    "name": "Veerapunayunipalle Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Veerapunayunipalle",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vempalli.y.s.r.kadapa@pothole.gov.in",
+    "name": "Vempalli Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Vempalli",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vemula.y.s.r.kadapa@pothole.gov.in",
+    "name": "Vemula Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Vemula",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.vontimitta.y.s.r.kadapa@pothole.gov.in",
+    "name": "Vontimitta Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Vontimitta",
+    "admin_scope": "Admin-Mandal"
+  },
+  {
+    "email": "admin.yerraguntla.y.s.r.kadapa@pothole.gov.in",
+    "name": "Yerraguntla Mandal Admin (Y S R Kadapa)",
+    "role": "admin",
+    "state": "Andhra Pradesh",
+    "district": "Y S R Kadapa",
+    "mandal": "Yerraguntla",
+    "admin_scope": "Admin-Mandal"
+  }
+]

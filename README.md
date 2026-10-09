@@ -39,7 +39,7 @@ npm install
 npm run dev
 ```
 - Citizen Dashboard: `http://localhost:3000/dashboard`
-- Admin Dashboard: `http://localhost:3000/admin` (Sign in with admin credentials from `ADMIN_CREDENTIALS.md`)
+- Admin Dashboard: `http://localhost:3000/admin` (Sign in with an admin account — see *Admin Accounts* below)
 
 ### 3. Tendering Website (Port 3001)
 ```bash
@@ -78,3 +78,31 @@ npm run dev
      - View the complete audit log of past transmissions
 
 > **Deployment note:** the Supabase schema was historically migrated by hand; run `npx prisma migrate deploy` (includes an idempotent reconciliation migration for `AdminScope`, the users jurisdiction columns and `TenderStatus.rejected`) when deploying.
+
+---
+
+## Admin Accounts
+
+The system provisions **702 admin accounts**: 1 state-wide, 26 district, and 675 mandal.
+The account list is committed as `admin-roster.csv` / `admin-roster.json`.
+**These files contain no passwords.**
+
+| Scope | Example account | Coverage |
+| :--- | :--- | :--- |
+| `state` | `admin@pothole.gov.in` | All 26 districts and 675 mandals |
+| `district` | `admin.eluru@pothole.gov.in` | One district |
+| `mandal` | `admin.addateegala.alluri.sitharama.raju@pothole.gov.in` | One mandal |
+
+> **Passwords are not stored in this repository.** A readable directory containing
+> plaintext credentials can be generated locally, is gitignored, and must never
+> be committed or shared over chat:
+>
+> ```bash
+> cd backend
+> ADMIN_PASSWORD='<your password>' node src/scripts/generateCredentialsDoc.js
+> ```
+>
+> Distribute credentials through a password manager or an encrypted channel, and
+> rotate the password after use. The production deployment uses its own password,
+> issued directly by the server administrator.
+
