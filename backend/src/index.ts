@@ -95,7 +95,35 @@ const isOriginAllowed = (origin?: string): boolean => {
   return false;
 };
 
-app.set("trust proxy", 1);
+/**
+ * Whether to trust reverse-proxy headers (X-Forwarded-For / X-Forwarded-Proto).
+ *
+ * express-rate-limit keys every limiter on the derived client IP, and Express
+ * derives that IP from the proxy headers when "trust proxy" is enabled. This
+ * backend listens on port 4000 directly with no terminating proxy in front of
+ * it, so trusting one hop meant a client could supply its own X-Forwarded-For
+ * and get a fresh rate-limit bucket per request — which defeated the 5-per-15
+ * minute login limit outright.
+ *
+ * Default is OFF. Set TRUST_PROXY only when a proxy you control actually
+ * terminates the connection and overwrites the header:
+ *   TRUST_PROXY=true                 -> trust exactly one hop
+ *   TRUST_PROXY=loopback             -> trust only loopback addresses
+ *   TRUST_PROXY=2                    -> trust two hops
+ * See https://expressjs.com/en/4x/api.html#trust-proxy-tokens
+ */
+const TRUST_PROXY = (() => {
+  const raw = process.env.TRUST_PROXY;
+  if (raw === undefined || raw === "") return false;
+  if (raw === "true") return true;
+  if (raw === "false") return false;
+  const asNumber = Number(raw);
+  if (Number.isInteger(asNumber) && asNumber >= 0) return asNumber;
+  // Named subnets, e.g. "loopback, linklocal, uniquelocal"
+  return raw;
+})();
+
+app.set("trust proxy", TRUST_PROXY);
 
 app.use(helmet({
   contentSecurityPolicy: {
