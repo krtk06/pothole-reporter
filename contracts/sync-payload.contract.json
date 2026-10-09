@@ -1,0 +1,46 @@
+{
+  "source": "pothole-reporter",
+  "sync_type": "scheduled",
+  "exported_at": "2026-09-02T09:00:00.000Z",
+  "triggered_by": "scheduler",
+  "summary": {
+    "total_potholes": 2,
+    "total_tenders": 1
+  },
+  "tenders": [
+    {
+      "id": "44444444-4444-4444-8444-444444444444",
+      "block_id": "andhra pradesh/eluru/addateegala",
+      "pothole_count": 22,
+      "estimated_cost": 3300,
+      "status": "open",
+      "generated_at": "2026-09-02T09:00:00.000Z"
+    }
+  ],
+  "potholes": [
+    {
+      "id": "pothole-uuid-0001",
+      "latitude": 17.385,
+      "longitude": 78.4867,
+      "address_notes": "Near the flyover entrance",
+      "block_id": "andhra pradesh/eluru/addateegala",
+      "status": "verified",
+      "created_at": "2026-09-01T10:00:00.000Z",
+      "reporter_name": "Ravi Kumar",
+      "image_url": "https://pothole-evidence.s3.ap-south-1.amazonaws.com/uploads/aa11.jpg?X-Amz-Signature=deadbeef",
+      "image_s3_key": "uploads/aa11.jpg"
+    },
+    {
+      "id": "pothole-uuid-0002",
+      "latitude": 17.39,
+      "longitude": 78.49,
+      "address_notes": null,
+      "block_id": "andhra pradesh/eluru/addateegala",
+      "status": "verified",
+      "created_at": "2026-09-01T11:00:00.000Z",
+      "reporter_name": "Sita Devi",
+      "image_url": "https://pothole-evidence.s3.ap-south-1.amazonaws.com/uploads/bb22.jpg?X-Amz-Signature=deadbeef",
+      "image_s3_key": "uploads/bb22.jpg"
+    }
+  ]
+}
