@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "backfill:areas": "tsx src/scripts/backfillAreaCoordinates.ts",
     "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "seed:admin": "tsx src/scripts/seedAdmin.ts",
+    "seed:all-admins": "tsx src/scripts/seedAllAdmins.ts",
     "start": "node dist/index.js",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:push": "prisma db push",
-    "seed:admin": "tsx src/scripts/seedAdmin.ts",
-    "seed:all-admins": "tsx src/scripts/seedAllAdmins.ts"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.600.0",

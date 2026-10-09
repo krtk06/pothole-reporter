@@ -54,7 +54,6 @@ model User {
   mandal          String?         @db.VarChar(100)
   admin_scope     AdminScope?
   created_at      DateTime        @default(now())
-  potholes        Pothole[]
   password_reset_tokens PasswordResetToken[]
 
   @@map("users")
@@ -74,19 +73,26 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
-model Pothole {
-  id           String       @id @default(uuid()) @db.Uuid
-  reporter_id  String       @db.Uuid
-  image_s3_key String       @db.VarChar(255)
-  location     Unsupported("geometry(Point, 4326)")
-  address_notes String?     @db.Text
-  block_id     String?      @db.VarChar(100)
-  status       ReportStatus @default(pending)
-  created_at   DateTime     @default(now())
-  reporter     User         @relation(fields: [reporter_id], references: [id])
-
-  @@map("potholes")
-}
+// The `potholes` table is NOT modelled here.
+//
+// It exists in the database (created by migration 20260622050528_init) and is
+// the core domain table, but every read and write goes through raw SQL
+// (`prisma.$queryRawUnsafe`) because it holds PostGIS `geometry(Point, 4326)`
+// columns that Prisma cannot query. The former `Pothole` model was never
+// referenced by any code path — it only made `prisma migrate dev` and
+// `prisma db push` believe they owned the table.
+//
+// DO NOT reintroduce a model for it without also replacing the raw SQL, and do
+// NOT run `prisma migrate dev` or `prisma db push` against a real database:
+// with this table unmodelled, both would propose DROP TABLE "potholes".
+// Use `prisma migrate deploy`, which only applies pending migrations.
+//
+// `potholes.reporter_id` has a foreign key to `users(id)` that is likewise no
+// longer described here.
+//
+// The `ReportStatus` enum below is retained for the same reason: raw SQL casts
+// to it on every status write (`$1::text::"ReportStatus"`), so removing it
+// would make Prisma propose DROP TYPE.
 
 model Tender {
   id            String       @id @default(uuid()) @db.Uuid
@@ -96,29 +102,62 @@ model Tender {
   status        TenderStatus @default(open)
   generated_at  DateTime     @default(now())
 
+  // NOTE: the duplicate-tender guard
+  // "tenders_block_id_open_assigned_key" is deliberately NOT declared here.
+  // It is a PARTIAL unique index
+  // (`WHERE status IN ('open','assigned')`, migration
+  // 20261008000000_add_tenders_block_unique_open) and Prisma has no
+  // partial-index support. Declaring a plain @@unique([block_id]) here would
+  // make `prisma migrate diff` propose replacing the partial index with a FULL
+  // one, which permanently breaks re-tendering after a withdrawal.
+  // `prisma migrate diff` will therefore always report this index as drift.
+
   @@map("tenders")
 }
 
-model AdministrativeArea {
-  id               String   @id
-  name             String   @db.VarChar(255)
-  normalized_name  String   @db.VarChar(255)
-  level            String   @db.VarChar(20)
-  state_code       String   @db.VarChar(20)
-  state_name       String   @db.VarChar(100)
-  district_code    String?  @db.VarChar(20)
-  district_name    String?  @db.VarChar(100)
-  subdistrict_code String?  @db.VarChar(20)
-  subdistrict_name String?  @db.VarChar(100)
-  latitude         Float?
-  longitude        Float?
-  bbox             Json?
-  boundary         Unsupported("geometry(MultiPolygon, 4326)")?
-  source           String   @default("LGD administrative directory") @db.VarChar(255)
-  updated_at       DateTime @default(now()) @updatedAt
+// The `administrative_areas` table is NOT modelled here, for the same reason as
+// `potholes`: it is created by migration 20260724090000_add_administrative_areas
+// and reached exclusively through raw SQL, including its PostGIS
+// `geometry(MultiPolygon, 4326)` `boundary` column. The former
+// `AdministrativeArea` model had zero code references.
+//
+// DO NOT run `prisma migrate dev` or `prisma db push` against a real database:
+// with this table unmodelled, both would propose DROP TABLE "administrative_areas".
+// Use `prisma migrate deploy`, which only applies pending migrations.
 
-  @@index([level, state_code, district_code, subdistrict_code, normalized_name])
-  @@index([district_code, normalized_name])
-  @@index([subdistrict_code, normalized_name])
-  @@map("administrative_areas")
+// ─── Tender website sync ─────────────────────────────────────────────────────
+//
+// These two tables were historically created at runtime by
+// ensureTenderSyncTablesExist() (src/services/tenderSyncService.ts) and appeared
+// in no migration, so `prisma migrate deploy` produced a schema missing both.
+// They are now declared here and created by migration
+// 20261008120000_add_tender_sync_tables.
+//
+// Model names deliberately match the table names (no @@map) because all access
+// is still raw SQL — keeping the names identical makes it obvious when reading
+// either side. Adding these models does NOT mean the app uses the Prisma client
+// for them; it means schema.prisma finally describes the real database.
+
+model tender_sync_settings {
+  id                 String    @id @db.VarChar(50)
+  target_url         String    @default("http://localhost:3001/api/sync") @db.Text
+  api_key            String    @default("") @db.VarChar(255)
+  sync_interval_days Int       @default(15)
+  is_enabled         Boolean   @default(true)
+  last_sync_at       DateTime? @db.Timestamptz(6)
+  next_sync_at       DateTime? @db.Timestamptz(6)
+  last_sync_status   String?   @default("idle") @db.VarChar(50)
+  last_sync_message  String?   @db.Text
+  updated_at         DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+}
+
+model tender_sync_logs {
+  id              String   @id @default(uuid()) @db.Uuid
+  synced_at       DateTime @default(now()) @db.Timestamptz(6)
+  potholes_count  Int      @default(0)
+  tenders_count   Int      @default(0)
+  status          String   @db.VarChar(50)
+  response_status Int?
+  error_message   String?  @db.Text
+  triggered_by    String   @default("scheduler") @db.VarChar(255)
 }
