@@ -275,6 +275,65 @@ async function checkSyncHealth() {
   }
 }
 
+/**
+ * A tender's stored pothole_count must equal the number of VERIFIED potholes
+ * actually in that block.
+ *
+ * This is the check that catches seeded/fabricated tender rows. A pricing
+ * check is not enough: a fabricated row can be perfectly self-consistent
+ * (pothole_count 3 at 3 x 150 = 450) and pass every arithmetic assertion while
+ * describing a block that holds a completely different number of verified
+ * reports. Only comparing against the source rows distinguishes real from
+ * invented.
+ */
+async function checkTenderIntegrity() {
+  const row = await scalar<{ n: string; mismatched: string; samples: string }>(
+    `SELECT count(*)::text AS n,
+            count(*) FILTER (WHERE t.pothole_count <> a.actual)::text AS mismatched,
+            coalesce(string_agg(t.block_id || ' says ' || t.pothole_count || ', actually ' || a.actual, '; '), '') AS samples
+       FROM tenders t
+       LEFT JOIN LATERAL (
+         SELECT count(*) AS actual FROM potholes p
+          WHERE p.block_id = t.block_id AND p.status = 'verified'
+       ) a ON true
+      WHERE t.status IN ('open','assigned')`,
+  );
+
+  const total = Number(row.n);
+  const mismatched = Number(row.mismatched);
+
+  if (total === 0) {
+    record("WARN", "tender count integrity", "no open/assigned tenders to check");
+  } else if (mismatched === 0) {
+    record("PASS", "tender count integrity", `${total} tender(s) match their verified pothole count`);
+  } else {
+    record(
+      "FAIL",
+      "tender count integrity",
+      `${mismatched}/${total} tender(s) claim a pothole_count that does not match the verified reports in their block — these rows are seeded, not generated. ${row.samples.slice(0, 220)}`,
+    );
+  }
+}
+
+/** Tenders should also have been created by the threshold pipeline, not by a script. */
+async function checkDemoSeeding() {
+  const row = await scalar<{ n: string }>(
+    `SELECT count(*)::text AS n FROM tenders
+      WHERE estimated_cost = pothole_count * 150.0
+        AND pothole_count <= 5
+        AND status = 'open'`,
+  );
+  if (Number(row.n) > 0) {
+    record(
+      "WARN",
+      "possible demo-seeded tenders",
+      `${row.n} tender(s) have a suspiciously small round-number pothole_count priced at 150 each — consistent with a hand-written seeding script rather than the threshold pipeline`,
+    );
+  } else {
+    record("PASS", "possible demo-seeded tenders", "no round-number tenders found");
+  }
+}
+
 async function main() {
   console.log("\n=== Deployment verification ===\n");
 
@@ -306,6 +365,8 @@ async function main() {
     ["orphans", checkOrphanReports],
     ["duplicates", checkDuplicates],
     ["pricing", checkTenderEconomics],
+    ["tender integrity", checkTenderIntegrity],
+    ["demo seeding", checkDemoSeeding],
     ["sync health", checkSyncHealth],
   ];
 
