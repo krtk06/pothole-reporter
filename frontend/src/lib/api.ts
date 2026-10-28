@@ -158,6 +158,13 @@ class ApiClient {
     });
   }
 
+  async generateTenders(force = true) {
+    return this.fetch("/admin/tenders/generate", {
+      method: "POST",
+      body: JSON.stringify({ force }),
+    });
+  }
+
   async getTenderSyncConfig() {
     return this.fetch("/admin/tender-sync");
   }

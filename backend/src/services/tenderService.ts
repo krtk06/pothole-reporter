@@ -37,13 +37,14 @@ export async function hasOpenTender(blockId: string): Promise<boolean> {
  * unique index on (block_id) WHERE status IN ('open','assigned') is the real
  * guard; the findFirst check only avoids the common-case error.
  */
-export async function checkAndGenerateTender(blockId: string): Promise<boolean> {
+async function createTenderForBlock(blockId: string, force: boolean): Promise<any | null> {
   const count = await verifiedCount(blockId);
-  if (count < threshold()) return false;
-  if (await findOpenTender(blockId)) return false;
+  if (count === 0) return null;
+  if (!force && count < threshold()) return null;
+  if (await findOpenTender(blockId)) return null;
 
   try {
-    await prisma.tender.create({
+    return await prisma.tender.create({
       data: {
         block_id: blockId,
         pothole_count: count,
@@ -51,14 +52,54 @@ export async function checkAndGenerateTender(blockId: string): Promise<boolean> 
         status: "open",
       },
     });
-    return true;
   } catch (err: any) {
     if (err?.code === "P2002") {
       logger.info({ blockId }, "Tender already exists for block (race resolved)");
-      return false;
+      return null;
     }
     throw err;
   }
+}
+
+export async function checkAndGenerateTender(blockId: string): Promise<boolean> {
+  return Boolean(await createTenderForBlock(blockId, false));
+}
+
+/**
+ * Manual admin action: create tenders for verified-pothole blocks in the
+ * admin's jurisdiction. Force mode is intentionally used by the admin button so
+ * a small staging/demo dataset can create a tender before the automatic
+ * threshold is reached. Automatic verification still respects the threshold.
+ */
+export async function generateTendersForScope(
+  scopePrefix: string,
+  force = false,
+): Promise<Array<{ block_id: string; pothole_count: number; tender_id: string }>> {
+  const rows = await prisma.$queryRawUnsafe<Array<{ block_id: string; count: bigint }>>(
+    `SELECT block_id, COUNT(*)::bigint AS count
+     FROM potholes
+     WHERE status = 'verified'
+       AND block_id IS NOT NULL
+       AND (block_id = $1 OR block_id LIKE $2)
+     GROUP BY block_id
+     ORDER BY block_id ASC`,
+    scopePrefix,
+    `${scopePrefix}/%`,
+  );
+
+  const generated: Array<{ block_id: string; pothole_count: number; tender_id: string }> = [];
+  for (const row of rows) {
+    if (!force && Number(row.count) < threshold()) continue;
+    const tender = await createTenderForBlock(row.block_id, force);
+    if (tender) {
+      generated.push({
+        block_id: tender.block_id,
+        pothole_count: Number(tender.pothole_count),
+        tender_id: tender.id,
+      });
+    }
+  }
+  return generated;
 }
 
 export async function getTenders() {

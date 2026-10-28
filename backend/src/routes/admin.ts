@@ -7,7 +7,7 @@ import { adminLimiter } from "../middleware/rateLimiter";
 import prisma from "../config/database";
 import logger from "../config/logger";
 import { generatePresignedDownloadUrl } from "../services/s3Service";
-import { checkAndGenerateTender, dispatchTenderForMandal, hasOpenTender } from "../services/tenderService";
+import { checkAndGenerateTender, dispatchTenderForMandal, generateTendersForScope, hasOpenTender } from "../services/tenderService";
 import { ensureRoadIssueForReport } from "../services/roadIssueRegistry";
 import {
   getTenderSyncConfig,
@@ -48,10 +48,16 @@ function scopePrefix(req: AuthenticatedRequest): string | null {
   return buildBlockId(state, null, null);
 }
 
-function scopeCondition(prefix: string | null, column: string, parameterIndex: number) {
+function scopeCondition(
+  prefix: string | null,
+  column: string,
+  parameterIndex: number,
+  includeNull = false,
+) {
   if (!prefix) return { clause: "1 = 0", params: [] as string[] };
+  const nullClause = includeNull ? ` OR ${column} IS NULL` : "";
   return {
-    clause: `(${column} = $${parameterIndex} OR ${column} LIKE $${parameterIndex + 1})`,
+    clause: `(${column} = $${parameterIndex} OR ${column} LIKE $${parameterIndex + 1}${nullClause})`,
     params: [prefix, `${prefix}/%`],
   };
 }
@@ -104,7 +110,7 @@ router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
       index++;
     }
 
-    const scope = scopeCondition(scopePrefix(req), "p.block_id", index);
+    const scope = scopeCondition(scopePrefix(req), "p.block_id", index, req.user?.admin_scope === "state");
     conditions.push(scope.clause);
     params.push(...scope.params);
 
@@ -149,7 +155,7 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
     const id = idResult.data;
     const { status } = req.body;
 
-    const scope = scopeCondition(scopePrefix(req), "block_id", 3);
+    const scope = scopeCondition(scopePrefix(req), "block_id", 3, req.user?.admin_scope === "state");
     const updated: any[] = await prisma.$queryRawUnsafe(
       `UPDATE potholes
        SET status = $1::text::"ReportStatus"
@@ -201,14 +207,14 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
 
 router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const pointScope = scopeCondition(scopePrefix(req), "p.block_id", 1);
-    const densityScope = scopeCondition(scopePrefix(req), "block_id", 1);
+    const pointScope = scopeCondition(scopePrefix(req), "p.block_id", 1, req.user?.admin_scope === "state");
+    const densityScope = scopeCondition(scopePrefix(req), "block_id", 1, req.user?.admin_scope === "state");
 
     const clusters: any[] = await prisma.$queryRawUnsafe(
       `SELECT p.id, ST_X(p.location::geometry) AS longitude,
               ST_Y(p.location::geometry) AS latitude, p.status, p.block_id
        FROM potholes p
-       WHERE p.status = 'verified' AND ${pointScope.clause}`,
+       WHERE ${pointScope.clause}`,
       ...pointScope.params,
     );
 
@@ -223,7 +229,7 @@ router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => 
               AVG(ST_X(location::geometry)) AS avg_longitude,
               AVG(ST_Y(location::geometry)) AS avg_latitude
        FROM potholes
-       WHERE status = 'verified' AND block_id IS NOT NULL AND ${densityScope.clause}
+       WHERE block_id IS NOT NULL AND ${densityScope.clause}
        GROUP BY block_id`,
       ...densityScope.params,
     );
@@ -290,6 +296,40 @@ function withdrawUrlFromTarget(targetUrl: string): string {
     return targetUrl;
   }
 }
+
+const generateTendersSchema = z.object({
+  force: z.boolean().optional(),
+});
+
+router.post("/tenders/generate", validate(generateTendersSchema), async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const prefix = scopePrefix(req);
+    if (!prefix) return res.status(400).json({ error: "Admin jurisdiction is not configured" });
+
+    const generated = await generateTendersForScope(prefix, req.body.force === true);
+    let pushFailures = 0;
+    for (const item of generated) {
+      const result = await pushBlockToTenderWebsite(item.block_id, `generate:admin:${req.user!.userId}`).catch(() => ({ success: false }));
+      if (!result.success) pushFailures += 1;
+    }
+
+    const message = generated.length === 0
+      ? "No new tenders were generated. All eligible blocks already have an open tender, or there are no verified potholes in your jurisdiction."
+      : `Generated ${generated.length} tender(s) for ${prefix}.${pushFailures ? ` ${pushFailures} tender push(es) will be retried by the scheduled sync.` : ""}`;
+
+    logger.info({ adminId: req.user!.userId, prefix, generated: generated.length, pushFailures }, "Manual tender generation completed");
+    res.json({
+      success: true,
+      generated,
+      generated_count: generated.length,
+      push_failures: pushFailures,
+      message,
+    });
+  } catch (err: any) {
+    logger.error({ err }, "Manual tender generation error");
+    return res.status(500).json({ error: err.message || "Failed to generate tenders" });
+  }
+});
 
 router.post("/tenders/:id/withdraw", async (req: AuthenticatedRequest, res: Response) => {
   try {

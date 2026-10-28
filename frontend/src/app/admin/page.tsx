@@ -216,6 +216,8 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [mounted, setMounted] = useState(false);
   const [tenderLoading, setTenderLoading] = useState<string | null>(null);
+  const [tenderGenerating, setTenderGenerating] = useState(false);
+  const [tenderGenerateFeedback, setTenderGenerateFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [withdrawConfirmId, setWithdrawConfirmId] = useState<string | null>(null);
   const [reportUpdating, setReportUpdating] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState("");
@@ -409,6 +411,26 @@ export default function AdminDashboard() {
       setWithdrawConfirmId(null);
     } finally {
       setTenderLoading(null);
+    }
+  };
+
+  const handleGenerateTenders = async () => {
+    setTenderGenerating(true);
+    setTenderGenerateFeedback(null);
+    try {
+      const res = await api.generateTenders(true);
+      setTenderGenerateFeedback({
+        type: "success",
+        text: res.message || `Generated ${res.generated_count || 0} tender(s).`,
+      });
+      await fetchAll();
+    } catch (err: any) {
+      setTenderGenerateFeedback({
+        type: "error",
+        text: err.message || "Failed to generate tenders.",
+      });
+    } finally {
+      setTenderGenerating(false);
     }
   };
 
@@ -809,11 +831,33 @@ export default function AdminDashboard() {
                 title="Tenders"
                 description="Accept a tender, or unsend it to withdraw it from the tendering website."
               >
+                <MagneticButton variant="primary" onClick={handleGenerateTenders} disabled={tenderGenerating}>
+                  {tenderGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                  Generate Tenders
+                </MagneticButton>
                 <MagneticButton variant="secondary" onClick={fetchAll}>
                   <RefreshCw className="h-4 w-4" />
                   Refresh
                 </MagneticButton>
               </SectionHeader>
+
+              {tenderGenerateFeedback && (
+                <div
+                  role="status"
+                  className={`mt-4 flex items-start gap-2 rounded-lg border px-4 py-3 text-sm ${
+                    tenderGenerateFeedback.type === "success"
+                      ? "border-ok/40 bg-surface text-ink"
+                      : "border-bad/40 bg-sunken text-ink"
+                  }`}
+                >
+                  {tenderGenerateFeedback.type === "success" ? (
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-ok" />
+                  ) : (
+                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-bad" />
+                  )}
+                  <span>{tenderGenerateFeedback.text}</span>
+                </div>
+              )}
 
               <div className="mt-5">
                 {loading ? (
@@ -826,7 +870,7 @@ export default function AdminDashboard() {
                     <Wallet className="h-7 w-7 text-ink3" />
                     <p className="text-sm text-ink2">No tenders yet</p>
                     <p className="text-xs text-ink3">
-                      Tenders are generated automatically once the pothole threshold is met.
+                      Use Generate Tenders above for your jurisdiction, or wait for the automatic threshold.
                     </p>
                   </Surface>
                 ) : (
