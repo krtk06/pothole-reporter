@@ -1,140 +1,137 @@
 import { Router, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middleware/auth";
-import { requireAdmin } from "../middleware/rbac";
+import { requireAdmin, requireStateAdmin } from "../middleware/rbac";
 import { validate } from "../middleware/validate";
+import { adminLimiter } from "../middleware/rateLimiter";
 import prisma from "../config/database";
 import logger from "../config/logger";
 import { generatePresignedDownloadUrl } from "../services/s3Service";
-import { checkAndGenerateTender } from "../services/tenderService";
+import { checkAndGenerateTender, dispatchTenderForMandal, hasOpenTender } from "../services/tenderService";
+import { ensureRoadIssueForReport } from "../services/roadIssueRegistry";
+import {
+  getTenderSyncConfig,
+  performTenderSync,
+  pushBlockToTenderWebsite,
+  updateTenderSyncConfig,
+} from "../services/tenderSyncService";
 import { AuthenticatedRequest } from "../types";
+import { buildBlockId, resolveDistrictForMandal } from "../services/geoService";
 
 const router = Router();
 
-router.use(authenticate, requireAdmin);
+router.use(authenticate, requireAdmin, adminLimiter);
 
 const statusFilterSchema = z.object({
   status: z.enum(["pending", "verified", "rejected", "fixed"]).optional(),
 });
 
-/** Build scope prefix string for tender filtering.
- * Returns null when the admin's jurisdiction cannot be resolved — callers must
- * fail closed (no data) in that case. */
-function getScopePrefix(req: AuthenticatedRequest): string | null {
+function scopePrefix(req: AuthenticatedRequest): string | null {
   const scope = req.user?.admin_scope;
   const state = req.user?.admin_state;
   const district = req.user?.admin_district;
   const mandal = req.user?.admin_mandal;
 
   if (!scope || !state) {
-    logger.warn(
-      { adminId: req.user?.userId, admin_scope: scope },
-      "Admin jurisdiction unresolved — failing closed (no data)"
-    );
+    logger.warn({ adminId: req.user?.userId, admin_scope: scope }, "Admin jurisdiction unresolved; failing closed");
     return null;
   }
 
-  const statePrefix = state.toLowerCase();
-
   if (scope === "mandal") {
-    if (!district || !mandal) {
-      logger.warn({ adminId: req.user?.userId }, "Mandal admin missing district/mandal — failing closed");
-      return null;
-    }
-    return `${statePrefix}/${district.toLowerCase()}/${mandal.toLowerCase()}`;
-  } else if (scope === "district") {
-    if (!district) {
-      logger.warn({ adminId: req.user?.userId }, "District admin missing district — failing closed");
-      return null;
-    }
-    return `${statePrefix}/${district.toLowerCase()}`;
+    if (!district || !mandal) return null;
+    return buildBlockId(state, district, mandal);
   }
-  return statePrefix;
+  if (scope === "district") {
+    if (!district) return null;
+    return buildBlockId(state, district, null);
+  }
+  return buildBlockId(state, null, null);
 }
 
-function getScopeCondition(scopePrefix: string | null, column: string, parameterIndex: number) {
-  // Fail closed: an unresolved jurisdiction matches nothing
-  if (!scopePrefix) return { clause: "1 = 0", params: [] as string[] };
+function scopeCondition(prefix: string | null, column: string, parameterIndex: number) {
+  if (!prefix) return { clause: "1 = 0", params: [] as string[] };
   return {
     clause: `(${column} = $${parameterIndex} OR ${column} LIKE $${parameterIndex + 1})`,
-    params: [scopePrefix, `${scopePrefix}/%`],
+    params: [prefix, `${prefix}/%`],
   };
 }
 
-/** Fail-closed scope condition derived straight from the request. */
-function getScopeConditionForRequest(req: AuthenticatedRequest, column: string, parameterIndex: number) {
-  return getScopeCondition(getScopePrefix(req), column, parameterIndex);
-}
-
-/** Prisma where-clause limiting tenders to the admin's jurisdiction; empty set when unresolved. */
-function getPrismaScopeWhere(req: AuthenticatedRequest): any {
-  const scopePrefix = getScopePrefix(req);
-  if (!scopePrefix) return { block_id: { in: [] } };
+function prismaScopeWhere(req: AuthenticatedRequest) {
+  const prefix = scopePrefix(req);
+  if (!prefix) return { block_id: { in: [] as string[] } };
   return {
-    OR: [
-      { block_id: scopePrefix },
-      { block_id: { startsWith: `${scopePrefix}/` } },
-    ],
+    OR: [{ block_id: prefix }, { block_id: { startsWith: `${prefix}/` } }],
   };
 }
 
-function isStateScopeAdmin(req: AuthenticatedRequest): boolean {
-  return req.user?.admin_scope === "state";
+function jurisdictionOf(req: AuthenticatedRequest) {
+  const scope = req.user!.admin_scope!;
+  const district = req.user!.admin_district || null;
+  const mandal = req.user!.admin_mandal || null;
+  return {
+    state: req.user!.admin_state || null,
+    district,
+    mandal,
+    locality: mandal,
+    level: scope,
+    admin_scope: scope,
+    canDispatchTender: scope === "mandal" || scope === "state",
+    roleTitle:
+      scope === "mandal"
+        ? `Mandal Operations Officer (${mandal})`
+        : scope === "district"
+          ? `District Supervisory Officer (${district})`
+          : "State Super Administrator",
+  };
 }
+
+router.get("/jurisdiction", async (req: AuthenticatedRequest, res: Response) => {
+  res.json(jurisdictionOf(req));
+});
 
 router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
   try {
     const parsed = statusFilterSchema.safeParse(req.query);
-    const status = parsed.success ? parsed.data.status : undefined;
+    if (!parsed.success) return res.status(400).json({ error: "Invalid status filter" });
 
-    let conditions: string[] = [];
-    let params: any[] = [];
-    let paramIdx = 1;
+    const conditions: string[] = [];
+    const params: any[] = [];
+    let index = 1;
 
-    if (status) {
-      conditions.push(`p.status = $${paramIdx}::text::"ReportStatus"`);
-      params.push(status);
-      paramIdx++;
+    if (parsed.data.status) {
+      conditions.push(`p.status = $${index}::text::"ReportStatus"`);
+      params.push(parsed.data.status);
+      index++;
     }
 
-    // Always apply scope (fails closed when the jurisdiction is unresolved)
-    const scopeCondition = getScopeConditionForRequest(req, "p.block_id", paramIdx);
-    conditions.push(scopeCondition.clause);
-    params.push(...scopeCondition.params);
-    paramIdx += 2;
+    const scope = scopeCondition(scopePrefix(req), "p.block_id", index);
+    conditions.push(scope.clause);
+    params.push(...scope.params);
 
-    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-
-    const query = `
-      SELECT
-        p.id,
-        u.name as reporter_name,
-        u.phone as reporter_phone,
-        p.image_s3_key,
-        ST_X(p.location::geometry) as longitude,
-        ST_Y(p.location::geometry) as latitude,
-        p.status,
-        p.block_id,
-        p.created_at
-      FROM potholes p
-      JOIN users u ON u.id = p.reporter_id
-      ${whereClause}
-      ORDER BY p.created_at DESC
-    `;
-
-    const reports: any[] = await prisma.$queryRawUnsafe(query, ...params);
-
-    const enriched = await Promise.all(
-      reports.map(async (r: any) => ({
-        ...r,
-        longitude: Number(r.longitude),
-        latitude: Number(r.latitude),
-        image_url: await generatePresignedDownloadUrl(r.image_s3_key).catch(() => null),
-      }))
+    const reports: any[] = await prisma.$queryRawUnsafe(
+      `SELECT p.id, u.name AS reporter_name, u.phone AS reporter_phone,
+              p.image_s3_key, ST_X(p.location::geometry) AS longitude,
+              ST_Y(p.location::geometry) AS latitude, p.status, p.block_id,
+              p.address_notes, p.created_at
+       FROM potholes p
+       JOIN users u ON u.id = p.reporter_id
+       WHERE ${conditions.join(" AND ")}
+       ORDER BY p.created_at DESC
+       LIMIT 2000`,
+      ...params,
     );
 
-    res.json({ reports: enriched });
-  } catch (err: any) {
+    const enriched = await Promise.all(
+      reports.map(async (report) => ({
+        ...report,
+        longitude: Number(report.longitude),
+        latitude: Number(report.latitude),
+        image_url: await generatePresignedDownloadUrl(report.image_s3_key).catch(() => null),
+      })),
+    );
+
+    res.json({ reports: enriched, jurisdiction: jurisdictionOf(req) });
+  } catch (err) {
     logger.error({ err }, "Admin reports error");
     return res.status(500).json({ error: "Failed to fetch reports" });
   }
@@ -143,54 +140,60 @@ router.get("/reports", async (req: AuthenticatedRequest, res: Response) => {
 const updateReportSchema = z.object({
   status: z.enum(["pending", "verified", "rejected", "fixed"]),
 });
-
 const uuidParam = z.string().uuid();
 
 router.patch("/reports/:id", validate(updateReportSchema), async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { status } = req.body;
     const idResult = uuidParam.safeParse(req.params.id);
-    if (!idResult.success) {
-      res.status(400).json({ error: "Invalid report ID" });
-      return;
-    }
+    if (!idResult.success) return res.status(400).json({ error: "Invalid report ID" });
     const id = idResult.data;
-    const scopeCondition = getScopeConditionForRequest(req, "block_id", 3);
+    const { status } = req.body;
 
-    const result: any[] = await prisma.$queryRawUnsafe(`
-      UPDATE potholes
-      SET status = $1::text::"ReportStatus"
-      WHERE id = $2::uuid${scopeCondition.clause ? ` AND ${scopeCondition.clause}` : ""}
-      RETURNING id, status, block_id
-    `, status, id, ...scopeCondition.params);
+    const scope = scopeCondition(scopePrefix(req), "block_id", 3);
+    const updated: any[] = await prisma.$queryRawUnsafe(
+      `UPDATE potholes
+       SET status = $1::text::"ReportStatus"
+       WHERE id = $2::uuid AND ${scope.clause}
+       RETURNING id, status, block_id`,
+      status,
+      id,
+      ...scope.params,
+    );
+    if (updated.length === 0) return res.status(404).json({ error: "Report not found" });
 
-    if (result.length === 0) {
-      res.status(404).json({ error: "Report not found" });
-      return;
-    }
-
-    // Verifying a report is the only way a human can confirm a pothole, so this
-    // is where the tender threshold has to be re-checked: checkAndGenerateTender
-    // counts verified potholes in the report's block and creates + dispatches a
-    // tender once POTHOLE_TENDER_THRESHOLD is reached.
+    let roadIssueId: string | null = null;
     let tenderGenerated = false;
-    const { block_id: blockId } = result[0];
+    const blockId = updated[0].block_id as string | null;
 
-    if (status === "verified" && blockId) {
+    if (status === "verified") {
+      // AI may have been unavailable, so manual verification must create or
+      // attach the physical map marker.
       try {
-        tenderGenerated = await checkAndGenerateTender(blockId);
-      } catch (tenderErr: any) {
-        // The status UPDATE is already committed. A tender-side failure must not
-        // be reported as a failed status change, or the admin UI will show an
-        // error for a change that actually happened. The scheduler retries on
-        // its own schedule.
-        logger.error({ err: tenderErr, reportId: id, blockId }, "Tender generation failed after report verification");
+        const issue = await ensureRoadIssueForReport(id);
+        roadIssueId = issue.issueId;
+      } catch (err) {
+        logger.error({ err, reportId: id }, "Failed to create road issue for verified report");
+      }
+
+      if (blockId) {
+        try {
+          tenderGenerated = await checkAndGenerateTender(blockId);
+          // Push new evidence even when an open tender already exists.
+          if (tenderGenerated || await hasOpenTender(blockId)) {
+            await pushBlockToTenderWebsite(blockId, `admin:${req.user!.userId}`).catch(() => undefined);
+          }
+        } catch (err) {
+          logger.error({ err, reportId: id, blockId }, "Tender generation failed after verification");
+        }
       }
     }
 
-    logger.info({ reportId: id, newStatus: status, adminId: req.user!.userId, tenderGenerated }, "Report status updated");
-    res.json({ report: result[0], tender_generated: tenderGenerated });
-  } catch (err: any) {
+    res.json({
+      report: updated[0],
+      road_issue_id: roadIssueId,
+      tender_generated: tenderGenerated,
+    });
+  } catch (err) {
     logger.error({ err }, "Update report error");
     return res.status(500).json({ error: "Failed to update report" });
   }
@@ -198,103 +201,60 @@ router.patch("/reports/:id", validate(updateReportSchema), async (req: Authentic
 
 router.get("/map-clusters", async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const scopeCondition = getScopeConditionForRequest(req, "p.block_id", 1);
-    const densityScopeCondition = getScopeConditionForRequest(req, "block_id", 1);
+    const pointScope = scopeCondition(scopePrefix(req), "p.block_id", 1);
+    const densityScope = scopeCondition(scopePrefix(req), "block_id", 1);
 
-    let conditions = [`p.status = 'verified'`];
-    let params: any[] = [];
+    const clusters: any[] = await prisma.$queryRawUnsafe(
+      `SELECT p.id, ST_X(p.location::geometry) AS longitude,
+              ST_Y(p.location::geometry) AS latitude, p.status, p.block_id
+       FROM potholes p
+       WHERE p.status = 'verified' AND ${pointScope.clause}`,
+      ...pointScope.params,
+    );
 
-    // Always apply scope (fails closed when the jurisdiction is unresolved)
-    conditions.push(scopeCondition.clause);
-    params.push(...scopeCondition.params);
-
-    const whereClause = `WHERE ${conditions.join(" AND ")}`;
-
-    const clusters: any[] = await prisma.$queryRawUnsafe(`
-      SELECT
-        p.id,
-        ST_X(p.location::geometry) as longitude,
-        ST_Y(p.location::geometry) as latitude,
-        p.status,
-        p.block_id
-      FROM potholes p
-      ${whereClause}
-    `, ...params);
-
-    const features = clusters.map((c: any) => ({
+    const features = clusters.map((cluster) => ({
       type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [Number(c.longitude), Number(c.latitude)],
-      },
-      properties: {
-        id: c.id,
-        status: c.status,
-        block_id: c.block_id,
-      },
+      geometry: { type: "Point", coordinates: [Number(cluster.longitude), Number(cluster.latitude)] },
+      properties: { id: cluster.id, status: cluster.status, block_id: cluster.block_id },
     }));
 
-    const geojson = {
-      type: "FeatureCollection",
-      features,
-    };
-
-    let densityConditions = [`status = 'verified'`, `block_id IS NOT NULL`];
-    let densityParams: any[] = [];
-
-    densityConditions.push(densityScopeCondition.clause);
-    densityParams.push(...densityScopeCondition.params);
-
-    const densityWhere = `WHERE ${densityConditions.join(" AND ")}`;
-
-    const blockDensity: any[] = await prisma.$queryRawUnsafe(`
-      SELECT
-        block_id,
-        COUNT(*)::bigint as count,
-        AVG(ST_X(location::geometry)) as avg_longitude,
-        AVG(ST_Y(location::geometry)) as avg_latitude
-      FROM potholes
-      ${densityWhere}
-      GROUP BY block_id
-    `, ...densityParams);
+    const density: any[] = await prisma.$queryRawUnsafe(
+      `SELECT block_id, COUNT(*)::bigint AS count,
+              AVG(ST_X(location::geometry)) AS avg_longitude,
+              AVG(ST_Y(location::geometry)) AS avg_latitude
+       FROM potholes
+       WHERE status = 'verified' AND block_id IS NOT NULL AND ${densityScope.clause}
+       GROUP BY block_id`,
+      ...densityScope.params,
+    );
 
     res.json({
-      potholes: geojson,
-      blockDensity: blockDensity.map((b: any) => ({
-        block_id: b.block_id,
-        count: Number(b.count),
-        avg_longitude: Number(b.avg_longitude),
-        avg_latitude: Number(b.avg_latitude),
+      potholes: { type: "FeatureCollection", features },
+      blockDensity: density.map((row) => ({
+        block_id: row.block_id,
+        count: Number(row.count),
+        avg_longitude: Number(row.avg_longitude),
+        avg_latitude: Number(row.avg_latitude),
       })),
     });
-  } catch (err: any) {
+  } catch (err) {
     logger.error({ err }, "Map clusters error");
     return res.status(500).json({ error: "Failed to fetch map data" });
   }
 });
 
+function serializeTender(tender: any) {
+  return { ...tender, estimated_cost: Number(tender.estimated_cost) };
+}
+
 router.get("/tenders", async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const scopePrefix = getScopePrefix(req);
-    let tenders: any[];
-
-    if (scopePrefix) {
-      tenders = await prisma.tender.findMany({
-        where: {
-          OR: [
-            { block_id: scopePrefix },
-            { block_id: { startsWith: `${scopePrefix}/` } },
-          ],
-        },
-        orderBy: { generated_at: "desc" },
-      });
-    } else {
-      // Fail closed: unresolved jurisdiction sees no tenders
-      tenders = [];
-    }
-
-    res.json({ tenders });
-  } catch (err: any) {
+    const tenders = await prisma.tender.findMany({
+      where: prismaScopeWhere(req),
+      orderBy: { generated_at: "desc" },
+    });
+    res.json({ tenders: tenders.map(serializeTender) });
+  } catch (err) {
     logger.error({ err }, "Tenders error");
     return res.status(500).json({ error: "Failed to fetch tenders" });
   }
@@ -306,36 +266,21 @@ const updateTenderSchema = z.object({
 
 router.patch("/tenders/:id", validate(updateTenderSchema), async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { status } = req.body;
     const idResult = uuidParam.safeParse(req.params.id);
-    if (!idResult.success) {
-      return res.status(400).json({ error: "Invalid tender ID" });
-    }
-    const id = idResult.data;
-    const scopeWhere = getPrismaScopeWhere(req);
-
-    const updateResult = await prisma.tender.updateMany({
-      where: { id, ...scopeWhere },
-      data: { status },
+    if (!idResult.success) return res.status(400).json({ error: "Invalid tender ID" });
+    const result = await prisma.tender.updateMany({
+      where: { id: idResult.data, ...prismaScopeWhere(req) },
+      data: { status: req.body.status },
     });
-
-    if (updateResult.count === 0) {
-      return res.status(404).json({ error: "Tender not found" });
-    }
-
-    const tender = await prisma.tender.findUnique({ where: { id } });
-
-    logger.info({ tenderId: id, newStatus: status, adminId: req.user!.userId }, "Tender status updated");
-    res.json({ tender });
-  } catch (err: any) {
+    if (result.count === 0) return res.status(404).json({ error: "Tender not found" });
+    const tender = await prisma.tender.findUnique({ where: { id: idResult.data } });
+    res.json({ tender: tender ? serializeTender(tender) : null });
+  } catch (err) {
     logger.error({ err }, "Update tender error");
     return res.status(500).json({ error: "Failed to update tender" });
   }
 });
 
-// ─── TENDER WEBSITE SYNC & SCHEDULING (ADMIN ONLY) ──────────────────────────
-
-/** Derive the tender website's withdraw endpoint from the configured sync target URL. */
 function withdrawUrlFromTarget(targetUrl: string): string {
   try {
     const parsed = new URL(targetUrl);
@@ -346,51 +291,31 @@ function withdrawUrlFromTarget(targetUrl: string): string {
   }
 }
 
-/**
- * Unsend a tender: marks it rejected in the backend (a rejected tender is
- * excluded from future scheduled syncs and cannot be re-created for the same
- * block) and removes it from the tender website. The DELETE dispatch is
- * best-effort — the next scheduled sync heals any failure because rejected
- * tenders are removed on ingestion.
- */
 router.post("/tenders/:id/withdraw", async (req: AuthenticatedRequest, res: Response) => {
   try {
     const idResult = uuidParam.safeParse(req.params.id);
-    if (!idResult.success) {
-      return res.status(400).json({ error: "Invalid tender ID" });
-    }
-    const id = idResult.data;
-    const scopeWhere = getPrismaScopeWhere(req);
+    if (!idResult.success) return res.status(400).json({ error: "Invalid tender ID" });
 
-    const tender = await prisma.tender.findFirst({ where: { id, ...scopeWhere } });
-    if (!tender) {
-      return res.status(404).json({ error: "Tender not found" });
-    }
+    const tender = await prisma.tender.findFirst({
+      where: { id: idResult.data, ...prismaScopeWhere(req) },
+    });
+    if (!tender) return res.status(404).json({ error: "Tender not found" });
     if (tender.status !== "open") {
-      return res.status(409).json({
-        error: `Only open tenders can be withdrawn (current status: ${tender.status})`,
-      });
+      return res.status(409).json({ error: `Only open tenders can be withdrawn (current: ${tender.status})` });
     }
 
-    const updateResult = await prisma.tender.updateMany({
-      where: { id, status: "open", ...scopeWhere },
+    const updated = await prisma.tender.updateMany({
+      where: { id: tender.id, status: "open", ...prismaScopeWhere(req) },
       data: { status: "rejected" },
     });
-    if (updateResult.count === 0) {
-      return res.status(409).json({
-        error: "Tender is no longer open — it may have been accepted, completed or already withdrawn",
-      });
-    }
+    if (updated.count === 0) return res.status(409).json({ error: "Tender is no longer open" });
 
-    const { getTenderSyncConfig } = await import("../services/tenderSyncService");
     const { settings } = await getTenderSyncConfig();
-
-    let withdrawDispatched = false;
+    let dispatched = false;
     let withdrawError: string | null = null;
 
     if (!settings.target_url || !settings.api_key) {
-      withdrawError = "Tender website URL or API key not configured; withdrawal will reconcile on next scheduled sync";
-      logger.warn({ tenderId: id }, withdrawError);
+      withdrawError = "Tender website URL or API key not configured; next scheduled sync will reconcile";
     } else {
       try {
         const response = await fetch(withdrawUrlFromTarget(settings.target_url), {
@@ -398,41 +323,105 @@ router.post("/tenders/:id/withdraw", async (req: AuthenticatedRequest, res: Resp
           headers: {
             "Content-Type": "application/json",
             "X-API-Key": settings.api_key,
-            "Authorization": `Bearer ${settings.api_key}`,
+            Authorization: `Bearer ${settings.api_key}`,
           },
           body: JSON.stringify({
-            tender_id: id,
+            tender_id: tender.id,
             block_id: tender.block_id,
             triggered_by: `admin:${req.user?.userId || "admin"}`,
           }),
-          signal: AbortSignal.timeout(15000),
+          signal: AbortSignal.timeout(15_000),
+          redirect: "error",
         });
-        withdrawDispatched = response.ok;
-        if (!response.ok) {
-          withdrawError = `Tender website withdraw call returned status ${response.status}; scheduled sync will reconcile`;
-          logger.warn({ tenderId: id, status: response.status }, withdrawError);
-        }
-      } catch (dispatchErr: any) {
-        withdrawError = `Failed to reach tender website: ${dispatchErr.message}; scheduled sync will reconcile`;
-        logger.warn({ err: dispatchErr, tenderId: id }, withdrawError);
+        dispatched = response.ok;
+        if (!response.ok) withdrawError = `Tender website returned ${response.status}; next sync will reconcile`;
+      } catch (err: any) {
+        withdrawError = `Failed to reach tender website: ${err.message}; next sync will reconcile`;
       }
     }
 
-    try {
-      await prisma.$executeRawUnsafe(`
-        INSERT INTO tender_sync_logs (potholes_count, tenders_count, status, error_message, triggered_by)
-        VALUES (0, 1, $1, $2, $3)
-      `, withdrawDispatched ? "success" : "failed", withdrawError, `withdraw:admin:${req.user?.userId || "admin"}`);
-    } catch (logErr) {
-      logger.error({ err: logErr }, "Failed to write withdraw log");
-    }
+    await prisma.$executeRawUnsafe(
+      `INSERT INTO tender_sync_logs (potholes_count, tenders_count, status, error_message, triggered_by)
+       VALUES (0, 1, $1, $2, $3)`,
+      dispatched ? "success" : "failed",
+      withdrawError,
+      `withdraw:admin:${req.user?.userId || "admin"}`,
+    ).catch(() => undefined);
 
-    const updated = await prisma.tender.findUnique({ where: { id } });
-    logger.info({ tenderId: id, adminId: req.user!.userId, withdrawDispatched }, "Tender withdrawn (unsent)");
-    res.json({ success: true, tender: updated, withdraw_dispatched: withdrawDispatched });
-  } catch (err: any) {
+    const fresh = await prisma.tender.findUnique({ where: { id: tender.id } });
+    res.json({
+      success: true,
+      tender: fresh ? serializeTender(fresh) : null,
+      withdraw_dispatched: dispatched,
+    });
+  } catch (err) {
     logger.error({ err }, "Withdraw tender error");
     return res.status(500).json({ error: "Failed to withdraw tender" });
+  }
+});
+
+router.post("/tenders/dispatch", async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const scope = req.user!.admin_scope!;
+    if (scope === "district") {
+      return res.status(403).json({ error: "District officers are supervisory only; mandal officers dispatch tenders." });
+    }
+
+    const body = z.object({
+      mandal: z.string().trim().min(1).max(160).optional(),
+      district: z.string().trim().min(1).max(120).optional(),
+    }).safeParse(req.body);
+    if (!body.success) return res.status(400).json({ error: "Invalid dispatch payload" });
+
+    const mandal = scope === "mandal" ? req.user!.admin_mandal : body.data.mandal;
+    let district: string | null | undefined = scope === "mandal" ? req.user!.admin_district : body.data.district;
+    if (!mandal) return res.status(400).json({ error: "A mandal is required" });
+    if (!req.user!.admin_state) return res.status(400).json({ error: "Admin state is not configured" });
+    if (scope === "state" && !district) {
+      district = await resolveDistrictForMandal(req.user!.admin_state, mandal);
+    }
+    if (!district) return res.status(400).json({ error: "A district is required for state-level dispatch" });
+
+    const tender = await dispatchTenderForMandal({
+      state: req.user!.admin_state,
+      district,
+      mandal,
+      initiatedBy: req.user!.userId,
+    });
+    await pushBlockToTenderWebsite(tender.block_id, `dispatch:admin:${req.user!.userId}`).catch(() => undefined);
+
+    res.json({
+      success: true,
+      message: `Tender batch dispatched for ${tender.block_id}`,
+      tender,
+      potholes_count: tender.pothole_count,
+      tenders_count: 1,
+      dispatched_by: jurisdictionOf(req).roleTitle,
+    });
+  } catch (err: any) {
+    logger.error({ err }, "Tender dispatch error");
+    return res.status(400).json({ error: err.message || "Failed to dispatch tender" });
+  }
+});
+
+router.get("/hierarchy-summary", async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const scope = scopeCondition(scopePrefix(req), "block_id", 1);
+    const summaries: any[] = await prisma.$queryRawUnsafe(
+      `SELECT COALESCE(block_id, 'Unassigned') AS block_id, status, COUNT(*)::bigint AS count
+       FROM potholes
+       WHERE ${scope.clause}
+       GROUP BY block_id, status
+       ORDER BY block_id ASC`,
+      ...scope.params,
+    );
+    res.json({
+      jurisdiction: jurisdictionOf(req),
+      summaries: summaries.map((row) => ({ ...row, count: Number(row.count) })),
+    });
+  } catch (err) {
+    logger.error({ err }, "Hierarchy summary error");
+    return res.status(500).json({ error: "Failed to fetch hierarchy summary" });
   }
 });
 
@@ -443,45 +432,31 @@ const updateSyncConfigSchema = z.object({
   is_enabled: z.boolean().optional(),
 });
 
-router.get("/tender-sync", async (req: AuthenticatedRequest, res: Response) => {
+router.get("/tender-sync", requireStateAdmin, async (_req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!isStateScopeAdmin(req)) {
-      return res.status(403).json({ error: "Tender sync is managed by state-level admins only" });
-    }
-    const { getTenderSyncConfig } = await import("../services/tenderSyncService");
-    const data = await getTenderSyncConfig();
-    res.json(data);
-  } catch (err: any) {
+    res.json(await getTenderSyncConfig());
+  } catch (err) {
     logger.error({ err }, "Fetch tender sync config error");
     res.status(500).json({ error: "Failed to fetch tender sync configuration" });
   }
 });
 
-router.put("/tender-sync", validate(updateSyncConfigSchema), async (req: AuthenticatedRequest, res: Response) => {
+router.put("/tender-sync", requireStateAdmin, validate(updateSyncConfigSchema), async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!isStateScopeAdmin(req)) {
-      return res.status(403).json({ error: "Tender sync is managed by state-level admins only" });
-    }
-    const { updateTenderSyncConfig } = await import("../services/tenderSyncService");
-    const updated = await updateTenderSyncConfig(req.body);
-    logger.info({ adminId: req.user?.userId, config: req.body }, "Tender sync settings updated");
-    res.json({ settings: updated });
+    const settings = await updateTenderSyncConfig(req.body);
+    logger.info({ adminId: req.user?.userId }, "Tender sync settings updated");
+    res.json({ settings });
   } catch (err: any) {
     logger.error({ err }, "Update tender sync config error");
-    res.status(500).json({ error: "Failed to update tender sync configuration" });
+    res.status(400).json({ error: err.message || "Failed to update tender sync configuration" });
   }
 });
 
-router.post("/tender-sync/trigger", async (req: AuthenticatedRequest, res: Response) => {
+router.post("/tender-sync/trigger", requireStateAdmin, async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!isStateScopeAdmin(req)) {
-      return res.status(403).json({ error: "Tender sync is managed by state-level admins only" });
-    }
-    const { performTenderSync } = await import("../services/tenderSyncService");
-    const adminIdentifier = req.user?.userId || "admin";
-    const result = await performTenderSync(`admin:${adminIdentifier}`);
+    const result = await performTenderSync(`admin:${req.user?.userId || "admin"}`);
     res.json(result);
-  } catch (err: any) {
+  } catch (err) {
     logger.error({ err }, "Trigger tender sync error");
     res.status(500).json({ error: "Failed to perform tender sync" });
   }

@@ -212,6 +212,7 @@ export default function AdminDashboard() {
   const [publicPotholes, setPublicPotholes] = useState<PublicPothole[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMap, setLoadingMap] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [mounted, setMounted] = useState(false);
   const [tenderLoading, setTenderLoading] = useState<string | null>(null);
@@ -329,6 +330,7 @@ export default function AdminDashboard() {
 
   const fetchAll = async () => {
     setLoading(true);
+    setLoadError("");
     try {
       const [reportsData, tendersData, mapData] = await Promise.all([
         api.getAdminReports(),
@@ -353,6 +355,10 @@ export default function AdminDashboard() {
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 401) {
         void logout().finally(() => router.push("/"));
+      } else if (err instanceof ApiError) {
+        setLoadError(`The server responded with HTTP ${err.status}.`);
+      } else {
+        setLoadError("The server could not be reached.");
       }
     } finally {
       setLoading(false);
@@ -567,6 +573,21 @@ export default function AdminDashboard() {
           </MagneticButton>
         </NavInner>
       </NavBar>
+      {loadError && (
+        <div role="alert" className="mx-auto mt-4 flex max-w-6xl flex-wrap items-center gap-3 rounded-lg border border-bad bg-sunken px-4 py-3 text-sm">
+          <span className="font-semibold text-bad">Data could not be loaded from the server.</span>
+          <span className="text-ink2">
+            {loadError} The tables and map below are empty because the request failed, not because there is no data.
+          </span>
+          <button
+            type="button"
+            onClick={() => void fetchAll()}
+            className="ml-auto rounded-md border border-hairline px-3 py-1 font-semibold text-ink hover:bg-surface"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {successMsg && (
         <div className="fixed right-4 top-20 z-50 flex max-w-sm items-start gap-2 rounded-lg border border-signal/40 bg-surface px-4 py-3 shadow-3 animate-mac-pop">

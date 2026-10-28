@@ -19,9 +19,12 @@ const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"];
 export type EvidenceKind = "image" | "video" | "none";
 
 export interface EvidenceSource {
+  /** First candidate. Kept for callers that only need one. */
   url: string | null;
+  /** Every candidate, in the order they should be tried on load failure. */
+  sources: string[];
   kind: EvidenceKind;
-  /** Where `url` came from, for diagnosing which path is live. */
+  /** Where the first candidate came from, for diagnosing which path is live. */
   origin: "uploads" | "presigned" | "none";
 }
 
@@ -50,20 +53,27 @@ export function evidenceSource(
   imageUrl?: string | null
 ): EvidenceSource {
   const kind = evidenceKind(imageS3Key, imageUrl);
-  if (kind === "none") return { url: null, kind, origin: "none" };
+  if (kind === "none") return { url: null, sources: [], kind, origin: "none" };
+
+  // Candidates in preference order. The presigned S3 URL goes first because it
+  // is the AWS-native path and works whenever the server's credentials are
+  // valid; the /uploads proxy is the fallback for deployments whose backend
+  // serves that route. Previously only one was chosen, so when /uploads was
+  // absent (the backend in this repository has no such route) every evidence
+  // image 404'd and the presigned URL was never attempted.
+  const candidates: string[] = [];
+  const presigned = (imageUrl || "").trim();
+  if (presigned) candidates.push(presigned);
 
   // image_s3_key already carries the `uploads/` prefix, so serving
   // /uploads/<key> verbatim yields /uploads/uploads/<file> and 404s.
-  // SERVER_HANDOFF.md flagged this; verified against the live proxy.
   const key = (imageS3Key || "").replace(/^\/+/, "");
   const path = key.replace(/^uploads\//, "");
-  if (path) {
-    return { url: `/uploads/${path}`, kind, origin: "uploads" };
-  }
-  if (imageUrl) {
-    return { url: imageUrl, kind, origin: "presigned" };
-  }
-  return { url: null, kind, origin: "none" };
+  if (path) candidates.push(`/uploads/${path}`);
+
+  const sources = [...new Set(candidates)];
+  if (sources.length === 0) return { url: null, sources: [], kind, origin: "none" };
+  return { url: sources[0], sources, kind, origin: presigned ? "presigned" : "uploads" };
 }
 
 export const EVIDENCE_VIDEO_EXTENSIONS = VIDEO_EXTENSIONS;

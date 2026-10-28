@@ -77,7 +77,7 @@ npm run dev
      - Trigger an instant manual sync ("Sync Now")
      - View the complete audit log of past transmissions
 
-> **Deployment note:** the Supabase schema was historically migrated by hand; run `npx prisma migrate deploy` (includes an idempotent reconciliation migration for `AdminScope`, the users jurisdiction columns and `TenderStatus.rejected`) when deploying.
+> **Deployment note:** the database is AWS RDS PostgreSQL with PostGIS. Apply schema changes only with `cd backend && npm run prisma:migrate` (= `prisma migrate deploy`). Never run `prisma db push` or `prisma migrate dev` against a real database: `potholes` and `administrative_areas` are deliberately absent from `schema.prisma`, so those commands would drop them.
 
 ---
 
@@ -105,4 +105,36 @@ The account list is committed as `admin-roster.csv` / `admin-roster.json`.
 > Distribute credentials through a password manager or an encrypted channel, and
 > rotate the password after use. The production deployment uses its own password,
 > issued directly by the server administrator.
+
+---
+
+## AWS deployment
+
+Everything runs in one AWS account. Nothing connects to a non-AWS database host. The backend refuses to start unless `DATABASE_URL` points at an RDS endpoint (`backend/src/config/databaseTarget.ts`).
+
+| Concern | Service | Used by |
+| :--- | :--- | :--- |
+| Users, reports, tenders, areas | RDS PostgreSQL with PostGIS | backend |
+| Pothole evidence photos | S3 bucket `pothole-evidence-storage-john` (us-east-1) | backend (presigned URLs) |
+| Tender and bid store | S3 bucket `pothole-bucket-1`, key `tender-portal/tenders.json` | tender website |
+| Password-reset email | SES (not configured) | backend. Reset emails are not sent until SES is set up. |
+
+**Development database.** Use a separate database on the same instance, so local testing cannot touch production data:
+
+```sql
+CREATE DATABASE pothole_dev;
+```
+
+Point `DATABASE_URL` in `backend/.env` at it. The migrations enable PostGIS themselves.
+
+**Credentials.** Give the backend and the tender website separate IAM users:
+
+- Backend: `s3:GetObject` and `s3:PutObject` on `pothole-evidence-storage-john/*`, plus `ses:SendEmail` if SES is enabled.
+- Tender website: `s3:GetObject` and `s3:PutObject` on `pothole-bucket-1/tender-portal/*`. It must be able to write, because bids are saved back to S3.
+
+**Verify a deployment** from a machine that can reach RDS:
+
+```bash
+cd backend && npm run verify:deploy
+```
 

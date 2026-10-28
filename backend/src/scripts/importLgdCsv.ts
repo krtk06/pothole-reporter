@@ -1,239 +1,159 @@
 import fs from "fs";
 import path from "path";
+import readline from "readline";
 import prisma from "../config/database";
 
-type VillageRecord = {
-  villageCode: string;
-  village: string;
-  subdistrictCode: string;
-  subdistrict: string;
-  districtCode: string;
-  district: string;
-};
+type AreaLevel = "state" | "district" | "subdistrict" | "village";
 
-const STATE_CODE = "28";
-const STATE_NAME = "Andhra Pradesh";
-const SOURCE = "LGD administrative directory";
-const BATCH_SIZE = 500;
-
-function normalizeName(value: string): string {
-  return value.trim().replace(/\s+/g, " ").toLowerCase();
+interface DirectoryRecord {
+  id: string;
+  name: string;
+  normalizedName: string;
+  level: AreaLevel;
+  stateCode: string | null;
+  stateName: string | null;
+  districtCode: string | null;
+  districtName: string | null;
+  subdistrictCode: string | null;
+  subdistrictName: string | null;
 }
 
-function clean(value: unknown): string {
-  return String(value ?? "").trim().replace(/\s+/g, " ");
-}
-
-function parseCsv(text: string): Record<string, string>[] {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let field = "";
+function parseCsvLine(line: string): string[] {
+  const values: string[] = [];
+  let value = "";
   let quoted = false;
-
-  for (let i = 0; i < text.length; i += 1) {
-    const char = text[i];
-    const next = text[i + 1];
-
-    if (quoted) {
-      if (char === '"' && next === '"') {
-        field += '"';
-        i += 1;
-      } else if (char === '"') {
-        quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    if (character === '"') {
+      if (quoted && line[index + 1] === '"') {
+        value += '"';
+        index += 1;
       } else {
-        field += char;
+        quoted = !quoted;
       }
-    } else if (char === '"') {
-      quoted = true;
-    } else if (char === ",") {
-      row.push(field);
-      field = "";
-    } else if (char === "\n") {
-      row.push(field);
-      rows.push(row);
-      row = [];
-      field = "";
-    } else if (char !== "\r") {
-      field += char;
+    } else if (character === "," && !quoted) {
+      values.push(value.trim());
+      value = "";
+    } else {
+      value += character;
     }
   }
-
-  if (field || row.length) {
-    row.push(field);
-    rows.push(row);
-  }
-
-  const [headers = [], ...data] = rows;
-  const normalizedHeaders = headers.map((header) => normalizeName(header).replace(/[^a-z0-9]/g, ""));
-  return data
-    .filter((values) => values.some((value) => value.trim()))
-    .map((values) => Object.fromEntries(normalizedHeaders.map((header, index) => [header, values[index] ?? ""])));
+  values.push(value.trim());
+  return values;
 }
 
-function fromUnknownRecord(record: Record<string, any>): VillageRecord {
+function normaliseHeader(value: string) {
+  return value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function normaliseName(value: string) {
+  return value.trim().toLocaleLowerCase().replace(/\s+/g, " ");
+}
+
+function readField(row: string[], columns: Map<string, number>, aliases: string[]) {
+  for (const alias of aliases) {
+    const column = columns.get(alias);
+    if (column !== undefined && row[column]) return row[column].trim();
+  }
+  return "";
+}
+
+function recordFromRow(level: AreaLevel, row: string[], columns: Map<string, number>): DirectoryRecord | null {
+  const stateCode = readField(row, columns, ["statecode", "statelgd"]);
+  const stateName = readField(row, columns, ["statenameenglish", "statename", "state"]);
+  const districtCode = readField(row, columns, ["districtcode", "districtlgd"]);
+  const districtName = readField(row, columns, ["districtnameenglish", "districtname", "district"]);
+  const subdistrictCode = readField(row, columns, ["subdistrictcode", "subdistrictlgd", "subdistrictcode", "tehsilcode"]);
+  const subdistrictName = readField(row, columns, ["subdistrictnameenglish", "subdistrictname", "subdistrict", "tehsilname"]);
+  const code = level === "state" ? stateCode : level === "district" ? districtCode : level === "subdistrict" ? subdistrictCode : readField(row, columns, ["villagecode", "villagelgd"]);
+  const name = level === "state" ? stateName : level === "district" ? districtName : level === "subdistrict" ? subdistrictName : readField(row, columns, ["villagenameenglish", "villagename", "village"]);
+  if (!code || !name) return null;
   return {
-    villageCode: clean(record.villageCode ?? record.villagecode ?? record.lgd_villagecode ?? record.lgdvillagecode),
-    village: clean(record.village ?? record.name ?? record.lgd_villagename ?? record.lgdvillagename),
-    subdistrictCode: clean(record.subdistrictCode ?? record.subdistrictcode ?? record.lgd_subdistrictcode ?? record.lgdsubdistrictcode),
-    subdistrict: clean(record.subdistrict ?? record.mandal ?? record.subdistrictname),
-    districtCode: clean(record.districtCode ?? record.districtcode ?? record.lgd_districtcode ?? record.lgddistrictcode),
-    district: clean(record.district ?? record.districtname),
+    id: `lgd:${level}:${code}`,
+    name,
+    normalizedName: normaliseName(name),
+    level,
+    stateCode: stateCode || null,
+    stateName: stateName || null,
+    districtCode: districtCode || null,
+    districtName: districtName || null,
+    subdistrictCode: subdistrictCode || null,
+    subdistrictName: subdistrictName || null,
   };
 }
 
-function readInput(filePath: string): VillageRecord[] {
-  const text = fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, "");
-  if (filePath.toLowerCase().endsWith(".json")) {
-    const parsed = JSON.parse(text);
-    const villages = Array.isArray(parsed) ? parsed : parsed.villages;
-    if (!Array.isArray(villages)) {
-      throw new Error("JSON input must be an array or contain a villages array");
-    }
-    return villages.map(fromUnknownRecord);
-  }
-
-  return parseCsv(text).map(fromUnknownRecord);
-}
-
-function validateAndDedupe(records: VillageRecord[]): VillageRecord[] {
-  const byVillageCode = new Map<string, VillageRecord>();
-  for (const record of records) {
-    if (!record.villageCode || !record.village || !record.subdistrictCode || !record.subdistrict || !record.districtCode || !record.district) {
-      throw new Error(`Invalid LGD record: ${JSON.stringify(record)}`);
-    }
-    byVillageCode.set(record.villageCode, record);
-  }
-  return [...byVillageCode.values()].sort((a, b) =>
-    a.district.localeCompare(b.district) ||
-    a.subdistrict.localeCompare(b.subdistrict) ||
-    a.village.localeCompare(b.village)
+async function flush(records: DirectoryRecord[]) {
+  if (!records.length) return;
+  const values: unknown[] = [];
+  const placeholders = records.map((record, recordIndex) => {
+    const offset = recordIndex * 10;
+    values.push(record.id, record.name, record.normalizedName, record.level, record.stateCode, record.stateName, record.districtCode, record.districtName, record.subdistrictCode, record.subdistrictName);
+    return `(${Array.from({ length: 10 }, (_, index) => `$${offset + index + 1}`).join(", ")})`;
+  });
+  await prisma.$executeRawUnsafe(
+    `INSERT INTO administrative_areas (id, name, normalized_name, level, state_code, state_name, district_code, district_name, subdistrict_code, subdistrict_name)
+     VALUES ${placeholders.join(", ")}
+     ON CONFLICT (id) DO UPDATE SET
+       name = EXCLUDED.name,
+       normalized_name = EXCLUDED.normalized_name,
+       state_code = EXCLUDED.state_code,
+       state_name = EXCLUDED.state_name,
+       district_code = EXCLUDED.district_code,
+       district_name = EXCLUDED.district_name,
+       subdistrict_code = EXCLUDED.subdistrict_code,
+       subdistrict_name = EXCLUDED.subdistrict_name,
+       updated_at = CURRENT_TIMESTAMP`,
+    ...values,
   );
 }
 
-function buildAreas(villages: VillageRecord[]) {
-  const areas = new Map<string, any>();
-
-  areas.set(`state:${STATE_CODE}`, {
-    id: `state:${STATE_CODE}`,
-    name: STATE_NAME,
-    level: "state",
-    state_code: STATE_CODE,
-    state_name: STATE_NAME,
-    district_code: null,
-    district_name: null,
-    subdistrict_code: null,
-    subdistrict_name: null,
-  });
-
-  for (const village of villages) {
-    areas.set(`district:${village.districtCode}`, {
-      id: `district:${village.districtCode}`,
-      name: village.district,
-      level: "district",
-      state_code: STATE_CODE,
-      state_name: STATE_NAME,
-      district_code: village.districtCode,
-      district_name: village.district,
-      subdistrict_code: null,
-      subdistrict_name: null,
-    });
-
-    areas.set(`subdistrict:${village.subdistrictCode}`, {
-      id: `subdistrict:${village.subdistrictCode}`,
-      name: village.subdistrict,
-      level: "subdistrict",
-      state_code: STATE_CODE,
-      state_name: STATE_NAME,
-      district_code: village.districtCode,
-      district_name: village.district,
-      subdistrict_code: village.subdistrictCode,
-      subdistrict_name: village.subdistrict,
-    });
-
-    areas.set(`village:${village.villageCode}`, {
-      id: `village:${village.villageCode}`,
-      name: village.village,
-      level: "village",
-      state_code: STATE_CODE,
-      state_name: STATE_NAME,
-      district_code: village.districtCode,
-      district_name: village.district,
-      subdistrict_code: village.subdistrictCode,
-      subdistrict_name: village.subdistrict,
-    });
+async function importFile(level: AreaLevel, filePath: string) {
+  const source = readline.createInterface({ input: fs.createReadStream(filePath, { encoding: "utf8" }), crlfDelay: Infinity });
+  let columns: Map<string, number> | null = null;
+  let records: DirectoryRecord[] = [];
+  let imported = 0;
+  for await (const line of source) {
+    if (!line.trim()) continue;
+    if (!columns) {
+      columns = new Map(parseCsvLine(line).map((header, index) => [normaliseHeader(header.replace(/^\uFEFF/, "")), index]));
+      continue;
+    }
+    const record = recordFromRow(level, parseCsvLine(line), columns);
+    if (!record) continue;
+    if (stateFilter && normaliseName(record.stateName || "") !== stateFilter) continue;
+    records.push(record);
+    if (records.length === 250) {
+      await flush(records);
+      imported += records.length;
+      records = [];
+    }
   }
-
-  return [...areas.values()];
+  await flush(records);
+  imported += records.length;
+  console.log(`Imported ${imported.toLocaleString()} ${level} rows from ${path.basename(filePath)}`);
 }
 
-async function upsertBatch(areas: any[]) {
-  if (areas.length === 0) return;
-
-  const placeholders: string[] = [];
-  const params: any[] = [];
-  areas.forEach((area, index) => {
-    const base = index * 11;
-    placeholders.push(`($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8}, $${base + 9}, $${base + 10}, $${base + 11})`);
-    params.push(
-      area.id,
-      area.name,
-      normalizeName(area.name),
-      area.level,
-      area.state_code,
-      area.state_name,
-      area.district_code,
-      area.district_name,
-      area.subdistrict_code,
-      area.subdistrict_name,
-      SOURCE
-    );
-  });
-
-  await prisma.$executeRawUnsafe(`
-    INSERT INTO administrative_areas (
-      id, name, normalized_name, level, state_code, state_name,
-      district_code, district_name, subdistrict_code, subdistrict_name, source
-    )
-    VALUES ${placeholders.join(",")}
-    ON CONFLICT (id) DO UPDATE SET
-      name = EXCLUDED.name,
-      normalized_name = EXCLUDED.normalized_name,
-      level = EXCLUDED.level,
-      state_code = EXCLUDED.state_code,
-      state_name = EXCLUDED.state_name,
-      district_code = EXCLUDED.district_code,
-      district_name = EXCLUDED.district_name,
-      subdistrict_code = EXCLUDED.subdistrict_code,
-      subdistrict_name = EXCLUDED.subdistrict_name,
-      source = EXCLUDED.source,
-      updated_at = CURRENT_TIMESTAMP
-  `, ...params);
-}
+const files = process.argv.slice(2);
+const stateFilter = process.env.LGD_STATE_FILTER ? normaliseName(process.env.LGD_STATE_FILTER) : null;
+const levelFromFileName = (filePath: string): AreaLevel | null => {
+  const name = path.basename(filePath).toLocaleLowerCase();
+  if (name.includes("village")) return "village";
+  if (name.includes("subdistrict") || name.includes("sub_district") || name.includes("mandal")) return "subdistrict";
+  if (name.includes("district")) return "district";
+  if (name.includes("state")) return "state";
+  return null;
+};
 
 async function main() {
-  const inputPath = process.argv[2];
-  if (!inputPath) {
-    throw new Error("Usage: tsx src/scripts/importLgdCsv.ts <andhraDirectory.json|lgd.csv>");
+  if (!files.length) throw new Error("Pass LGD CSV files: states, districts, subdistricts, villages.");
+  for (const filePath of files) {
+    const level = levelFromFileName(filePath);
+    if (!level) throw new Error(`Cannot infer LGD level from ${filePath}`);
+    await importFile(level, filePath);
   }
-
-  const resolved = path.resolve(inputPath);
-  const villages = validateAndDedupe(readInput(resolved));
-  const areas = buildAreas(villages);
-
-  for (let index = 0; index < areas.length; index += BATCH_SIZE) {
-    await upsertBatch(areas.slice(index, index + BATCH_SIZE));
-    process.stdout.write(`Imported ${Math.min(index + BATCH_SIZE, areas.length)} / ${areas.length}\r`);
-  }
-
-  process.stdout.write("\n");
-  console.log(`Imported ${villages.length} villages and ${areas.length} administrative areas.`);
 }
 
-main()
-  .catch((err) => {
-    console.error(err);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+}).finally(() => prisma.$disconnect());

@@ -39,6 +39,23 @@ const MAX_ATTEMPTS = 3;
 const LEVELS = ["state", "district", "subdistrict", "village"] as const;
 type Level = (typeof LEVELS)[number];
 
+/**
+ * Nominatim answered 403. That is a policy refusal, not a transient failure:
+ * its usage policy blocks some networks outright, cloud and datacenter ranges
+ * in particular. Retrying cannot succeed, so the run aborts instead of grinding
+ * through every area and writing nothing.
+ */
+class NominatimBlockedError extends Error {
+  constructor() {
+    super(
+      "Nominatim refused the request with HTTP 403 (Access denied). Its usage policy " +
+        "blocks some networks, notably cloud/datacenter IP ranges. Run this from an " +
+        "allowed network (for example the EC2 instance or a normal workstation) and set " +
+        "NOMINATIM_EMAIL to a real contact address.",
+    );
+  }
+}
+
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -86,6 +103,9 @@ async function queryNominatim(query: string): Promise<{ lat: number; lon: number
         signal: AbortSignal.timeout(15000),
       });
 
+      if (res.status === 403) {
+        throw new NominatimBlockedError();
+      }
       if (res.status === 429 || res.status >= 500) {
         const backoff = attempt * 4000;
         logger.warn({ query, status: res.status, backoff }, "Nominatim throttled; retrying");
@@ -102,6 +122,8 @@ async function queryNominatim(query: string): Promise<{ lat: number; lon: number
       if (!first?.lat || !first?.lon) return null;
       return { lat: Number(first.lat), lon: Number(first.lon) };
     } catch (err: any) {
+      // A policy refusal is not transient — do not retry it.
+      if (err instanceof NominatimBlockedError) throw err;
       if (err?.name === "TimeoutError") {
         logger.warn({ query, attempt }, "Nominatim request timed out");
       } else {
@@ -156,40 +178,52 @@ async function main() {
   let resolved = 0;
   let failed = 0;
 
-  for (const [index, row] of pending.entries()) {
-    let coords: { lat: number; lon: number } | null = null;
+  try {
+    for (const [index, row] of pending.entries()) {
+      let coords: { lat: number; lon: number } | null = null;
 
-    for (const query of buildQuery(row)) {
-      coords = await queryNominatim(query);
-      if (coords) break;
-      await sleep(delayMs);
-    }
-
-    if (coords) {
-      resolved += 1;
-      if (!dryRun) {
-        await prisma.$executeRawUnsafe(
-          `
-          UPDATE administrative_areas
-          SET latitude = $2, longitude = $3, updated_at = CURRENT_TIMESTAMP
-          WHERE id = $1
-          `,
-          row.id,
-          coords.lat,
-          coords.lon,
-        );
+      for (const query of buildQuery(row)) {
+        coords = await queryNominatim(query);
+        if (coords) break;
+        await sleep(delayMs);
       }
-      logger.info(
-        { id: row.id, name: row.name, level: row.level, ...coords },
-        `${dryRun ? "[dry-run] would set" : "set"} coordinates`,
-      );
-    } else {
-      failed += 1;
-      logger.warn({ id: row.id, name: row.name, level: row.level }, "no coordinate found");
-    }
 
-    // Pace to Nominatim's 1 req/s policy.
-    if (index < pending.length - 1) await sleep(delayMs);
+      if (coords) {
+        resolved += 1;
+        if (!dryRun) {
+          await prisma.$executeRawUnsafe(
+            `
+            UPDATE administrative_areas
+            SET latitude = $2, longitude = $3, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $1
+            `,
+            row.id,
+            coords.lat,
+            coords.lon,
+          );
+        }
+        logger.info(
+          { id: row.id, name: row.name, level: row.level, ...coords },
+          `${dryRun ? "[dry-run] would set" : "set"} coordinates`,
+        );
+      } else {
+        failed += 1;
+        logger.warn({ id: row.id, name: row.name, level: row.level }, "no coordinate found");
+      }
+
+      // Pace to Nominatim's 1 req/s policy.
+      if (index < pending.length - 1) await sleep(delayMs);
+    }
+  } catch (err) {
+    if (err instanceof NominatimBlockedError) {
+      logger.error({ resolved, failed }, "Nominatim blocked this client; aborting");
+      console.error(
+        `\nAborted after ${resolved} of ${pending.length} areas.\n${err.message}\n\nNothing further was written.\n`,
+      );
+      process.exitCode = 3;
+      return;
+    }
+    throw err;
   }
 
   logger.info({ total: pending.length, resolved, failed, dryRun }, "Backfill complete");

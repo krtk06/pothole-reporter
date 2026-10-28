@@ -2,19 +2,23 @@
   "name": "pothole-backend",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "backfill:areas": "tsx src/scripts/backfillAreaCoordinates.ts",
-    "build": "tsc",
     "dev": "tsx watch src/index.ts",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate deploy",
-    "seed:admin": "tsx src/scripts/seedAdmin.ts",
-    "seed:all-admins": "tsx src/scripts/seedAllAdmins.ts",
-    "seed:demo-tenders": "tsx src/scripts/seedDemoTenders.ts",
+    "build": "tsc",
     "start": "node dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify:deploy": "tsx src/scripts/verifyDeployment.ts"
+    "prisma:generate": "prisma generate",
+    "prisma:validate": "prisma validate",
+    "prisma:migrate": "prisma migrate deploy",
+    "verify:deploy": "tsx src/scripts/verifyDeployment.ts",
+    "seed:all-admins": "tsx src/scripts/seedAllAdmins.ts",
+    "import:lgd": "tsx src/scripts/importLgdCsv.ts",
+    "backfill:areas": "tsx src/scripts/backfillAreaCoordinates.ts",
+    "backfill:road-issues": "tsx src/scripts/backfillRoadIssues.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.600.0",

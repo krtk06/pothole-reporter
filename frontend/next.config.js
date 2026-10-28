@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
+// Backend origin for the proxied routes. Defaults to the EC2 host. Rewrites are
+// fixed at build time, so set API_PROXY_TARGET before `next build`. The server
+// must accept connections from wherever this app is hosted (AWS security group).
+const API_TARGET = (process.env.API_PROXY_TARGET || "http://3.24.13.80:4000").replace(/\/+$/, "");
+
 const nextConfig = {
   output: "standalone",
   images: {
@@ -13,7 +18,7 @@ const nextConfig = {
       },
     ],
   },
-  // Proxy the API to the EC2 backend so browser requests stay same-origin and
+  // Proxy the API to the backend so browser requests stay same-origin and
   // CORS is never evaluated. Note: Next 14.2 rejects a `headers` key on
   // rewrites, so the X-Client-Platform header is set by the fetch wrapper in
   // src/lib/api.ts instead.
@@ -21,24 +26,19 @@ const nextConfig = {
     return [
       {
         source: "/api/v1/:path*",
-        destination: "http://32.199.22.201:4000/api/v1/:path*",
+        destination: `${API_TARGET}/api/v1/:path*`,
       },
-      // Pothole evidence (photo/video). Proxied for two reasons: pointing
-      // the browser straight at the backend would be blocked as mixed
-      // content, since this site is served over HTTPS and the backend is
-      // not; and proxying keeps evidence same-origin.
-      //
-      // NOTE: the backend serves this route without auth and with
-      // `Access-Control-Allow-Origin: *`, so every evidence object is
-      // publicly readable by URL. That is a backend concern and should be
-      // flagged to whoever owns it — presigned URLs exist to avoid it.
+      // Pothole evidence (photo/video). Proxied so the browser never calls
+      // the plain-HTTP backend directly (mixed content) and so the httpOnly
+      // session cookie is forwarded. The backend requires an authenticated
+      // session for /uploads; presigned S3 URLs remain the primary source.
       {
         source: "/uploads/:path*",
-        destination: "http://32.199.22.201:4000/uploads/:path*",
+        destination: `${API_TARGET}/uploads/:path*`,
       },
       {
         source: "/api/health",
-        destination: "http://32.199.22.201:4000/api/health",
+        destination: `${API_TARGET}/api/health`,
       },
     ];
   },

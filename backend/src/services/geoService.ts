@@ -1,140 +1,119 @@
 import prisma from "../config/database";
 import logger from "../config/logger";
 
+const MAX_RESOLUTION_METERS = Number(process.env.BLOCK_RESOLUTION_MAX_METERS || 75_000);
+
+export function buildBlockId(state?: string | null, district?: string | null, mandal?: string | null): string | null {
+  const parts = [state, district, mandal]
+    .map((part) => (part || "").trim().replace(/\s+/g, " ").toLowerCase())
+    .filter(Boolean);
+  if (parts.length === 0) return null;
+  return parts.join("/").slice(0, 100);
+}
+
+export function normalizeBlockId(value?: string | null): string | null {
+  if (!value) return null;
+  const normalized = value.trim().replace(/\s+/g, " ").toLowerCase();
+  if (!/^[a-z0-9][a-z0-9 /-]*$/.test(normalized)) return null;
+  return normalized.slice(0, 100);
+}
+
+interface AreaRow {
+  name: string;
+  state_name: string | null;
+  district_name: string | null;
+  subdistrict_name: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  distance_m: number | null;
+}
+
+async function nearestArea(latitude: number, longitude: number, levels: string[]): Promise<AreaRow | null> {
+  const rows = await prisma.$queryRawUnsafe<AreaRow[]>(
+    `SELECT
+       name, state_name, district_name, subdistrict_name, latitude, longitude,
+       (6371000 * acos(
+         LEAST(1, GREATEST(-1,
+           cos(radians($1)) * cos(radians(latitude)) *
+           cos(radians(longitude) - radians($2)) +
+           sin(radians($1)) * sin(radians(latitude))
+         ))
+       )) AS distance_m
+     FROM administrative_areas
+     WHERE level = ANY($3::text[])
+       AND latitude IS NOT NULL
+       AND longitude IS NOT NULL
+     ORDER BY distance_m ASC
+     LIMIT 1`,
+    latitude,
+    longitude,
+    levels,
+  );
+  return rows[0] || null;
+}
+
 /**
- * Resolve a report's `block_id` from its coordinates.
- *
- * `block_id` is the join key the whole admin system hangs off: admin scope
- * prefixes (`getScopePrefix`) are matched against it as
- * `block_id = $prefix OR block_id LIKE $prefix/%`, and the tender threshold
- * counts `WHERE block_id = $1`. A report submitted without one is therefore
- * invisible to every scoped admin query and can never reach the tender
- * threshold — which is the state the mobile client was in, since it only ever
- * sends raw GPS.
- *
- * `administrative_areas` carries a representative point per area (latitude /
- * longitude). Resolving to the nearest one is a nearest-neighbour lookup, not a
- * point-in-polygon test: the `boundary` MultiPolygon column is null for every
- * row loaded from the LGD directory, so containment is not available.
- *
- * Granularity preference is subdistrict (mandal) > district > state, because
- * block_id is `state/district/mandal` and that is the shape the admin scope
- * prefixes expect.
- */
-
-/** Refuse to guess beyond this distance (metres). Beyond it, block_id stays null. */
-const MAX_DISTANCE_METERS = 75_000;
-
-export interface ResolvedBlock {
-  blockId: string;
-  level: string;
-  meters: number;
-}
-
-function slug(value?: string | null): string {
-  return String(value || "")
-    .trim()
-    .replace(/\s+/g, " ")
-    .toLowerCase();
-}
-
-/** Map a matched row to the block_id shape the admin scope prefixes expect. */
-function toBlockId(row: any): string {
-  const state = slug(row.state_name);
-  const district = slug(row.district_name);
-  const mandal = slug(row.subdistrict_name);
-
-  if (row.level === "subdistrict" && state && district && mandal) {
-    return `${state}/${district}/${mandal}`;
-  }
-  if (row.level === "district" && state && district) {
-    return `${state}/${district}`;
-  }
-  return state;
-}
-
-/**
- * Nearest administrative area to (latitude, longitude), or null when nothing is
- * within MAX_DISTANCE_METERS or no coordinates have been backfilled yet.
+ * Resolve a report's jurisdiction from GPS. Mobile clients send only
+ * coordinates, so without this a report matches no admin scope predicate and
+ * can never reach the tender threshold.
  */
 export async function resolveBlockIdFromCoordinates(
   latitude: number,
   longitude: number,
-): Promise<ResolvedBlock | null> {
-  const rows: any[] = await prisma.$queryRawUnsafe(
-    `
-    SELECT level, state_name, district_name, subdistrict_name, meters
-    FROM (
-      SELECT
-        level,
-        state_name,
-        district_name,
-        subdistrict_name,
-        ST_Distance(
-          ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography,
-          ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
-        ) AS meters,
-        CASE level
-          WHEN 'subdistrict' THEN 0
-          WHEN 'district'   THEN 1
-          ELSE 2
-        END AS prio
-      FROM administrative_areas
-      WHERE latitude IS NOT NULL
-        AND longitude IS NOT NULL
-        AND level IN ('subdistrict', 'district', 'state')
-        AND ST_DWithin(
-          ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography,
-          ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography,
-          $3
-        )
-    ) AS candidates
-    ORDER BY prio ASC, meters ASC
-    LIMIT 3
-  `,
-    longitude,
-    latitude,
-    MAX_DISTANCE_METERS,
-  );
-
-  // Rows arrive already ordered by granularity preference, then distance.
-  for (const row of rows) {
-    const blockId = toBlockId(row);
-    if (blockId) {
-      return { blockId, level: row.level, meters: Number(row.meters) };
+): Promise<string | null> {
+  try {
+    const subdistrict = await nearestArea(latitude, longitude, ["subdistrict", "mandal", "block"]);
+    if (subdistrict && (subdistrict.distance_m === null || subdistrict.distance_m <= MAX_RESOLUTION_METERS)) {
+      const blockId = buildBlockId(
+        subdistrict.state_name,
+        subdistrict.district_name,
+        subdistrict.subdistrict_name || subdistrict.name,
+      );
+      if (blockId) return blockId;
     }
-  }
 
+    const district = await nearestArea(latitude, longitude, ["district"]);
+    if (district && (district.distance_m === null || district.distance_m <= MAX_RESOLUTION_METERS)) {
+      return buildBlockId(district.state_name, district.district_name || district.name, null);
+    }
+
+    const state = await nearestArea(latitude, longitude, ["state"]);
+    if (state && (state.distance_m === null || state.distance_m <= MAX_RESOLUTION_METERS)) {
+      return buildBlockId(state.state_name || state.name, null, null);
+    }
+  } catch (err) {
+    // A report must still be accepted if the directory is unavailable.
+    logger.warn({ err, latitude, longitude }, "Could not resolve block_id from coordinates");
+  }
   return null;
 }
 
-/**
- * Resolve a block_id only when the caller did not supply one. Never throws: a
- * report must still be accepted if the lookup fails.
- */
 export async function resolveBlockIdIfMissing(
-  supplied: string | null | undefined,
+  blockId: string | undefined,
   latitude: number,
   longitude: number,
 ): Promise<string | null> {
-  if (supplied) return supplied;
+  const provided = normalizeBlockId(blockId);
+  if (provided) return provided;
+  return resolveBlockIdFromCoordinates(latitude, longitude);
+}
 
-  try {
-    const resolved = await resolveBlockIdFromCoordinates(latitude, longitude);
-    if (!resolved) {
-      logger.info(
-        { latitude, longitude },
-        "No administrative area within range — report stored without block_id",
-      );
-      return null;
-    }
-    logger.info(
-      { latitude, longitude, blockId: resolved.blockId, meters: Math.round(resolved.meters) },
-      "Resolved block_id from coordinates",
-    );
-    return resolved.blockId;
-  } catch (err) {
-    logger.error({ err }, "block_id resolution failed; storing report without one");
-    return null;
-  }
+export async function resolveDistrictForMandal(
+  state: string | null | undefined,
+  mandal: string,
+): Promise<string | null> {
+  if (!state || !mandal) return null;
+  const rows = await prisma.$queryRawUnsafe<Array<{ district_name: string | null }>>(
+    `SELECT district_name
+     FROM administrative_areas
+     WHERE level = ANY($1::text[])
+       AND LOWER(COALESCE(state_name, '')) = LOWER($2)
+       AND LOWER(COALESCE(subdistrict_name, name)) = LOWER($3)
+       AND district_name IS NOT NULL
+     LIMIT 1`,
+    ["subdistrict", "mandal", "block"],
+    state,
+    mandal,
+  );
+  return rows[0]?.district_name || null;
 }

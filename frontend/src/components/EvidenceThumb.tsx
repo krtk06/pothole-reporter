@@ -29,8 +29,10 @@ export function EvidenceThumb({
   imageUrl,
   onOpen,
 }: EvidenceThumbProps) {
-  const [failed, setFailed] = useState(false);
+  // Index into the candidate list; each load failure advances to the next one.
+  const [attempt, setAttempt] = useState(0);
   const source = evidenceSource(imageS3Key, imageUrl);
+  const src = source.sources[attempt];
 
   if (source.kind === "none") {
     return (
@@ -41,7 +43,7 @@ export function EvidenceThumb({
     );
   }
 
-  if (failed || !source.url) {
+  if (!src) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-sunken px-2 py-1 text-[11px] text-ink3">
         <FileImage className="h-3 w-3" />
@@ -71,15 +73,14 @@ export function EvidenceThumb({
     <button
       type="button"
       onClick={() => onOpen(reportId)}
-      onError={() => setFailed(true)}
       className="group relative inline-block h-14 w-20 overflow-hidden rounded-md border border-hairline bg-sunken"
       aria-label="Open evidence photo"
     >
       <img
-        src={source.url}
+        src={src}
         alt="Pothole evidence"
         loading="lazy"
-        onError={() => setFailed(true)}
+        onError={() => setAttempt((n) => n + 1)}
         className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
       />
       <span className="pointer-events-none absolute inset-0 bg-ink/0 transition-colors group-hover:bg-ink/10" />

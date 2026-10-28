@@ -76,6 +76,7 @@ export default function TenderPortalHome() {
   const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([]);
   const [lastSyncAt, setLastSyncAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [live, setLive] = useState<{
     backend_reachable: boolean;
     source: string;
@@ -117,7 +118,10 @@ export default function TenderPortalHome() {
         setSyncLogs(data.sync_logs || []);
         setLastSyncAt(data.last_sync_at);
         setLive(data.live || null);
+        setLoadError("");
         if (Array.isArray(data.bids)) setBids(data.bids);
+      } else {
+        setLoadError(`The portal API responded with HTTP ${res.status}.`);
       }
       const bidsRes = await fetch("/api/bids", { cache: "no-store" });
       if (bidsRes.ok) {
@@ -126,6 +130,7 @@ export default function TenderPortalHome() {
       }
     } catch (err) {
       console.error("Failed to load portal data", err);
+      setLoadError("The portal API could not be reached.");
     } finally {
       if (!quiet) setLoading(false);
     }
@@ -486,6 +491,12 @@ export default function TenderPortalHome() {
                   {allPotholes.length} geotagged
                 </Pill>
               </div>
+              {allPotholes.length === 0 && tenders.length > 0 && (
+                <p className="border-b border-hairline px-5 py-3 text-sm text-ink2">
+                  {tenders.length} tender(s) are published, but none has verified pothole reports attached, so there
+                  are no pins to show yet. Pins appear once reports in these blocks are verified.
+                </p>
+              )}
               <div className="h-[560px]">
                 <TenderMap potholes={allPotholes} height="100%" zoom={8} />
               </div>
@@ -502,10 +513,20 @@ export default function TenderPortalHome() {
             <Surface level={1} className="flex flex-col items-center gap-3 py-16 text-center">
               <Wallet className="h-7 w-7 text-ink3" />
               <p className="font-display text-base font-semibold text-ink">
-                {tenders.length === 0 ? "No tenders available" : "No tenders match your criteria"}
+                {loadError
+                  ? "Tenders could not be loaded"
+                  : tenders.length === 0 && live && !live.backend_reachable
+                  ? "The live backend is unreachable"
+                  : tenders.length === 0
+                  ? "No tenders available"
+                  : "No tenders match your criteria"}
               </p>
               <p className="max-w-md text-sm text-ink2">
-                {tenders.length === 0
+                {loadError
+                  ? `${loadError} This is a failed request, not an empty board.`
+                  : tenders.length === 0 && live && !live.backend_reachable
+                  ? "Only the last synced copy is available, and it holds no tenders."
+                  : tenders.length === 0
                   ? "There are currently no road-work tenders published. New packages appear here automatically via secure sync."
                   : "Adjust the filters, or trigger a sync from the Pothole Reporter admin dashboard."}
               </p>

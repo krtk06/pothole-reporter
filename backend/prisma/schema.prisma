@@ -27,12 +27,6 @@ enum ReportStatus {
   fixed
 }
 
-enum AdminScope {
-  mandal
-  district
-  state
-}
-
 enum TenderStatus {
   open
   assigned
@@ -40,23 +34,59 @@ enum TenderStatus {
   rejected
 }
 
-model User {
-  id              String          @id @default(uuid()) @db.Uuid
-  role            Role            @default(public)
-  name            String          @db.VarChar(255)
-  email           String          @unique @db.VarChar(255)
-  phone           String?         @db.VarChar(20)
-  password_hash   String          @db.VarChar(255)
-  theme_preference ThemePreference @default(dark)
-  refresh_token   String?         @db.Text
-  state           String?         @db.VarChar(100)
-  district        String?         @db.VarChar(100)
-  mandal          String?         @db.VarChar(100)
-  admin_scope     AdminScope?
-  created_at      DateTime        @default(now())
-  password_reset_tokens PasswordResetToken[]
+enum RoadIssueStatus {
+  active
+  fixed
+  dismissed
+}
 
+enum DeduplicationState {
+  new
+  reused
+  not_an_issue
+}
+
+model User {
+  id               String          @id @default(uuid()) @db.Uuid
+  role             Role            @default(public)
+  name             String          @db.VarChar(255)
+  email            String?         @unique @db.VarChar(255)
+  phone            String?         @unique @db.VarChar(20)
+  state            String?         @db.VarChar(120)
+  district         String?         @db.VarChar(120)
+  // Kept as `locality` for backwards compatibility with the live database.
+  // The API exposes this value as `mandal`.
+  locality         String?         @db.VarChar(160)
+  admin_scope      String?         @db.VarChar(32)
+  password_hash    String          @db.VarChar(255)
+  theme_preference ThemePreference @default(dark)
+  refresh_token    String?         @db.Text
+  session_version  Int             @default(0)
+  created_at       DateTime        @default(now())
+  potholes         Pothole[]
+  password_reset_tokens PasswordResetToken[]
+  sessions         UserSession[]
+
+  @@index([admin_scope])
+  @@index([role])
   @@map("users")
+}
+
+model UserSession {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id            String    @db.Uuid
+  refresh_token_hash String    @unique @db.VarChar(64)
+  user_agent         String?   @db.VarChar(512)
+  ip_address         String?   @db.VarChar(64)
+  created_at         DateTime  @default(now()) @db.Timestamptz(6)
+  last_used_at       DateTime? @db.Timestamptz(6)
+  expires_at         DateTime  @db.Timestamptz(6)
+  revoked_at         DateTime? @db.Timestamptz(6)
+  user               User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([expires_at])
+  @@map("user_sessions")
 }
 
 model PasswordResetToken {
@@ -73,26 +103,51 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
-// The `potholes` table is NOT modelled here.
-//
-// It exists in the database (created by migration 20260622050528_init) and is
-// the core domain table, but every read and write goes through raw SQL
-// (`prisma.$queryRawUnsafe`) because it holds PostGIS `geometry(Point, 4326)`
-// columns that Prisma cannot query. The former `Pothole` model was never
-// referenced by any code path — it only made `prisma migrate dev` and
-// `prisma db push` believe they owned the table.
-//
-// DO NOT reintroduce a model for it without also replacing the raw SQL, and do
-// NOT run `prisma migrate dev` or `prisma db push` against a real database:
-// with this table unmodelled, both would propose DROP TABLE "potholes".
-// Use `prisma migrate deploy`, which only applies pending migrations.
-//
-// `potholes.reporter_id` has a foreign key to `users(id)` that is likewise no
-// longer described here.
-//
-// The `ReportStatus` enum below is retained for the same reason: raw SQL casts
-// to it on every status write (`$1::text::"ReportStatus"`), so removing it
-// would make Prisma propose DROP TYPE.
+model Pothole {
+  id           String       @id @default(uuid()) @db.Uuid
+  reporter_id  String       @db.Uuid
+  image_s3_key String       @db.VarChar(255)
+  report_type  String       @default("single") @db.VarChar(20)
+  evidence_metadata Json?
+  canonical_issue_id String?    @db.Uuid
+  deduplication_state DeduplicationState @default(new)
+  ai_result          Json?
+  location     Unsupported("geometry(Point, 4326)")
+  address_notes String?     @db.Text
+  block_id     String?      @db.VarChar(100)
+  status       ReportStatus @default(pending)
+  created_at   DateTime     @default(now())
+  reporter     User         @relation(fields: [reporter_id], references: [id])
+  canonical_issue RoadIssue? @relation(fields: [canonical_issue_id], references: [id])
+
+  @@index([reporter_id])
+  @@index([block_id])
+  @@index([status])
+  @@index([created_at(sort: Desc)])
+  @@index([canonical_issue_id])
+  @@map("potholes")
+}
+
+model RoadIssue {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  condition         String    @db.VarChar(64)
+  location          Unsupported("geometry(Point, 4326)")
+  block_id          String?   @db.VarChar(100)
+  severity_score    Decimal?  @db.Decimal(5, 2)
+  pothole_count     Int       @default(1)
+  confidence        Decimal?  @db.Decimal(5, 4)
+  status            RoadIssueStatus @default(active)
+  model_version     String?   @db.VarChar(128)
+  analysis          Json?
+  evidence_count    Int       @default(1)
+  first_detected_at DateTime  @default(now())
+  last_detected_at  DateTime  @default(now())
+  reports           Pothole[]
+
+  @@index([status, last_detected_at(sort: Desc)], map: "road_issues_active_recent_idx")
+  @@index([block_id])
+  @@map("road_issues")
+}
 
 model Tender {
   id            String       @id @default(uuid()) @db.Uuid
@@ -102,57 +157,52 @@ model Tender {
   status        TenderStatus @default(open)
   generated_at  DateTime     @default(now())
 
-  // NOTE: the duplicate-tender guard
-  // "tenders_block_id_open_assigned_key" is deliberately NOT declared here.
-  // It is a PARTIAL unique index
-  // (`WHERE status IN ('open','assigned')`, migration
-  // 20261008000000_add_tenders_block_unique_open) and Prisma has no
-  // partial-index support. Declaring a plain @@unique([block_id]) here would
-  // make `prisma migrate diff` propose replacing the partial index with a FULL
-  // one, which permanently breaks re-tendering after a withdrawal.
-  // `prisma migrate diff` will therefore always report this index as drift.
-
+  @@index([block_id, status])
   @@map("tenders")
 }
 
-// The `administrative_areas` table is NOT modelled here, for the same reason as
-// `potholes`: it is created by migration 20260724090000_add_administrative_areas
-// and reached exclusively through raw SQL, including its PostGIS
-// `geometry(MultiPolygon, 4326)` `boundary` column. The former
-// `AdministrativeArea` model had zero code references.
-//
-// DO NOT run `prisma migrate dev` or `prisma db push` against a real database:
-// with this table unmodelled, both would propose DROP TABLE "administrative_areas".
-// Use `prisma migrate deploy`, which only applies pending migrations.
+model AdministrativeArea {
+  id               String   @id @db.VarChar(64)
+  name             String   @db.VarChar(255)
+  normalized_name  String   @db.VarChar(255)
+  level            String   @db.VarChar(24)
+  state_code       String?  @db.VarChar(32)
+  state_name       String?  @db.VarChar(255)
+  district_code    String?  @db.VarChar(32)
+  district_name    String?  @db.VarChar(255)
+  subdistrict_code String?  @db.VarChar(32)
+  subdistrict_name String?  @db.VarChar(255)
+  latitude         Decimal? @db.Decimal(9, 6)
+  longitude        Decimal? @db.Decimal(9, 6)
+  bbox             Json?
+  boundary         Json?
+  updated_at       DateTime @default(now()) @updatedAt
 
-// ─── Tender website sync ─────────────────────────────────────────────────────
-//
-// These two tables were historically created at runtime by
-// ensureTenderSyncTablesExist() (src/services/tenderSyncService.ts) and appeared
-// in no migration, so `prisma migrate deploy` produced a schema missing both.
-// They are now declared here and created by migration
-// 20261008120000_add_tender_sync_tables.
-//
-// Model names deliberately match the table names (no @@map) because all access
-// is still raw SQL — keeping the names identical makes it obvious when reading
-// either side. Adding these models does NOT mean the app uses the Prisma client
-// for them; it means schema.prisma finally describes the real database.
+  @@index([level, state_name, normalized_name], map: "administrative_areas_level_state_name_normalized_name_idx")
+  @@index([level, state_name, district_name, normalized_name], map: "administrative_areas_level_state_name_district_name_normalized_")
+  @@index([level, state_name, district_name, subdistrict_name, normalized_name], map: "administrative_areas_level_state_name_district_name_subdistrict")
+  @@map("administrative_areas")
+}
 
+// Tender website periodic-sync settings. Previously created at runtime; these
+// are now explicit migrations so a fresh deployment is complete.
 model tender_sync_settings {
-  id                 String    @id @db.VarChar(50)
-  target_url         String    @default("http://localhost:3001/api/sync") @db.Text
-  api_key            String    @default("") @db.VarChar(255)
-  sync_interval_days Int       @default(15)
-  is_enabled         Boolean   @default(true)
-  last_sync_at       DateTime? @db.Timestamptz(6)
-  next_sync_at       DateTime? @db.Timestamptz(6)
-  last_sync_status   String?   @default("idle") @db.VarChar(50)
-  last_sync_message  String?   @db.Text
-  updated_at         DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+  id                  String    @id @db.VarChar(50)
+  target_url          String    @default("http://localhost:3001/api/sync") @db.Text
+  api_key             String    @default("") @db.VarChar(255)
+  sync_interval_days  Int       @default(15)
+  is_enabled          Boolean   @default(true)
+  last_sync_at        DateTime? @db.Timestamptz(6)
+  next_sync_at        DateTime? @db.Timestamptz(6)
+  last_sync_status    String?   @default("idle") @db.VarChar(50)
+  last_sync_message   String?   @db.Text
+  sync_lock_until     DateTime? @db.Timestamptz(6)
+  consecutive_failures Int      @default(0)
+  updated_at          DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
 }
 
 model tender_sync_logs {
-  id              String   @id @default(uuid()) @db.Uuid
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   synced_at       DateTime @default(now()) @db.Timestamptz(6)
   potholes_count  Int      @default(0)
   tenders_count   Int      @default(0)
@@ -160,4 +210,6 @@ model tender_sync_logs {
   response_status Int?
   error_message   String?  @db.Text
   triggered_by    String   @default("scheduler") @db.VarChar(255)
+
+  @@index([synced_at(sort: Desc)])
 }

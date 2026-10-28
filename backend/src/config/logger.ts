@@ -7,7 +7,17 @@ const logger = pino({
       ? { target: "pino-pretty", options: { colorize: true } }
       : undefined,
   redact: {
-    paths: ["req.headers.authorization", "req.headers.cookie", "body.password", "body.refreshToken"],
+    paths: [
+      "req.headers.authorization",
+      "req.headers.cookie",
+      "req.headers['x-api-key']",
+      "body.password",
+      "body.current_password",
+      "body.new_password",
+      "body.refreshToken",
+      "body.token",
+      "body.api_key",
+    ],
     censor: "[REDACTED]",
   },
 });

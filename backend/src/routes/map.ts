@@ -1,14 +1,16 @@
 import { Router, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
-import { z } from "zod";
 import prisma from "../config/database";
 import logger from "../config/logger";
+import { publicReadLimiter } from "../middleware/rateLimiter";
 
 const router = Router();
-
-const ANDHRA_STATE_CODE = "28";
-const ANDHRA_STATE_NAME = "Andhra Pradesh";
-const MAX_RESULTS = 30;
+const NOMINATIM_URL = process.env.NOMINATIM_URL || "https://nominatim.openstreetmap.org";
+const MAP_TILE_URL_TEMPLATE = process.env.MAP_TILE_URL_TEMPLATE || "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const NOMINATIM_USER_AGENT = process.env.NOMINATIM_USER_AGENT || "PotholeReporter/1.0 (maps@example.invalid)";
+const SEARCH_CACHE_TTL_MS = 60 * 60 * 1000;
+const SEARCH_MIN_INTERVAL_MS = 1100;
+const MAX_CACHE_ENTRIES = 500;
 
 const nominatimLimiter = rateLimit({
   windowMs: 60_000,
@@ -18,35 +20,166 @@ const nominatimLimiter = rateLimit({
   message: { error: "Too many map lookup requests. Please wait a moment." },
 });
 
-const levelSchema = z.enum(["district", "subdistrict", "village"]);
-
-function normalizeName(value: string): string {
-  return value.trim().replace(/\s+/g, " ").toLowerCase();
+interface NominatimPlace {
+  osm_type: string;
+  osm_id: number;
+  display_name: string;
+  lat: string;
+  lon: string;
+  boundingbox: [string, string, string, string];
+  geojson?: GeoJSON.GeoJsonObject;
 }
 
-function cleanPlaceName(value?: string | null): string {
-  return String(value || "")
-    .replace(/\([^)]*\)/g, " ")
-    .replace(/\b(R|U)\b/gi, " ")
-    .trim()
-    .replace(/\s+/g, " ");
+type AdministrativeLevel = "district" | "subdistrict" | "village";
+
+interface DirectoryAreaRow {
+  id: string;
+  name: string;
+  level: string;
+  state_code: string | null;
+  state_name: string | null;
+  district_code: string | null;
+  district_name: string | null;
+  subdistrict_code: string | null;
+  subdistrict_name: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  bbox: unknown;
 }
 
-function unique(values: string[]) {
-  return [...new Set(values.map((value) => value.trim()).filter(Boolean))];
+const placeCache = new Map<string, { expiresAt: number; value: NominatimPlace[] }>();
+let lastLookupAt = 0;
+
+function cacheSet(key: string, value: NominatimPlace[]) {
+  if (placeCache.size >= MAX_CACHE_ENTRIES) {
+    const oldest = placeCache.keys().next().value;
+    if (oldest) placeCache.delete(oldest);
+  }
+  placeCache.set(key, { value, expiresAt: Date.now() + SEARCH_CACHE_TTL_MS });
 }
 
-function toPublicArea(row: any) {
+function readNumber(value: unknown, minimum: number, maximum: number): number | null {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= minimum && parsed <= maximum ? parsed : null;
+}
+
+function normalizeLevel(value: string): AdministrativeLevel | null {
+  const level = value.trim().toLowerCase();
+  if (level === "district") return "district";
+  if (level === "subdistrict" || level === "mandal" || level === "block") return "subdistrict";
+  if (level === "village" || level === "locality" || level === "city") return "village";
+  return null;
+}
+
+function toArea(place: NominatimPlace, areaType: string) {
+  const [south, north, west, east] = place.boundingbox.map(Number);
+  return {
+    id: `${place.osm_type}-${place.osm_id}`,
+    name: place.display_name.split(",")[0],
+    displayName: place.display_name,
+    type: areaType,
+    stateName: "Andhra Pradesh",
+    center: { latitude: Number(place.lat), longitude: Number(place.lon) },
+    latitude: Number(place.lat),
+    longitude: Number(place.lon),
+    bounds: { south, west, north, east },
+    bbox: { south, west, north, east },
+    boundary: place.geojson || null,
+    detail: place.display_name,
+  };
+}
+
+function toOption(place: NominatimPlace, type: string) {
+  return {
+    id: `${place.osm_type}-${place.osm_id}`,
+    name: place.display_name.split(",")[0],
+    displayName: place.display_name,
+    detail: place.display_name,
+    type,
+    latitude: Number(place.lat),
+    longitude: Number(place.lon),
+    bbox: null,
+  };
+}
+
+async function searchNominatim(query: string): Promise<NominatimPlace[]> {
+  const cached = placeCache.get(query);
+  if (cached && cached.expiresAt > Date.now()) return cached.value;
+
+  const waitMs = Math.max(0, SEARCH_MIN_INTERVAL_MS - (Date.now() - lastLookupAt));
+  if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
+  lastLookupAt = Date.now();
+
+  const url = new URL("/search", NOMINATIM_URL);
+  url.search = new URLSearchParams({
+    format: "jsonv2",
+    addressdetails: "1",
+    polygon_geojson: "1",
+    countrycodes: "in",
+    limit: "5",
+    q: query,
+  }).toString();
+
+  const response = await fetch(url, {
+    headers: { "User-Agent": NOMINATIM_USER_AGENT, Accept: "application/json" },
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!response.ok) throw new Error(`Place search failed with ${response.status}`);
+
+  const places = (await response.json()) as NominatimPlace[];
+  cacheSet(query, places);
+  return places;
+}
+
+async function searchDirectory(input: {
+  level: AdministrativeLevel;
+  state: string;
+  district: string;
+  districtCode: string;
+  mandal: string;
+  subdistrictCode: string;
+  query: string;
+}): Promise<DirectoryAreaRow[]> {
+  const levels =
+    input.level === "district"
+      ? ["district"]
+      : input.level === "subdistrict"
+        ? ["subdistrict", "mandal", "block"]
+        : ["village", "city", "municipality", "panchayat", "region"];
+  const match = input.query.toLocaleLowerCase();
+  return prisma.$queryRawUnsafe<DirectoryAreaRow[]>(
+    `SELECT
+       id, name, level, state_code, state_name, district_code, district_name,
+       subdistrict_code, subdistrict_name, latitude, longitude, bbox
+     FROM administrative_areas
+     WHERE level = ANY($1::text[])
+       AND ($2 = '' OR LOWER(COALESCE(state_name, '')) = LOWER($2))
+       AND ($3 = '' OR LOWER(COALESCE(district_name, '')) = LOWER($3))
+       AND ($4 = '' OR district_code = $4)
+       AND ($5 = '' OR LOWER(COALESCE(subdistrict_name, '')) = LOWER($5))
+       AND ($6 = '' OR subdistrict_code = $6)
+       AND ($7 = '' OR normalized_name LIKE $7 || '%')
+     ORDER BY name ASC
+     LIMIT 30`,
+    levels,
+    input.state,
+    input.district,
+    input.districtCode,
+    input.mandal,
+    input.subdistrictCode,
+    match,
+  );
+}
+
+function directoryOption(row: DirectoryAreaRow) {
+  const detail = [row.subdistrict_name, row.district_name, row.state_name].filter(Boolean).join(", ");
   return {
     id: row.id,
     name: row.name,
-    displayName: [
-      row.name,
-      row.level === "village" ? row.subdistrict_name : null,
-      row.level !== "district" ? row.district_name : null,
-      row.state_name,
-      "India",
-    ].filter(Boolean).join(", "),
+    displayName: [row.name, row.subdistrict_name, row.district_name, row.state_name, "India"]
+      .filter(Boolean)
+      .join(", "),
+    detail: detail || row.name,
     type: row.level,
     stateCode: row.state_code,
     stateName: row.state_name,
@@ -54,382 +187,290 @@ function toPublicArea(row: any) {
     districtName: row.district_name,
     subdistrictCode: row.subdistrict_code,
     subdistrictName: row.subdistrict_name,
-    latitude: row.latitude === null || row.latitude === undefined ? null : Number(row.latitude),
-    longitude: row.longitude === null || row.longitude === undefined ? null : Number(row.longitude),
+    latitude: row.latitude === null ? null : Number(row.latitude),
+    longitude: row.longitude === null ? null : Number(row.longitude),
     bbox: row.bbox ?? null,
-    boundary: row.boundary_geojson ?? null,
   };
 }
 
-function fallbackAreaFromQuery(req: Request) {
-  const id = typeof req.query.id === "string" ? req.query.id : undefined;
-  const name = typeof req.query.name === "string" ? req.query.name : undefined;
-  if (!id || !name) return null;
-
-  const districtName = typeof req.query.districtName === "string" ? req.query.districtName : undefined;
-  const subdistrictName = typeof req.query.subdistrictName === "string" ? req.query.subdistrictName : undefined;
-  const districtCode = typeof req.query.districtCode === "string" ? req.query.districtCode : undefined;
-  const subdistrictCode = typeof req.query.subdistrictCode === "string" ? req.query.subdistrictCode : undefined;
-  const level = id.startsWith("district:")
-    ? "district"
-    : id.startsWith("subdistrict:")
-    ? "subdistrict"
-    : "village";
-
-  return {
-    id,
-    name,
-    level,
-    state_code: ANDHRA_STATE_CODE,
-    state_name: ANDHRA_STATE_NAME,
-    district_code: districtCode || null,
-    district_name: districtName || (level === "district" ? name : null),
-    subdistrict_code: subdistrictCode || null,
-    subdistrict_name: subdistrictName || (level === "subdistrict" ? name : null),
-    latitude: null,
-    longitude: null,
-    bbox: null,
-    boundary_geojson: null,
-  };
-}
-
-async function fetchAreas(level: string, q?: string, districtCode?: string, subdistrictCode?: string) {
-  const conditions = ["level = $1", "state_code = $2"];
-  const params: any[] = [level, ANDHRA_STATE_CODE];
-  let index = 3;
-
-  if (districtCode) {
-    conditions.push(`district_code = $${index++}`);
-    params.push(districtCode);
-  }
-
-  if (subdistrictCode) {
-    conditions.push(`subdistrict_code = $${index++}`);
-    params.push(subdistrictCode);
-  }
-
-  if (q) {
-    conditions.push(`normalized_name LIKE $${index++}`);
-    params.push(`${normalizeName(q)}%`);
-  }
-
-  return prisma.$queryRawUnsafe(`
-    SELECT
-      id, name, level, state_code, state_name,
-      district_code, district_name, subdistrict_code, subdistrict_name,
-      latitude, longitude, bbox
-    FROM administrative_areas
-    WHERE ${conditions.join(" AND ")}
-    ORDER BY name ASC
-    LIMIT ${MAX_RESULTS}
-  `, ...params);
-}
-
-function childFallbackArea(area: any) {
-  if (area.level === "village" && area.subdistrict_name) {
-    return {
-      ...area,
-      id: area.subdistrict_code ? `subdistrict:${area.subdistrict_code}` : `subdistrict:${area.subdistrict_name}`,
-      name: area.subdistrict_name,
-      level: "subdistrict",
-      latitude: null,
-      longitude: null,
-      bbox: null,
-      boundary_geojson: null,
-    };
-  }
-
-  if (area.level === "subdistrict" && area.district_name) {
-    return {
-      ...area,
-      id: area.district_code ? `district:${area.district_code}` : `district:${area.district_name}`,
-      name: area.district_name,
-      level: "district",
-      subdistrict_code: null,
-      subdistrict_name: null,
-      latitude: null,
-      longitude: null,
-      bbox: null,
-      boundary_geojson: null,
-    };
-  }
-
-  return null;
-}
-
-function geocodeQueries(area: any) {
-  const name = cleanPlaceName(area.name);
-  const originalName = String(area.name || "").trim().replace(/\s+/g, " ");
-  const subdistrict = cleanPlaceName(area.subdistrict_name);
-  const district = cleanPlaceName(area.district_name);
-
-  if (area.level === "village") {
-    return unique([
-      [originalName, area.subdistrict_name, area.district_name, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-      [name, subdistrict, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-      [`${name} village`, subdistrict, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-      [subdistrict, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-    ]);
-  }
-
-  if (area.level === "subdistrict") {
-    return unique([
-      [originalName, area.district_name, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-      [name, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-      [`${name} mandal`, district, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-    ]);
-  }
-
-  return unique([
-    [originalName, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-    [name, ANDHRA_STATE_NAME, "India"].filter(Boolean).join(", "),
-  ]);
-}
-
-router.get("/areas/options", async (req: Request, res: Response) => {
-  try {
-    const levelResult = levelSchema.safeParse(req.query.level);
-    if (!levelResult.success) {
-      return res.status(400).json({ error: "Invalid level" });
-    }
-
-    let areas: any[] = [];
-    try {
-      areas = await fetchAreas(
-        levelResult.data,
-        typeof req.query.q === "string" ? req.query.q : undefined,
-        typeof req.query.districtCode === "string" ? req.query.districtCode : undefined,
-        typeof req.query.subdistrictCode === "string" ? req.query.subdistrictCode : undefined
-      ) as any[];
-    } catch (err) {
-      logger.warn({ err }, "Administrative options database lookup failed; returning empty options");
-    }
-
-    res.json({ areas: areas.map(toPublicArea) });
-  } catch (err) {
-    logger.error({ err }, "Map options error");
-    res.status(500).json({ error: "Failed to load administrative options" });
-  }
-});
-
-router.get("/areas/search", async (req: Request, res: Response) => {
-  try {
-    const query = z.string().trim().min(1).max(100).safeParse(req.query.q);
-    const levelResult = levelSchema.optional().safeParse(req.query.level);
-    if (!query.success || !levelResult.success) {
-      return res.status(400).json({ error: "Invalid search query" });
-    }
-
-    const levels = levelResult.data ? [levelResult.data] : ["district", "subdistrict", "village"];
-    let searches: any[][] = [];
-    try {
-      searches = await Promise.all(
-        levels.map((level) => fetchAreas(
-          level,
-          query.data,
-          typeof req.query.districtCode === "string" ? req.query.districtCode : undefined,
-          typeof req.query.subdistrictCode === "string" ? req.query.subdistrictCode : undefined
-        ) as Promise<any[]>)
-      );
-    } catch (err) {
-      logger.warn({ err }, "Administrative search database lookup failed; returning empty results");
-    }
-
-    res.json({ areas: searches.flat().slice(0, MAX_RESULTS).map(toPublicArea) });
-  } catch (err) {
-    logger.error({ err }, "Map search error");
-    res.status(500).json({ error: "Failed to search administrative areas" });
-  }
-});
-
-async function queryNominatim(query: string) {
-  const url = new URL("https://nominatim.openstreetmap.org/search");
-  url.searchParams.set("q", query);
-  url.searchParams.set("format", "jsonv2");
-  url.searchParams.set("limit", "1");
-  url.searchParams.set("polygon_geojson", "1");
-  url.searchParams.set("addressdetails", "0");
-  if (process.env.NOMINATIM_EMAIL) {
-    url.searchParams.set("email", process.env.NOMINATIM_EMAIL);
-  }
-
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent": process.env.NOMINATIM_USER_AGENT || `PotholeReporter/1.0 (${process.env.FRONTEND_URL || "local"})`,
-      "Accept": "application/json",
-    },
+router.get("/config", (_req: Request, res: Response) => {
+  res.json({
+    tileUrlTemplate: MAP_TILE_URL_TEMPLATE,
+    attribution: process.env.MAP_ATTRIBUTION || "(c) OpenStreetMap contributors (c) CARTO",
+    minZoom: 7,
+    maxZoom: 19,
   });
+});
 
-  if (!response.ok) {
-    throw new Error(`Nominatim returned ${response.status}`);
+router.get("/areas/search", nominatimLimiter, async (req: Request, res: Response) => {
+  const state = String(req.query.state || "").trim();
+  const district = String(req.query.district || "").trim();
+  const mandal = String(req.query.mandal || "").trim();
+  const locality = String(req.query.locality || "").trim();
+  const type = String(req.query.type || "municipality").trim();
+  const query = [locality, mandal, district, state, "India"].filter(Boolean).join(", ");
+
+  if (!state || (!district && !locality)) {
+    return res.status(400).json({ error: "State and District or locality are required" });
   }
 
-  const results = await response.json() as any[];
-  return results[0] || null;
-}
+  try {
+    const places = await searchNominatim(query);
+    res.json({ areas: places.map((place) => toArea(place, type)) });
+  } catch (err) {
+    logger.error({ err, query }, "Map area search failed");
+    res.status(502).json({ error: "Map area search is unavailable" });
+  }
+});
 
-async function geocodeArea(area: any): Promise<any> {
-  let first: any = null;
-  for (const query of geocodeQueries(area)) {
-    first = await queryNominatim(query);
-    if (first?.lat && first?.lon) break;
+router.get("/areas/options", nominatimLimiter, async (req: Request, res: Response) => {
+  const level = normalizeLevel(String(req.query.level || ""));
+  const state = String(req.query.state || "Andhra Pradesh").trim();
+  const district = String(req.query.district || "").trim();
+  const districtCode = String(req.query.districtCode || "").trim();
+  const mandal = String(req.query.mandal || "").trim();
+  const subdistrictCode = String(req.query.subdistrictCode || "").trim();
+  const query = String(req.query.q ?? req.query.query ?? "").trim();
+
+  if (!level) {
+    return res.status(400).json({ error: "A valid administrative level is required" });
+  }
+  if (!state) {
+    return res.status(400).json({ error: "State is required" });
+  }
+  if ((level === "subdistrict" || level === "village") && !district && !districtCode) {
+    return res.status(400).json({ error: "District is required before selecting a mandal" });
+  }
+  if (level === "village" && !mandal && !subdistrictCode) {
+    return res.status(400).json({ error: "Mandal is required before selecting an area" });
   }
 
-  if (!first?.lat || !first?.lon) {
-    const fallback = childFallbackArea(area);
-    if (fallback) return geocodeArea(fallback);
-    throw new Error("No coordinate found for selected area");
+  try {
+    const directoryMatches = await searchDirectory({
+      level,
+      state,
+      district,
+      districtCode,
+      mandal,
+      subdistrictCode,
+      query,
+    });
+    if (directoryMatches.length || query.length < 2) {
+      const options = directoryMatches.map(directoryOption);
+      return res.json({ options, areas: options, source: "directory" });
+    }
+  } catch (err) {
+    logger.warn({ err }, "Administrative directory is not ready; using place lookup");
   }
 
-  const latitude = Number(first.lat);
-  const longitude = Number(first.lon);
-  const bbox = Array.isArray(first.boundingbox)
-    ? {
-        south: Number(first.boundingbox[0]),
-        north: Number(first.boundingbox[1]),
-        west: Number(first.boundingbox[2]),
-        east: Number(first.boundingbox[3]),
-      }
-    : {
-        south: latitude - 0.0045,
-        north: latitude + 0.0045,
-        west: longitude - 0.0045,
-        east: longitude + 0.0045,
-      };
-
-  const geojson = first.geojson && ["Polygon", "MultiPolygon"].includes(first.geojson.type)
-    ? first.geojson
-    : null;
-
-  const updated: any[] = await prisma.$queryRawUnsafe(`
-    UPDATE administrative_areas
-    SET
-      latitude = $1,
-      longitude = $2,
-      bbox = $3::jsonb,
-      boundary = CASE
-        WHEN $4::jsonb IS NULL THEN boundary
-        ELSE ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON($4::text), 4326))
-      END,
-      updated_at = CURRENT_TIMESTAMP
-    WHERE id = $5
-    RETURNING
-      id, name, level, state_code, state_name,
-      district_code, district_name, subdistrict_code, subdistrict_name,
-      latitude, longitude, bbox,
-      CASE WHEN boundary IS NULL THEN NULL ELSE ST_AsGeoJSON(boundary)::json END as boundary_geojson
-  `, latitude, longitude, JSON.stringify(bbox), geojson ? JSON.stringify(geojson) : null, area.id);
-
-  if (updated[0]) return updated[0];
-
-  const inserted: any[] = await prisma.$queryRawUnsafe(`
-    INSERT INTO administrative_areas (
-      id, name, normalized_name, level, state_code, state_name,
-      district_code, district_name, subdistrict_code, subdistrict_name,
-      latitude, longitude, bbox, boundary, source
-    )
-    VALUES (
-      $1, $2, $3, $4, $5, $6,
-      $7, $8, $9, $10,
-      $11, $12, $13::jsonb,
-      CASE
-        WHEN $14::jsonb IS NULL THEN NULL
-        ELSE ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON($14::text), 4326))
-      END,
-      'LGD administrative directory + Nominatim'
-    )
-    ON CONFLICT (id) DO UPDATE SET
-      name = EXCLUDED.name,
-      normalized_name = EXCLUDED.normalized_name,
-      latitude = EXCLUDED.latitude,
-      longitude = EXCLUDED.longitude,
-      bbox = EXCLUDED.bbox,
-      boundary = COALESCE(EXCLUDED.boundary, administrative_areas.boundary),
-      updated_at = CURRENT_TIMESTAMP
-    RETURNING
-      id, name, level, state_code, state_name,
-      district_code, district_name, subdistrict_code, subdistrict_name,
-      latitude, longitude, bbox,
-      CASE WHEN boundary IS NULL THEN NULL ELSE ST_AsGeoJSON(boundary)::json END as boundary_geojson
-  `, area.id, area.name, normalizeName(area.name), area.level, area.state_code, area.state_name,
-    area.district_code, area.district_name, area.subdistrict_code, area.subdistrict_name,
-    latitude, longitude, JSON.stringify(bbox), geojson ? JSON.stringify(geojson) : null);
-
-  return inserted[0];
-}
+  const context = [mandal, district, state, "India"].filter(Boolean);
+  const searchTerm = level === "district" ? `${query} district` : query;
+  const searchQuery = [searchTerm, ...context].join(", ");
+  try {
+    const places = await searchNominatim(searchQuery);
+    const unique = new Map<string, ReturnType<typeof toOption>>();
+    for (const place of places) unique.set(`${place.osm_type}-${place.osm_id}`, toOption(place, level));
+    const options = Array.from(unique.values());
+    res.json({ options, areas: options, source: "development-place-lookup" });
+  } catch (err) {
+    logger.error({ err, searchQuery, level }, "Administrative area options unavailable");
+    res.status(502).json({ error: "Area suggestions are unavailable" });
+  }
+});
 
 router.get("/areas/current", nominatimLimiter, async (req: Request, res: Response) => {
+  const latitude = readNumber(req.query.latitude, -90, 90);
+  const longitude = readNumber(req.query.longitude, -180, 180);
+  if (latitude === null || longitude === null) {
+    return res.status(400).json({ error: "Valid latitude and longitude are required" });
+  }
+
+  res.json({
+    area: {
+      id: "current-location",
+      name: "Current location",
+      displayName: "Current location",
+      type: "nearby",
+      center: { latitude, longitude },
+      latitude,
+      longitude,
+      bounds: {
+        south: latitude - 0.25,
+        north: latitude + 0.25,
+        west: longitude - 0.25,
+        east: longitude + 0.25,
+      },
+      bbox: {
+        south: latitude - 0.25,
+        north: latitude + 0.25,
+        west: longitude - 0.25,
+        east: longitude + 0.25,
+      },
+      boundary: null,
+    },
+  });
+});
+
+function parseBbox(value: unknown): [number, number, number, number] | null {
+  if (typeof value !== "string") return null;
+  const parts = value.split(",").map(Number);
+  if (parts.length !== 4 || parts.some((part) => !Number.isFinite(part))) return null;
+  const [west, south, east, north] = parts;
+  if (west < -180 || east > 180 || south < -90 || north > 90 || west >= east || south >= north) return null;
+  return [west, south, east, north];
+}
+
+interface PublicIssueRow {
+  id: string;
+  latitude: number;
+  longitude: number;
+  status: string;
+  condition: string | null;
+  severity_score: number | null;
+  pothole_count: number | null;
+  evidence_count: number | null;
+  block_id: string | null;
+  created_at: Date;
+  last_detected_at: Date;
+  image_s3_key: string | null;
+}
+
+/**
+ * Public map layer: one pin per physical issue, plus unlinked pending reports
+ * so AI downtime never blanks the map. `road_issues` is authoritative for
+ * verified/fixed defects.
+ */
+router.get("/potholes", publicReadLimiter, async (req: Request, res: Response) => {
+  const bbox = parseBbox(req.query.bbox);
+  if (!bbox) return res.status(400).json({ error: "bbox must be west,south,east,north" });
+  const [west, south, east, north] = bbox;
+
   try {
-    const id = typeof req.query.id === "string" ? req.query.id : undefined;
-    const villageCode = typeof req.query.villageCode === "string" ? req.query.villageCode : undefined;
-    if (!id && !villageCode) {
-      return res.status(400).json({ error: "id or villageCode is required" });
-    }
+    const issues = await prisma.$queryRawUnsafe<PublicIssueRow[]>(
+      `SELECT
+         ri.id,
+         ST_Y(ri.location::geometry) AS latitude,
+         ST_X(ri.location::geometry) AS longitude,
+         ri.status,
+         ri.condition,
+         ri.severity_score,
+         ri.pothole_count,
+         ri.evidence_count,
+         ri.block_id,
+         ri.first_detected_at AS created_at,
+         ri.last_detected_at,
+         (SELECT p.image_s3_key FROM potholes p
+           WHERE p.canonical_issue_id = ri.id
+           ORDER BY p.created_at DESC LIMIT 1) AS image_s3_key
+       FROM road_issues ri
+       WHERE ri.status <> 'dismissed'
+         AND ri.location && ST_MakeEnvelope($1, $2, $3, $4, 4326)
+       ORDER BY ri.last_detected_at DESC
+       LIMIT 3000`,
+      west,
+      south,
+      east,
+      north,
+    );
 
-    const rows: any[] = await prisma.$queryRawUnsafe(`
-      SELECT
-        id, name, level, state_code, state_name,
-        district_code, district_name, subdistrict_code, subdistrict_name,
-        latitude, longitude, bbox,
-        CASE WHEN boundary IS NULL THEN NULL ELSE ST_AsGeoJSON(boundary)::json END as boundary_geojson
-      FROM administrative_areas
-      WHERE ${id ? "id = $1" : "id = $1 OR id = CONCAT('village:', $1)"}
-      LIMIT 1
-    `, id || villageCode);
+    const pending = await prisma.$queryRawUnsafe<PublicIssueRow[]>(
+      `SELECT
+         p.id,
+         ST_Y(p.location::geometry) AS latitude,
+         ST_X(p.location::geometry) AS longitude,
+         'pending' AS status,
+         NULL::varchar AS condition,
+         NULL::numeric AS severity_score,
+         NULL::integer AS pothole_count,
+         1 AS evidence_count,
+         p.block_id,
+         p.created_at,
+         p.created_at AS last_detected_at,
+         p.image_s3_key
+       FROM potholes p
+       WHERE p.status = 'pending'
+         AND p.canonical_issue_id IS NULL
+         AND p.location && ST_MakeEnvelope($1, $2, $3, $4, 4326)
+       ORDER BY p.created_at DESC
+       LIMIT 1000`,
+      west,
+      south,
+      east,
+      north,
+    );
 
-    if (rows.length === 0) {
-      const fallbackArea = fallbackAreaFromQuery(req);
-      if (fallbackArea) {
-        const area = await geocodeArea(fallbackArea);
-        return res.json({ area: toPublicArea(area) });
-      }
-      return res.status(404).json({ error: "Administrative area not found" });
-    }
+    const potholes = [
+      ...issues.map((row) => ({
+        id: row.id,
+        latitude: Number(row.latitude),
+        longitude: Number(row.longitude),
+        status: row.status === "active" ? "verified" : row.status === "fixed" ? "fixed" : "rejected",
+        condition: row.condition,
+        severity_score: row.severity_score === null ? null : Number(row.severity_score),
+        pothole_count: row.pothole_count === null ? null : Number(row.pothole_count),
+        evidence_count: Number(row.evidence_count || 1),
+        block_id: row.block_id,
+        created_at: row.created_at,
+        last_detected_at: row.last_detected_at,
+        image_s3_key: row.image_s3_key,
+      })),
+      ...pending.map((row) => ({
+        id: row.id,
+        latitude: Number(row.latitude),
+        longitude: Number(row.longitude),
+        status: "pending",
+        condition: null,
+        severity_score: null,
+        pothole_count: null,
+        evidence_count: 1,
+        block_id: row.block_id,
+        created_at: row.created_at,
+        last_detected_at: row.last_detected_at,
+        image_s3_key: row.image_s3_key,
+      })),
+    ];
 
-    const area = rows[0].latitude && rows[0].longitude ? rows[0] : await geocodeArea(rows[0]);
-    res.json({ area: toPublicArea(area) });
-  } catch (err: any) {
-    logger.error({ err }, "Current map area error");
-    res.status(500).json({ error: err.message || "Failed to resolve selected location" });
+    res.json({ potholes });
+  } catch (err) {
+    logger.error({ err }, "Public map query failed");
+    res.status(500).json({ error: "Could not load public reports" });
   }
 });
 
-router.get("/potholes", async (req: Request, res: Response) => {
+// Compatibility endpoint for the handoff website client. The main website uses
+// /map/potholes above.
+router.get("/reports", publicReadLimiter, async (req: Request, res: Response) => {
+  const south = readNumber(req.query.south, -90, 90);
+  const west = readNumber(req.query.west, -180, 180);
+  const north = readNumber(req.query.north, -90, 90);
+  const east = readNumber(req.query.east, -180, 180);
+  if (south === null || west === null || north === null || east === null || south >= north || west >= east) {
+    return res.status(400).json({ error: "Valid map bounds are required" });
+  }
+
   try {
-    const bbox = z.string().regex(/^-?\d+(\.\d+)?,-?\d+(\.\d+)?,-?\d+(\.\d+)?,-?\d+(\.\d+)?$/).safeParse(req.query.bbox);
-    if (!bbox.success) {
-      return res.status(400).json({ error: "bbox must be west,south,east,north" });
-    }
-    const [west, south, east, north] = bbox.data.split(",").map(Number);
-
-    const reports: any[] = await prisma.$queryRawUnsafe(`
-      SELECT
-        id,
-        ST_X(location::geometry) as longitude,
-        ST_Y(location::geometry) as latitude,
-        status,
-        block_id,
-        created_at
-      FROM potholes
-      WHERE status IN ('verified', 'pending')
-        AND location && ST_MakeEnvelope($1, $2, $3, $4, 4326)
-      ORDER BY created_at DESC
-      LIMIT 1000
-    `, west, south, east, north);
-
-    res.json({
-      potholes: reports.map((report) => ({
-        id: report.id,
-        latitude: Number(report.latitude),
-        longitude: Number(report.longitude),
-        status: report.status,
-        block_id: report.block_id,
-        created_at: report.created_at,
-      })),
-    });
+    const reports = await prisma.$queryRawUnsafe(
+      `SELECT id, ST_Y(location::geometry) AS latitude, ST_X(location::geometry) AS longitude,
+              status, last_detected_at AS created_at, condition, severity_score,
+              pothole_count, confidence, evidence_count, block_id,
+              (SELECT p.image_s3_key FROM potholes p WHERE p.canonical_issue_id = road_issues.id ORDER BY p.created_at DESC LIMIT 1) AS image_s3_key
+       FROM road_issues
+       WHERE status <> 'dismissed'
+         AND ST_Intersects(location::geometry, ST_MakeEnvelope($1, $2, $3, $4, 4326))
+       ORDER BY last_detected_at DESC
+       LIMIT 3000`,
+      west,
+      south,
+      east,
+      north,
+    );
+    const tender = await prisma.$queryRawUnsafe<Array<{ generated_at: Date | null }>>(
+      "SELECT MAX(generated_at) AS generated_at FROM tenders",
+    );
+    res.json({ reports, lastTenderedAt: tender[0]?.generated_at || null });
   } catch (err) {
-    logger.error({ err }, "Visible map potholes error");
-    res.status(500).json({ error: "Failed to fetch map potholes" });
+    logger.error({ err }, "Map report query failed");
+    res.status(500).json({ error: "Could not load public reports" });
   }
 });
 

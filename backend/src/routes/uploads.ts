@@ -10,7 +10,7 @@ const router = Router();
 
 const presignedUrlSchema = z.object({
   filename: z.string().min(1).max(255),
-  contentType: z.string().regex(/^image\//, "Must be an image type"),
+  contentType: z.string().regex(/^(?:image\/(?:jpeg|png|webp)|video\/(?:mp4|quicktime))$/, "Unsupported media type"),
 });
 
 router.post(

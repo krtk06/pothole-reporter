@@ -1,14 +1,16 @@
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { SESClient, SendEmailCommand, SESClientConfig } from "@aws-sdk/client-ses";
 import logger from "../config/logger";
 
-const sesClient = new SESClient({
+const sesConfig: SESClientConfig = {
   region: process.env.AWS_REGION || "us-east-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
-  },
-});
-
+};
+if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
+  sesConfig.credentials = {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  };
+}
+const sesClient = new SESClient(sesConfig);
 const FROM_EMAIL = process.env.SES_FROM_EMAIL || "";
 
 export async function sendPasswordResetEmail(recipient: string, resetLink: string): Promise<void> {
@@ -16,14 +18,13 @@ export async function sendPasswordResetEmail(recipient: string, resetLink: strin
     logger.info({ recipient }, "Password reset email skipped in non-production");
     return;
   }
-
   if (!FROM_EMAIL) {
     logger.warn("SES_FROM_EMAIL not configured. Password reset email not sent.");
     return;
   }
 
   try {
-    const command = new SendEmailCommand({
+    await sesClient.send(new SendEmailCommand({
       Source: FROM_EMAIL,
       Destination: { ToAddresses: [recipient] },
       Message: {
@@ -34,9 +35,7 @@ export async function sendPasswordResetEmail(recipient: string, resetLink: strin
           },
         },
       },
-    });
-
-    await sesClient.send(command);
+    }));
     logger.info({ recipient }, "Password reset email sent via SES");
   } catch (err) {
     logger.error({ err, recipient }, "Failed to send password reset email via SES");

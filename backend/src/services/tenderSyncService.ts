@@ -12,6 +12,7 @@ export interface TenderSyncSettings {
   next_sync_at: string | null;
   last_sync_status: string;
   last_sync_message: string | null;
+  consecutive_failures: number;
   updated_at: string;
 }
 
@@ -26,129 +27,96 @@ export interface TenderSyncLog {
   triggered_by: string;
 }
 
-// Bootstrap defaults for the tender sync settings row; no hardcoded secrets —
-// when TENDER_API_KEY is unset the row starts with an empty key and every
-// push/sync reports a configuration error until it is provided.
 const DEFAULT_TARGET_URL = process.env.TENDER_WEBSITE_URL || "http://localhost:3001/api/sync";
 const DEFAULT_API_KEY = process.env.TENDER_API_KEY || "";
 const DEFAULT_INTERVAL_DAYS = 15;
 
-let tablesInitialized = false;
-
-export async function ensureTenderSyncTablesExist(): Promise<void> {
-  if (tablesInitialized) return;
-
-  try {
-    await prisma.$executeRawUnsafe(`
-      CREATE TABLE IF NOT EXISTS tender_sync_settings (
-        id VARCHAR(50) PRIMARY KEY,
-        target_url TEXT NOT NULL DEFAULT 'http://localhost:3001/api/sync',
-        api_key VARCHAR(255) NOT NULL DEFAULT '',
-        sync_interval_days INT NOT NULL DEFAULT 15,
-        is_enabled BOOLEAN NOT NULL DEFAULT true,
-        last_sync_at TIMESTAMP WITH TIME ZONE,
-        next_sync_at TIMESTAMP WITH TIME ZONE,
-        last_sync_status VARCHAR(50) DEFAULT 'idle',
-        last_sync_message TEXT,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-      );
-    `);
-
-    await prisma.$executeRawUnsafe(`
-      CREATE TABLE IF NOT EXISTS tender_sync_logs (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        synced_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        potholes_count INT NOT NULL DEFAULT 0,
-        tenders_count INT NOT NULL DEFAULT 0,
-        status VARCHAR(50) NOT NULL,
-        response_status INT,
-        error_message TEXT,
-        triggered_by VARCHAR(255) NOT NULL DEFAULT 'scheduler'
-      );
-    `);
-
-    const existing: any[] = await prisma.$queryRawUnsafe(`
-      SELECT id FROM tender_sync_settings WHERE id = 'default' LIMIT 1
-    `);
-
-    if (existing.length === 0) {
-      const nextSync = new Date(Date.now() + DEFAULT_INTERVAL_DAYS * 24 * 60 * 60 * 1000).toISOString();
-      await prisma.$executeRawUnsafe(`
-        INSERT INTO tender_sync_settings (id, target_url, api_key, sync_interval_days, is_enabled, next_sync_at, last_sync_status)
-        VALUES ('default', $1, $2, $3, true, $4::timestamptz, 'idle')
-      `, DEFAULT_TARGET_URL, DEFAULT_API_KEY, DEFAULT_INTERVAL_DAYS, nextSync);
-    }
-
-    tablesInitialized = true;
-    logger.info("Tender sync database tables verified/initialized.");
-  } catch (err) {
-    logger.error({ err }, "Error ensuring tender sync tables exist");
-  }
+function clampInterval(value: number): number {
+  if (!Number.isFinite(value)) return DEFAULT_INTERVAL_DAYS;
+  return Math.min(30, Math.max(15, Math.floor(value)));
 }
 
-let memorySettings: TenderSyncSettings = {
-  id: "default",
-  target_url: DEFAULT_TARGET_URL,
-  api_key: DEFAULT_API_KEY,
-  sync_interval_days: DEFAULT_INTERVAL_DAYS,
-  is_enabled: true,
-  last_sync_at: null,
-  next_sync_at: new Date(Date.now() + DEFAULT_INTERVAL_DAYS * 24 * 60 * 60 * 1000).toISOString(),
-  last_sync_status: "idle",
-  last_sync_message: null,
-  updated_at: new Date().toISOString(),
-};
+function isPrivateHost(host: string): boolean {
+  const lower = host.toLowerCase();
+  if (["localhost", "127.0.0.1", "::1", "0.0.0.0"].includes(lower)) return true;
+  if (/^10\./.test(lower)) return true;
+  if (/^192\.168\./.test(lower)) return true;
+  if (/^172\.(1[6-9]|2\d|3[01])\./.test(lower)) return true;
+  if (/^169\.254\./.test(lower)) return true;
+  if (lower.endsWith(".local") || lower.endsWith(".internal")) return true;
+  return false;
+}
 
-let memoryLogs: TenderSyncLog[] = [];
+export function validateTenderTargetUrl(value: string): { ok: boolean; reason?: string } {
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    return { ok: false, reason: "Tender target URL is not a valid URL" };
+  }
+  if (!["http:", "https:"].includes(parsed.protocol)) {
+    return { ok: false, reason: "Tender target URL must use http or https" };
+  }
+  const allowPrivate =
+    process.env.ALLOW_PRIVATE_TENDER_URL === "1" || (process.env.NODE_ENV || "development") !== "production";
+  if (isPrivateHost(parsed.hostname) && !allowPrivate) {
+    return { ok: false, reason: "Tender target URL may not point at a private or loopback host" };
+  }
+  return { ok: true };
+}
+
+async function ensureSettingsRow(): Promise<void> {
+  await prisma.$executeRawUnsafe(
+    `INSERT INTO tender_sync_settings (
+       id, target_url, api_key, sync_interval_days, is_enabled, next_sync_at, last_sync_status
+     )
+     SELECT 'default', $1, $2, $3, TRUE, NOW() + ($3::text || ' days')::interval, 'idle'
+     WHERE NOT EXISTS (SELECT 1 FROM tender_sync_settings WHERE id = 'default')`,
+    DEFAULT_TARGET_URL,
+    DEFAULT_API_KEY,
+    DEFAULT_INTERVAL_DAYS,
+  );
+}
 
 export async function getTenderSyncConfig(): Promise<{ settings: TenderSyncSettings; logs: TenderSyncLog[] }> {
-  try {
-    await ensureTenderSyncTablesExist();
+  await ensureSettingsRow();
 
-    const rows: any[] = await prisma.$queryRawUnsafe(`
-      SELECT 
-        id,
-        target_url,
-        api_key,
-        sync_interval_days,
-        is_enabled,
-        last_sync_at,
-        next_sync_at,
-        last_sync_status,
-        last_sync_message,
-        updated_at
-      FROM tender_sync_settings
-      WHERE id = 'default'
-      LIMIT 1
-    `);
+  const rows: any[] = await prisma.$queryRawUnsafe(
+    `SELECT id, target_url, api_key, sync_interval_days, is_enabled, last_sync_at,
+            next_sync_at, last_sync_status, last_sync_message, consecutive_failures, updated_at
+     FROM tender_sync_settings WHERE id = 'default' LIMIT 1`,
+  );
 
-    if (rows && rows.length > 0) {
-      memorySettings = rows[0];
-    }
+  const row = rows[0];
+  const settings: TenderSyncSettings = {
+    id: "default",
+    target_url: row?.target_url || DEFAULT_TARGET_URL,
+    api_key: row?.api_key || DEFAULT_API_KEY,
+    sync_interval_days: clampInterval(Number(row?.sync_interval_days ?? DEFAULT_INTERVAL_DAYS)),
+    is_enabled: row?.is_enabled ?? true,
+    last_sync_at: row?.last_sync_at ? new Date(row.last_sync_at).toISOString() : null,
+    next_sync_at: row?.next_sync_at ? new Date(row.next_sync_at).toISOString() : null,
+    last_sync_status: row?.last_sync_status || "idle",
+    last_sync_message: row?.last_sync_message || null,
+    consecutive_failures: Number(row?.consecutive_failures || 0),
+    updated_at: row?.updated_at ? new Date(row.updated_at).toISOString() : new Date().toISOString(),
+  };
 
-    const logs: any[] = await prisma.$queryRawUnsafe(`
-      SELECT
-        id,
-        synced_at,
-        potholes_count,
-        tenders_count,
-        status,
-        response_status,
-        error_message,
-        triggered_by
-      FROM tender_sync_logs
-      ORDER BY synced_at DESC
-      LIMIT 20
-    `);
+  const logs: any[] = await prisma.$queryRawUnsafe(
+    `SELECT id, synced_at, potholes_count, tenders_count, status, response_status, error_message, triggered_by
+     FROM tender_sync_logs ORDER BY synced_at DESC LIMIT 20`,
+  );
 
-    if (logs) {
-      memoryLogs = logs;
-    }
-  } catch (err) {
-    logger.warn({ err }, "Database unavailable for tender sync config; using fallback in-memory settings");
-  }
-
-  return { settings: memorySettings, logs: memoryLogs };
+  return {
+    settings,
+    logs: (logs || []).map((log) => ({
+      ...log,
+      synced_at: new Date(log.synced_at).toISOString(),
+      potholes_count: Number(log.potholes_count),
+      tenders_count: Number(log.tenders_count),
+      response_status: log.response_status === null ? null : Number(log.response_status),
+    })),
+  };
 }
 
 export async function updateTenderSyncConfig(data: {
@@ -157,90 +125,112 @@ export async function updateTenderSyncConfig(data: {
   sync_interval_days?: number;
   is_enabled?: boolean;
 }): Promise<TenderSyncSettings> {
-  const current = memorySettings;
+  const { settings } = await getTenderSyncConfig();
+  const target_url = data.target_url !== undefined ? data.target_url.trim() : settings.target_url;
+  const api_key = data.api_key !== undefined ? data.api_key.trim() : settings.api_key;
+  const sync_interval_days = data.sync_interval_days !== undefined
+    ? clampInterval(Number(data.sync_interval_days))
+    : settings.sync_interval_days;
+  const is_enabled = data.is_enabled !== undefined ? Boolean(data.is_enabled) : settings.is_enabled;
 
-  const target_url = data.target_url !== undefined ? data.target_url.trim() : current.target_url;
-  const api_key = data.api_key !== undefined ? data.api_key.trim() : current.api_key;
-  let sync_interval_days = data.sync_interval_days !== undefined ? Number(data.sync_interval_days) : current.sync_interval_days;
+  const validation = validateTenderTargetUrl(target_url);
+  if (!validation.ok) throw new Error(validation.reason);
 
-  // Validate interval between 15 and 30 days as required
-  if (isNaN(sync_interval_days) || sync_interval_days < 15) {
-    sync_interval_days = 15;
-  } else if (sync_interval_days > 30) {
-    sync_interval_days = 30;
-  }
+  const base = settings.last_sync_at ? new Date(settings.last_sync_at).getTime() : Date.now();
+  const nextSync = new Date(base + sync_interval_days * 86_400_000);
 
-  const is_enabled = data.is_enabled !== undefined ? Boolean(data.is_enabled) : current.is_enabled;
-
-  let nextSyncDate: Date;
-  if (current.last_sync_at) {
-    nextSyncDate = new Date(new Date(current.last_sync_at).getTime() + sync_interval_days * 24 * 60 * 60 * 1000);
-  } else {
-    nextSyncDate = new Date(Date.now() + sync_interval_days * 24 * 60 * 60 * 1000);
-  }
-
-  memorySettings = {
-    ...memorySettings,
+  const updated = await prisma.$executeRawUnsafe(
+    `UPDATE tender_sync_settings
+     SET target_url = $1, api_key = $2, sync_interval_days = $3, is_enabled = $4,
+         next_sync_at = $5::timestamptz, updated_at = NOW()
+     WHERE id = 'default'`,
     target_url,
     api_key,
     sync_interval_days,
     is_enabled,
-    next_sync_at: nextSyncDate.toISOString(),
-    updated_at: new Date().toISOString(),
-  };
+    nextSync.toISOString(),
+  );
+  if (updated === 0) throw new Error("Tender sync settings row is missing");
 
+  logger.info({ sync_interval_days, target_url, is_enabled }, "Tender sync config updated");
+  return (await getTenderSyncConfig()).settings;
+}
+
+async function acquireLock(): Promise<boolean> {
+  const rows = await prisma.$queryRawUnsafe<Array<{ id: string }>>(
+    `UPDATE tender_sync_settings
+     SET sync_lock_until = NOW() + INTERVAL '10 minutes'
+     WHERE id = 'default'
+       AND (sync_lock_until IS NULL OR sync_lock_until < NOW())
+     RETURNING id`,
+  );
+  return rows.length === 1;
+}
+
+async function releaseLock(): Promise<void> {
+  await prisma.$executeRawUnsafe(
+    `UPDATE tender_sync_settings SET sync_lock_until = NULL WHERE id = 'default'`,
+  );
+}
+
+async function logSyncResult(
+  potholesCount: number,
+  tendersCount: number,
+  status: "success" | "failed",
+  responseStatus: number | null,
+  errorMessage: string | null,
+  triggeredBy: string,
+) {
   try {
-    await ensureTenderSyncTablesExist();
-    await prisma.$executeRawUnsafe(`
-      UPDATE tender_sync_settings
-      SET 
-        target_url = $1,
-        api_key = $2,
-        sync_interval_days = $3,
-        is_enabled = $4,
-        next_sync_at = $5::timestamptz,
-        updated_at = NOW()
-      WHERE id = 'default'
-    `, target_url, api_key, sync_interval_days, is_enabled, nextSyncDate.toISOString());
+    await prisma.$executeRawUnsafe(
+      `INSERT INTO tender_sync_logs (potholes_count, tenders_count, status, response_status, error_message, triggered_by)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      potholesCount,
+      tendersCount,
+      status,
+      responseStatus,
+      errorMessage,
+      triggeredBy,
+    );
   } catch (err) {
-    logger.warn({ err }, "Database unavailable; updated in-memory tender sync settings");
+    logger.error({ err }, "Failed to write tender sync log");
   }
-
-  logger.info({ sync_interval_days, target_url, is_enabled }, "Tender sync config updated by admin");
-  return memorySettings;
 }
 
-
-interface DispatchResult {
-  ok: boolean;
-  status: number | null;
-  responseText: string;
+async function postPayload(payload: unknown, targetUrl: string, apiKey: string) {
+  const response = await fetch(targetUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-Key": apiKey,
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(15_000),
+    redirect: "error",
+  });
+  const text = await response.text().catch(() => "");
+  return { ok: response.ok, status: response.status, text };
 }
 
-/** Fetch the verified potholes for a single block (join reporter for display name). */
 async function fetchBlockPotholes(blockId: string): Promise<any[]> {
-  return prisma.$queryRawUnsafe(`
-    SELECT
-      p.id,
-      p.image_s3_key,
-      ST_X(p.location::geometry) as longitude,
-      ST_Y(p.location::geometry) as latitude,
-      p.address_notes,
-      p.block_id,
-      p.status,
-      p.created_at,
-      u.name as reporter_name
-    FROM potholes p
-    JOIN users u ON u.id = p.reporter_id
-    WHERE p.block_id = $1 AND p.status = 'verified'
-    ORDER BY p.created_at DESC
-  `, blockId);
+  return prisma.$queryRawUnsafe(
+    `SELECT p.id, p.image_s3_key,
+            ST_X(p.location::geometry) AS longitude,
+            ST_Y(p.location::geometry) AS latitude,
+            p.address_notes, p.block_id, p.status, p.created_at,
+            u.name AS reporter_name
+     FROM potholes p
+     JOIN users u ON u.id = p.reporter_id
+     WHERE p.block_id = $1 AND p.status = 'verified'
+     ORDER BY p.created_at DESC`,
+    blockId,
+  );
 }
 
-/** Attach a presigned S3 download URL to each pothole row (null when unavailable). */
 async function enrichPotholeRows(potholes: any[]): Promise<any[]> {
   return Promise.all(
-    potholes.map(async (p: any) => ({
+    potholes.map(async (p) => ({
       id: p.id,
       latitude: Number(p.latitude),
       longitude: Number(p.longitude),
@@ -251,12 +241,12 @@ async function enrichPotholeRows(potholes: any[]): Promise<any[]> {
       reporter_name: p.reporter_name,
       image_url: await generatePresignedDownloadUrl(p.image_s3_key).catch(() => null),
       image_s3_key: p.image_s3_key,
-    }))
+    })),
   );
 }
 
-function mapTenderRows(tenders: any[]): any[] {
-  return tenders.map((t: any) => ({
+function mapTenderRows(tenders: any[]) {
+  return tenders.map((t) => ({
     id: t.id,
     block_id: t.block_id,
     pothole_count: Number(t.pothole_count),
@@ -266,330 +256,162 @@ function mapTenderRows(tenders: any[]): any[] {
   }));
 }
 
-/** POST a sync payload to the tender website with API-key auth and a hard timeout. */
-async function postPayloadToTenderWebsite(
-  payload: unknown,
-  targetUrl: string,
-  apiKey: string
-): Promise<DispatchResult> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-  try {
-    const response = await fetch(targetUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-Key": apiKey,
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    });
-
-    let responseText = "";
-    try {
-      responseText = await response.text();
-    } catch {
-      responseText = "";
-    }
-
-    return { ok: response.ok, status: response.status, responseText };
-  } finally {
-    clearTimeout(timeoutId);
-  }
-}
-
-export async function performTenderSync(triggeredBy: string = "scheduler"): Promise<{
+export async function performTenderSync(triggeredBy = "scheduler"): Promise<{
   success: boolean;
   potholes_count: number;
   tenders_count: number;
   message: string;
   response_status?: number;
 }> {
-  await ensureTenderSyncTablesExist();
   const { settings } = await getTenderSyncConfig();
-
   if (!settings.is_enabled && triggeredBy === "scheduler") {
-    return {
-      success: false,
-      potholes_count: 0,
-      tenders_count: 0,
-      message: "Tender sync is currently disabled by admin.",
-    };
+    return { success: false, potholes_count: 0, tenders_count: 0, message: "Tender sync is disabled by admin." };
   }
 
-  if (!settings.target_url || !settings.api_key) {
-    const errorMsg = "Tender sync target URL or API key is not configured.";
-    await logSyncResult(0, 0, "failed", null, errorMsg, triggeredBy);
-    return { success: false, potholes_count: 0, tenders_count: 0, message: errorMsg };
+  const urlCheck = validateTenderTargetUrl(settings.target_url);
+  if (!urlCheck.ok || !settings.api_key) {
+    const message = urlCheck.reason || "Tender sync target URL or API key is not configured.";
+    await logSyncResult(0, 0, "failed", null, message, triggeredBy);
+    return { success: false, potholes_count: 0, tenders_count: 0, message };
+  }
+
+  if (!(await acquireLock())) {
+    return { success: false, potholes_count: 0, tenders_count: 0, message: "A tender sync is already running." };
   }
 
   try {
-    // 1. Fetch verified potholes that are still awaiting a tender
-    //    (below threshold — blocks with any tender record are excluded because
-    //    above-threshold blocks are dispatched immediately on tender creation,
-    //    and withdrawn blocks keep their rejected tender record by design)
-    const potholes: any[] = await prisma.$queryRawUnsafe(`
-      SELECT
-        p.id,
-        p.image_s3_key,
-        ST_X(p.location::geometry) as longitude,
-        ST_Y(p.location::geometry) as latitude,
-        p.address_notes,
-        p.block_id,
-        p.status,
-        p.created_at,
-        u.name as reporter_name
-      FROM potholes p
-      JOIN users u ON u.id = p.reporter_id
-      WHERE p.status = 'verified'
-        AND (p.block_id IS NULL OR p.block_id NOT IN (
-          SELECT DISTINCT block_id FROM tenders WHERE block_id IS NOT NULL
-        ))
-      ORDER BY p.created_at DESC
-    `);
+    const potholes: any[] = await prisma.$queryRawUnsafe(
+      `SELECT p.id, p.image_s3_key,
+              ST_X(p.location::geometry) AS longitude,
+              ST_Y(p.location::geometry) AS latitude,
+              p.address_notes, p.block_id, p.status, p.created_at,
+              u.name AS reporter_name
+       FROM potholes p
+       JOIN users u ON u.id = p.reporter_id
+       WHERE p.status = 'verified'
+         AND p.block_id IS NOT NULL
+         AND p.block_id NOT IN (SELECT DISTINCT block_id FROM tenders WHERE block_id IS NOT NULL)
+       ORDER BY p.created_at DESC`,
+    );
 
-    // 2. Fetch all tenders (reconciliation channel: upsert + withdrawal healing)
-    const tenders: any[] = await prisma.$queryRawUnsafe(`
-      SELECT
-        id,
-        block_id,
-        pothole_count,
-        estimated_cost,
-        status,
-        generated_at
-      FROM tenders
-      ORDER BY generated_at DESC
-    `);
+    const tenders: any[] = await prisma.$queryRawUnsafe(
+      `SELECT id, block_id, pothole_count, estimated_cost, status, generated_at
+       FROM tenders ORDER BY generated_at DESC`,
+    );
 
-    // 3. Enrich potholes with image presigned URLs
-    const enrichedPotholes = await enrichPotholeRows(potholes);
-
+    const enriched = await enrichPotholeRows(potholes);
     const payload = {
       source: "pothole-reporter",
       sync_type: "scheduled",
       exported_at: new Date().toISOString(),
       triggered_by: triggeredBy,
-      summary: {
-        total_potholes: enrichedPotholes.length,
-        total_tenders: tenders.length,
-      },
+      summary: { total_potholes: enriched.length, total_tenders: tenders.length },
       tenders: mapTenderRows(tenders),
-      potholes: enrichedPotholes,
+      potholes: enriched,
     };
 
-    // 4. Send payload to Tender Website with API Key
-    const { ok: isSuccess, status: responseStatus, responseText } =
-      await postPayloadToTenderWebsite(payload, settings.target_url, settings.api_key);
-
-    if (isSuccess) {
-      const now = new Date();
-      const nextSync = new Date(now.getTime() + settings.sync_interval_days * 24 * 60 * 60 * 1000);
-
-      await prisma.$executeRawUnsafe(`
-        UPDATE tender_sync_settings
-        SET
-          last_sync_at = $1::timestamptz,
-          next_sync_at = $2::timestamptz,
-          last_sync_status = 'success',
-          last_sync_message = $3,
-          updated_at = NOW()
-        WHERE id = 'default'
-      `, now.toISOString(), nextSync.toISOString(), `Successfully sent ${enrichedPotholes.length} potholes and ${tenders.length} tenders`);
-
-      await logSyncResult(
-        enrichedPotholes.length,
-        tenders.length,
-        "success",
-        responseStatus,
-        null,
-        triggeredBy
-      );
-
-      logger.info(
-        { potholesCount: enrichedPotholes.length, tendersCount: tenders.length, triggeredBy },
-        "Tender sync completed successfully"
-      );
-
-      return {
-        success: true,
-        potholes_count: enrichedPotholes.length,
-        tenders_count: tenders.length,
-        message: `Successfully synchronized ${enrichedPotholes.length} potholes and ${tenders.length} tenders to tender website.`,
-        response_status: responseStatus ?? undefined,
-      };
-    } else {
-      const errMsg = `Tender website returned status ${responseStatus}: ${responseText.slice(0, 200)}`;
-      await logSyncResult(
-        enrichedPotholes.length,
-        tenders.length,
-        "failed",
-        responseStatus,
-        errMsg,
-        triggeredBy
-      );
-
-      await prisma.$executeRawUnsafe(`
-        UPDATE tender_sync_settings
-        SET
-          last_sync_status = 'failed',
-          last_sync_message = $1,
-          updated_at = NOW()
-        WHERE id = 'default'
-      `, errMsg);
-
-      logger.warn({ responseStatus, responseText }, "Tender sync failed with non-2xx status");
-
-      return {
-        success: false,
-        potholes_count: enrichedPotholes.length,
-        tenders_count: tenders.length,
-        message: errMsg,
-        response_status: responseStatus ?? undefined,
-      };
+    const result = await postPayload(payload, settings.target_url, settings.api_key);
+    if (!result.ok) {
+      const message = `Tender website returned ${result.status}: ${result.text.slice(0, 200)}`;
+      await markFailure(settings, message);
+      await logSyncResult(enriched.length, tenders.length, "failed", result.status, message, triggeredBy);
+      return { success: false, potholes_count: enriched.length, tenders_count: tenders.length, message, response_status: result.status };
     }
-  } catch (err: any) {
-    const errMsg = err.message || "Failed to reach tender website";
-    await logSyncResult(0, 0, "failed", null, errMsg, triggeredBy);
 
-    await prisma.$executeRawUnsafe(`
-      UPDATE tender_sync_settings
-      SET
-        last_sync_status = 'failed',
-        last_sync_message = $1,
-        updated_at = NOW()
-      WHERE id = 'default'
-    `, errMsg).catch(() => {});
-
-    logger.error({ err }, "Error during tender sync");
+    const now = new Date();
+    const nextSync = new Date(now.getTime() + settings.sync_interval_days * 86_400_000);
+    await prisma.$executeRawUnsafe(
+      `UPDATE tender_sync_settings
+       SET last_sync_at = $1::timestamptz, next_sync_at = $2::timestamptz,
+           last_sync_status = 'success', last_sync_message = $3,
+           consecutive_failures = 0, sync_lock_until = NULL, updated_at = NOW()
+       WHERE id = 'default'`,
+      now.toISOString(),
+      nextSync.toISOString(),
+      `Sent ${enriched.length} potholes and ${tenders.length} tenders`,
+    );
+    await logSyncResult(enriched.length, tenders.length, "success", result.status, null, triggeredBy);
+    logger.info({ potholes: enriched.length, tenders: tenders.length, triggeredBy }, "Tender sync completed");
     return {
-      success: false,
-      potholes_count: 0,
-      tenders_count: 0,
-      message: `Sync failed: ${errMsg}`,
+      success: true,
+      potholes_count: enriched.length,
+      tenders_count: tenders.length,
+      message: `Synchronized ${enriched.length} potholes and ${tenders.length} tenders.`,
+      response_status: result.status,
     };
+  } catch (err: any) {
+    const message = err?.message || "Failed to reach tender website";
+    await markFailure(settings, message);
+    await logSyncResult(0, 0, "failed", null, message, triggeredBy);
+    logger.error({ err }, "Tender sync failed");
+    return { success: false, potholes_count: 0, tenders_count: 0, message: `Sync failed: ${message}` };
+  } finally {
+    await releaseLock().catch(() => undefined);
   }
 }
 
-/**
- * Immediately dispatches a block's verified potholes and its tender to the
- * tender website. Called when a block crosses POTHOLE_TENDER_THRESHOLD.
- *
- * Unlike performTenderSync this is mandatory (independent of the admin's
- * enable/disable toggle, which governs only the periodic scheduler) and never
- * advances last_sync_at / next_sync_at so the periodic cycle is unaffected.
- * Failures are logged and healed by the next scheduled sync via block_id upsert.
- */
-export async function pushBlockToTenderWebsite(
-  blockId: string,
-  triggeredBy: string = "threshold"
-): Promise<{ success: boolean; potholes_count: number; message: string }> {
-  await ensureTenderSyncTablesExist();
-  const { settings } = await getTenderSyncConfig();
+async function markFailure(settings: TenderSyncSettings, message: string) {
+  const failures = Math.min(settings.consecutive_failures + 1, 10);
+  const backoffHours = Math.min(24, 2 ** Math.min(failures, 5));
+  await prisma.$executeRawUnsafe(
+    `UPDATE tender_sync_settings
+     SET last_sync_status = 'failed', last_sync_message = $1,
+         consecutive_failures = $2,
+         next_sync_at = NOW() + ($3::text || ' hours')::interval,
+         sync_lock_until = NULL, updated_at = NOW()
+     WHERE id = 'default'`,
+    message,
+    failures,
+    String(backoffHours),
+  ).catch(() => undefined);
+}
 
-  if (!settings.target_url || !settings.api_key) {
-    const errorMsg = "Tender website push skipped: target URL or API key is not configured.";
-    logger.warn({ blockId, triggeredBy }, errorMsg);
-    return { success: false, potholes_count: 0, message: errorMsg };
+export async function pushBlockToTenderWebsite(blockId: string, triggeredBy = "threshold") {
+  const { settings } = await getTenderSyncConfig();
+  const urlCheck = validateTenderTargetUrl(settings.target_url);
+  if (!urlCheck.ok || !settings.api_key) {
+    const message = urlCheck.reason || "Tender website URL or API key is not configured.";
+    logger.warn({ blockId, triggeredBy }, message);
+    return { success: false, potholes_count: 0, message };
   }
 
   try {
-    const potholes = await fetchBlockPotholes(blockId);
+    const potholes = await enrichPotholeRows(await fetchBlockPotholes(blockId));
     if (potholes.length === 0) {
-      const message = `No verified potholes found for block ${blockId}; nothing to push.`;
-      logger.warn({ blockId, triggeredBy }, message);
-      return { success: false, potholes_count: 0, message };
+      return { success: false, potholes_count: 0, message: `No verified potholes in ${blockId}.` };
     }
-
-    const tenders: any[] = await prisma.$queryRawUnsafe(`
-      SELECT
-        id,
-        block_id,
-        pothole_count,
-        estimated_cost,
-        status,
-        generated_at
-      FROM tenders
-      WHERE block_id = $1
-      ORDER BY generated_at DESC
-      LIMIT 1
-    `, blockId);
-
-    const enrichedPotholes = await enrichPotholeRows(potholes);
-
+    const tenders: any[] = await prisma.$queryRawUnsafe(
+      `SELECT id, block_id, pothole_count, estimated_cost, status, generated_at
+       FROM tenders WHERE block_id = $1 ORDER BY generated_at DESC LIMIT 1`,
+      blockId,
+    );
     const payload = {
       source: "pothole-reporter",
       sync_type: "threshold",
       exported_at: new Date().toISOString(),
       triggered_by: triggeredBy,
-      summary: {
-        total_potholes: enrichedPotholes.length,
-        total_tenders: tenders.length,
-      },
+      summary: { total_potholes: potholes.length, total_tenders: tenders.length },
       tenders: mapTenderRows(tenders),
-      potholes: enrichedPotholes,
+      potholes,
     };
-
-    const { ok, status, responseText } = await postPayloadToTenderWebsite(
-      payload,
-      settings.target_url,
-      settings.api_key
-    );
-
-    if (ok) {
-      await logSyncResult(
-        enrichedPotholes.length,
-        tenders.length,
-        "success",
-        status,
-        null,
-        triggeredBy
-      );
-      logger.info(
-        { blockId, potholesCount: enrichedPotholes.length, triggeredBy, status },
-        "Threshold tender push completed successfully"
-      );
-      return {
-        success: true,
-        potholes_count: enrichedPotholes.length,
-        message: `Pushed ${enrichedPotholes.length} potholes for block ${blockId} to tender website.`,
-      };
-    }
-
-    const errMsg = `Tender website returned status ${status}: ${responseText.slice(0, 200)}`;
+    const result = await postPayload(payload, settings.target_url, settings.api_key);
     await logSyncResult(
-      enrichedPotholes.length,
+      potholes.length,
       tenders.length,
-      "failed",
-      status,
-      errMsg,
-      triggeredBy
+      result.ok ? "success" : "failed",
+      result.status,
+      result.ok ? null : `Tender website returned ${result.status}: ${result.text.slice(0, 200)}`,
+      triggeredBy,
     );
-    logger.warn({ blockId, triggeredBy, status, responseText }, "Threshold tender push failed with non-2xx status");
-    return { success: false, potholes_count: enrichedPotholes.length, message: errMsg };
+    return {
+      success: result.ok,
+      potholes_count: potholes.length,
+      message: result.ok ? `Pushed ${potholes.length} potholes for ${blockId}.` : `Push failed with ${result.status}.`,
+    };
   } catch (err: any) {
-    const errMsg = err.message || "Failed to reach tender website";
-    await logSyncResult(0, 0, "failed", null, errMsg, triggeredBy);
-    logger.error({ err, blockId, triggeredBy }, "Threshold tender push failed (non-blocking)");
-    return { success: false, potholes_count: 0, message: `Push failed: ${errMsg}` };
-  }
-}
-
-async function logSyncResult(
-  potholesCount: number,
-  tendersCount: number,
-  status: "success" | "failed",
-  responseStatus: number | null,
-  errorMessage: string | null,
-  triggeredBy: string
-) {
-  try {
-    await prisma.$executeRawUnsafe(`
-      INSERT INTO tender_sync_logs (potholes_count, tenders_count, status, response_status, error_message, triggered_by)
-      VALUES ($1, $2, $3, $4, $5, $6)
-    `, potholesCount, tendersCount, status, responseStatus, errorMessage, triggeredBy);
-  } catch (err) {
-    logger.error({ err }, "Failed to write tender sync log");
+    const message = err?.message || "Failed to reach tender website";
+    await logSyncResult(0, 0, "failed", null, message, triggeredBy);
+    logger.error({ err, blockId }, "Threshold tender push failed");
+    return { success: false, potholes_count: 0, message };
   }
 }

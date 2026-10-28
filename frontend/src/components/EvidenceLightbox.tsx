@@ -32,12 +32,14 @@ export function EvidenceLightbox({
   onClose,
 }: EvidenceLightboxProps) {
   const source: EvidenceSource = evidenceSource(imageS3Key, imageUrl);
-  // Reset on close so reopening a failed item retries rather than showing
-  // the previous error state.
-  const [failed, setFailed] = useState(false);
+  // Index into the candidate list; each load failure advances to the next one.
+  // Reset on close so reopening a failed item retries rather than showing the
+  // previous error state.
+  const [attempt, setAttempt] = useState(0);
+  const src = source.sources[attempt];
 
   useEffect(() => {
-    setFailed(false);
+    setAttempt(0);
   }, [open, reportId]);
 
   useEffect(() => {
@@ -80,21 +82,21 @@ export function EvidenceLightbox({
             <X className="h-4 w-4" />
           </button>
 
-          {source.kind === "video" && source.url && !failed ? (
+          {source.kind === "video" && src ? (
             <video
-              key={source.url}
-              src={source.url}
+              key={src}
+              src={src}
               controls
               playsInline
-              onError={() => setFailed(true)}
+              onError={() => setAttempt((n) => n + 1)}
               className="max-h-[84vh] w-full rounded-lg bg-black"
             />
-          ) : source.kind === "image" && source.url && !failed ? (
+          ) : source.kind === "image" && src ? (
             <img
-              key={source.url}
-              src={source.url}
+              key={src}
+              src={src}
               alt="Full evidence preview"
-              onError={() => setFailed(true)}
+              onError={() => setAttempt((n) => n + 1)}
               className="max-h-[84vh] w-full rounded-lg object-contain"
             />
           ) : (
@@ -103,11 +105,11 @@ export function EvidenceLightbox({
                 <FileImage className="h-5 w-5" />
               </span>
               <p className="text-sm font-semibold text-ink">
-                {failed ? "Evidence unavailable" : "No evidence attached"}
+                {source.sources.length > 0 ? "Evidence unavailable" : "No evidence attached"}
               </p>
               <p className="max-w-xs text-xs leading-relaxed text-ink3">
-                {failed
-                  ? "The evidence file could not be loaded from the server. It may have expired or not finished uploading."
+                {source.sources.length > 0
+                  ? "The evidence file could not be loaded from S3 or the server. It may have expired, or uploading may not have finished."
                   : "This report was submitted without a photo or video."}
               </p>
             </div>

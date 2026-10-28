@@ -279,25 +279,12 @@ class ApiClient {
   }
 
   async getPotholesInBounds(bbox: { west: number; south: number; east: number; north: number }): Promise<{ potholes: PublicPothole[] }> {
-    try {
-      const query = new URLSearchParams({
-        bbox: `${bbox.west},${bbox.south},${bbox.east},${bbox.north}`,
-      });
-      return await this.fetch(`/map/potholes?${query.toString()}`);
-    } catch {
-      try {
-        const query = new URLSearchParams({
-          north: String(bbox.north),
-          south: String(bbox.south),
-          east: String(bbox.east),
-          west: String(bbox.west),
-        });
-        const data = await this.fetch(`/map/reports?${query.toString()}`);
-        return { potholes: data.reports || data.potholes || [] };
-      } catch {
-        return { potholes: [] };
-      }
-    }
+    const query = new URLSearchParams({
+      bbox: `${bbox.west},${bbox.south},${bbox.east},${bbox.north}`,
+    });
+    // Errors propagate so the caller can show them. This used to swallow every
+    // failure and return an empty list, which looked identical to an empty map.
+    return this.fetch(`/map/potholes?${query.toString()}`);
   }
 }
 
