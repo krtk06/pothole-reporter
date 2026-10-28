@@ -18,7 +18,8 @@
     "seed:all-admins": "tsx src/scripts/seedAllAdmins.ts",
     "import:lgd": "tsx src/scripts/importLgdCsv.ts",
     "backfill:areas": "tsx src/scripts/backfillAreaCoordinates.ts",
-    "backfill:road-issues": "tsx src/scripts/backfillRoadIssues.ts"
+    "backfill:road-issues": "tsx src/scripts/backfillRoadIssues.ts",
+    "backfill:report-blocks": "tsx src/scripts/backfillReportBlockIds.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.600.0",
